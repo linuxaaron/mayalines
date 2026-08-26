@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import quotesData from "../../../data/quotes.json";
+import Breadcrumbs from "../../../components/Breadcrumbs";
 
 export const dynamicParams = false;
 
@@ -30,8 +31,9 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category } = await params;
   const title = category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   return {
-    title: `${title} Quotes — Quote Archive`,
+    title: `${title} Quotes`,
     description: descriptions[category] ?? `Explore a curated collection of ${title.toLowerCase()} quotes from notable authors.`,
+    alternates: { canonical: `/categories/${category}` },
   };
 }
 
@@ -42,7 +44,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
 
   return (
     <main className="quote-detail">
-      <a className="back-link" href="/">← Quote Archive</a>
+      <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Categories", url: "/#categories" }, { name: `${title} Quotes`, url: `/categories/${category}` }]} />
       <p className="eyebrow">QUOTE CATEGORY</p>
       <h1>{title} Quotes</h1>
       <p className="hero-copy">{descriptions[category] ?? `Explore ${title.toLowerCase()} quotes from the archive.`}</p>
