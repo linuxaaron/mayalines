@@ -1,6 +1,47 @@
 import type { MetadataRoute } from "next";
 import quotesData from "../data/quotes";
+
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
-function slugify(value: string) { return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
-function isIndexable(quote: (typeof quotesData)[number]) { return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared"; }
-export default function sitemap(): MetadataRoute.Sitemap { const indexableQuotes = quotesData.filter(isIndexable); const categories = [...new Set(indexableQuotes.map((quote) => quote.category))]; return [{url:siteUrl,changeFrequency:"weekly",priority:1},{url:`${siteUrl}/imprint`,changeFrequency:"yearly",priority:.2},{url:`${siteUrl}/privacy`,changeFrequency:"yearly",priority:.2},{url:`${siteUrl}/terms`,changeFrequency:"yearly",priority:.2},{url:`${siteUrl}/copyright`,changeFrequency:"monthly",priority:.3},{url:`${siteUrl}/accessibility`,changeFrequency:"yearly",priority:.2},...categories.map((category)=>({url:`${siteUrl}/categories/${slugify(category)}`,changeFrequency:"weekly" as const,priority:.8})),...indexableQuotes.map((quote)=>({url:`${siteUrl}/quotes/${quote.slug}`,changeFrequency:"monthly" as const,priority:.6}))]; }
+
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+function isIndexable(quote: (typeof quotesData)[number]) {
+  return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared";
+}
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const indexableQuotes = quotesData.filter(isIndexable);
+  const categories = [...new Set(indexableQuotes.map((quote) => quote.category))];
+  const authors = [...new Set(indexableQuotes.map((quote) => quote.author))];
+
+  return [
+    { url: siteUrl, changeFrequency: "weekly", priority: 1 },
+    { url: `${siteUrl}/imprint`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/privacy`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/terms`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/copyright`, changeFrequency: "monthly", priority: 0.3 },
+    { url: `${siteUrl}/accessibility`, changeFrequency: "yearly", priority: 0.2 },
+    ...categories.map((category) => ({
+      url: `${siteUrl}/categories/${slugify(category)}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    })),
+    ...authors.map((author) => ({
+      url: `${siteUrl}/authors/${slugify(author)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+    ...indexableQuotes.map((quote) => ({
+      url: `${siteUrl}/quotes/${quote.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  ];
+}
