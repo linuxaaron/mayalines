@@ -2,7 +2,15 @@
 
 **Words that last.**
 
+**Website:** https://mayalines.com
+
 MAYALINES is a fast, minimalist and searchable collection of remarkable quotes, authors and thoughts.
+
+## A Special Dedication
+
+MAYALINES was created in honor of a very special person.
+
+This website is a lasting expression of appreciation and recognition. Every quote collected here is part of a project built to preserve meaningful words, ideas and thoughts that deserve to be remembered.
 
 ## Technology
 
@@ -34,6 +42,8 @@ npm start
 ## Repository
 
 MAYALINES is the current brand of the former `quotes` project.
+
+The production website is available at **https://mayalines.com**.
 
 ## Goal
 
