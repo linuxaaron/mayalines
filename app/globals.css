@@ -23,7 +23,7 @@ button { background: none; border: 0; color: inherit; cursor: pointer; }
 .header-rule { height: 1px; flex: 1; background: var(--border); }
 .nav { display: flex; gap: 28px; color: var(--muted); font-size: 14px; }
 .nav a { transition: color .15s ease; }
-.nav a:hover, .author-row a:hover { color: var(--brown); }
+.nav a:hover, .author-row a:hover, .back-link:hover { color: var(--brown); }
 
 .hero { width: min(1440px, 100%); margin: 0 auto; padding: 96px 16.7% 80px; }
 .eyebrow { margin: 0 0 20px; color: var(--brown); font-size: 11px; font-weight: 750; letter-spacing: 0.2em; }
@@ -57,6 +57,13 @@ button { background: none; border: 0; color: inherit; cursor: pointer; }
 .author-row { display: flex; flex-wrap: wrap; gap: 28px 40px; margin-top: 24px; font-family: Georgia, "Times New Roman", serif; font-size: 22px; }
 .author-row a { transition: color .15s ease; }
 
+.quote-detail { width: min(1000px, calc(100% - 48px)); min-height: 100vh; margin: 0 auto; padding: 56px 0 96px; }
+.back-link { color: var(--muted); font-size: 13px; font-weight: 650; }
+.quote-detail blockquote { margin: 80px 0 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(42px, 6vw, 78px); line-height: 1.08; letter-spacing: -.04em; color: #11100f; }
+.quote-detail .quote-author { font-size: 16px; margin-top: 30px; }
+.quote-detail .copy-button { margin-top: 28px; }
+.source-note { margin-top: 56px; color: var(--muted); font-size: 12px; }
+
 .footer { margin-top: 24px; padding: 30px 72px; background: #26211d; color: #d4cec6; font-size: 12px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
@@ -76,4 +83,5 @@ button { background: none; border: 0; color: inherit; cursor: pointer; }
   .hero-copy { font-size: 18px; }
   .quote-of-the-day { padding: 28px; }
   .author-row { font-size: 19px; }
+  .quote-detail { width: min(100% - 32px, 1000px); padding-top: 32px; }
 }
