@@ -52,7 +52,13 @@ export default function Home() {
     <main className="site-shell">
       <a className="skip-link" href="#main-content">Skip to content</a>
       <header className="header">
-        <a className="brand" href="#top" aria-label="Quote Archive home">QUOTES</a>
+        <a className="brand" href="#top" aria-label="Mayalines home">
+          <img className="brand-mark" src="/mayalines-mark.svg" alt="" aria-hidden="true" />
+          <span className="brand-copy">
+            <span className="brand-name">MAYALINES</span>
+            <span className="brand-tagline">WORDS WORTH KEEPING.</span>
+          </span>
+        </a>
         <div className="header-rule" aria-hidden="true" />
         <nav className="nav" aria-label="Primary navigation">
           <a href="#top">Home</a>
@@ -63,7 +69,7 @@ export default function Home() {
       </header>
 
       <section className="hero" id="top" aria-labelledby="page-title">
-        <p className="eyebrow">THE QUOTE ARCHIVE</p>
+        <p className="eyebrow">MAYALINES</p>
         <h1 id="page-title">Words worth keeping.</h1>
         <p className="hero-copy">A considered collection of memorable words, ideas, and voices.</p>
         <label className="search-box">
@@ -115,7 +121,7 @@ export default function Home() {
       </section>
 
       <footer className="footer" id="about">
-        <span>© 2026 Quote Archive</span>
+        <span>© 2026 Mayalines</span>
         <nav className="footer-links" aria-label="Legal and accessibility navigation">
           <a href="/imprint">Imprint</a>
           <a href="/privacy">Privacy</a>
