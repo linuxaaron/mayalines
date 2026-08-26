@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">MAYALINES poetry illustration</title>
+  <desc id="desc">A minimal warm paper composition with an ink bottle, pen and abstract handwritten lines.</desc>
+  <rect width="1200" height="675" fill="#e7e4de"/>
+  <rect x="52" y="52" width="1096" height="571" rx="8" fill="#ddd7cf" stroke="#bdb8af"/>
+  <path d="M108 486 C310 430 330 548 510 478 S790 410 1055 472" fill="none" stroke="#9a7a61" stroke-width="3" opacity=".65"/>
+  <path d="M110 524 C310 468 350 582 540 512 S820 450 1058 506" fill="none" stroke="#765843" stroke-width="1.5" opacity=".38"/>
+  <g transform="translate(790 125) rotate(-9)">
+    <path d="M0 270 L176 20 Q188 3 204 16 L222 32 Q235 45 222 62 L44 286 Z" fill="#26211d"/>
+    <path d="M176 20 L205 -5 Q218 -18 231 -5 L246 10 Q258 22 246 35 L222 62 Z" fill="#765843"/>
+    <path d="M40 286 L14 314 L44 303 L68 279 Z" fill="#171513"/>
+  </g>
+  <g transform="translate(650 330)">
+    <path d="M0 96 Q4 30 42 16 Q78 5 112 22 Q132 34 136 96 Z" fill="#26211d"/>
+    <rect x="15" y="82" width="108" height="34" rx="8" fill="#26211d"/>
+    <ellipse cx="69" cy="82" rx="54" ry="12" fill="#171513"/>
+    <ellipse cx="69" cy="78" rx="28" ry="7" fill="#9a7a61"/>
+  </g>
+  <g fill="#765843" opacity=".65">
+    <circle cx="162" cy="148" r="4"/><circle cx="190" cy="148" r="4"/><circle cx="218" cy="148" r="4"/>
+  </g>
+  <text x="112" y="210" fill="#171513" font-family="Georgia, serif" font-size="64" letter-spacing="-2">Words worth keeping.</text>
+  <text x="116" y="255" fill="#765843" font-family="Arial, sans-serif" font-size="13" letter-spacing="4">MAYALINES · POETRY</text>
+</svg>
