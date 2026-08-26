@@ -1,0 +1,35 @@
+[
+  {
+    "id": "q001",
+    "quote": "The only way to do great work is to love what you do.",
+    "author": "Steve Jobs",
+    "category": "Work",
+    "source": "Stanford commencement address, 2005",
+    "sourceName": "Stanford University",
+    "attributionStatus": "verified",
+    "copyrightStatus": "review-required",
+    "slug": "the-only-way-to-do-great-work-is-to-love-what-you-do"
+  },
+  {
+    "id": "q002",
+    "quote": "Life is what happens when you're busy making other plans.",
+    "author": "John Lennon",
+    "category": "Life",
+    "source": "Attributed to John Lennon",
+    "sourceName": "John Lennon",
+    "attributionStatus": "commonly-attributed",
+    "copyrightStatus": "review-required",
+    "slug": "life-is-what-happens-when-youre-busy-making-other-plans"
+  },
+  {
+    "id": "q003",
+    "quote": "It is never too late to be what you might have been.",
+    "author": "George Eliot",
+    "category": "Life",
+    "source": "Commonly attributed to George Eliot",
+    "sourceName": "George Eliot",
+    "attributionStatus": "disputed",
+    "copyrightStatus": "public-domain-source-review-required",
+    "slug": "it-is-never-too-late-to-be-what-you-might-have-been"
+  }
+]
