@@ -11,6 +11,15 @@ function isIndexable(quote: (typeof quotesData)[number]) {
   return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared";
 }
 
+const collectionSlugs = [
+  "quotes-about-life",
+  "famous-love-quotes",
+  "quotes-about-success",
+  "motivational-quotes",
+  "wisdom-quotes",
+  "short-inspirational-quotes",
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const indexableQuotes = quotesData.filter(isIndexable);
   const categories = [...new Set(indexableQuotes.map((quote) => quote.category))];
@@ -19,6 +28,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
     { url: `${siteUrl}/poems`, changeFrequency: "weekly", priority: 0.95 },
+    { url: `${siteUrl}/collections`, changeFrequency: "weekly", priority: 0.95 },
+    ...collectionSlugs.map((slug) => ({ url: `${siteUrl}/collections/${slug}`, changeFrequency: "weekly" as const, priority: 0.9 })),
     { url: `${siteUrl}/categories`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/authors`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/imprint`, changeFrequency: "yearly", priority: 0.2 },
