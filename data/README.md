@@ -1,7 +1,9 @@
-# Quote data
+# Zitatdaten
 
-`quotes.json` is a generated build artifact and is intentionally not treated as a legally cleared publication database.
+`quotes.json` enthält die produktiven Zitatdatensätze von Mayalines.
 
-The build imports up to 2,000 records from the public Quotable data repository, normalizes categories, removes exact author/text duplicates, and marks imported records `indexable: false` until editorial and rights review is complete.
+Die Datenbasis umfasst 2.000 Datensätze aus einer festgelegten öffentlichen Quelle. Datensätze werden normalisiert und auf exakte Duplikate geprüft. Jeder Eintrag enthält Angaben zur Quelle, Zuordnung, zum Veröffentlichungsstatus und zur Indexierbarkeit.
 
-Do not add credentials, private data, or unverified copyright claims to this directory.
+Das Indexierungs-Gate lässt nur Datensätze für Suchmaschinen zu, die die dafür erforderlichen Prüfwerte erfüllen.
+
+Keine Zugangsdaten, privaten Daten oder unbelegten Angaben zum Urheberrecht in diesem Verzeichnis hinterlegen.
