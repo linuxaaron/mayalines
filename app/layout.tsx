@@ -7,46 +7,30 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Mayalines – Zitate, Gedanken und Worte, die bleiben",
+    default: "Mayalines – Quotes, Thoughts and Words That Last",
     template: "%s | Mayalines",
   },
-  description: "Entdecke bemerkenswerte Zitate, bekannte Worte, inspirierende Gedanken und Autoren auf Mayalines. Lesen, entdecken und Zitate direkt kopieren.",
+  description: "Discover remarkable quotes, famous words, inspiring thoughts and authors on Mayalines. Read, explore and copy quotes instantly.",
   applicationName: "Mayalines",
   keywords: [
-    "Zitate",
-    "Zitatesammlung",
-    "bekannte Zitate",
-    "berühmte Zitate",
-    "beste Zitate",
-    "inspirierende Zitate",
-    "Motivationszitate",
-    "Lebenszitate",
-    "Weisheiten",
-    "Zitate von Autoren",
-    "Mayalines",
+    "quotes", "quote collection", "famous quotes", "best quotes", "inspirational quotes",
+    "motivational quotes", "life quotes", "wisdom quotes", "quotes by authors", "Mayalines",
   ],
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
   openGraph: {
-    type: "website",
-    url: "/",
-    siteName: "Mayalines",
-    title: "Mayalines – Zitate, Gedanken und Worte, die bleiben",
-    description: "Entdecke bemerkenswerte Zitate, bekannte Worte und inspirierende Gedanken. Lesen, entdecken und Zitate direkt kopieren.",
+    type: "website", url: "/", siteName: "Mayalines",
+    title: "Mayalines – Quotes, Thoughts and Words That Last",
+    description: "Discover remarkable quotes, famous words and inspiring thoughts. Read, explore and copy quotes instantly.",
   },
   twitter: {
     card: "summary",
-    title: "Mayalines – Zitate, Gedanken und Worte, die bleiben",
-    description: "Entdecke bemerkenswerte Zitate, bekannte Worte und inspirierende Gedanken.",
+    title: "Mayalines – Quotes, Thoughts and Words That Last",
+    description: "Discover remarkable quotes, famous words and inspiring thoughts.",
   },
 };
 
-export const viewport: Viewport = {
-  width: "device-width",
-  initialScale: 1,
-  colorScheme: "light",
-  themeColor: "#d8d5cf",
-};
+export const viewport: Viewport = { width: "device-width", initialScale: 1, colorScheme: "light", themeColor: "#d8d5cf" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const websiteSchema = {
@@ -54,20 +38,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "WebSite",
     name: "Mayalines",
     url: siteUrl,
-    description: "Eine kuratierte Sammlung bemerkenswerter Zitate, bekannter Autoren und Gedanken.",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${siteUrl}/?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
+    description: "A curated collection of remarkable quotes, authors and thoughts.",
+    potentialAction: { "@type": "SearchAction", target: `${siteUrl}/?q={search_term_string}`, "query-input": "required name=search_term_string" },
   };
 
-  return (
-    <html lang="de">
-      <body>
-        <StructuredData data={websiteSchema} />
-        {children}
-      </body>
-    </html>
-  );
+  return <html lang="en"><body><StructuredData data={websiteSchema} />{children}</body></html>;
 }
