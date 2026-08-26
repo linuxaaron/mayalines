@@ -59,6 +59,7 @@ button { background: none; border: 0; color: inherit; cursor: pointer; }
 
 .quote-detail { width: min(1000px, calc(100% - 48px)); min-height: 100vh; margin: 0 auto; padding: 56px 0 96px; }
 .back-link { color: var(--muted); font-size: 13px; font-weight: 650; }
+.quote-detail h1 { margin: 64px 0 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(48px, 7vw, 86px); line-height: 1; font-weight: 500; letter-spacing: -.045em; color: #11100f; }
 .quote-detail blockquote { margin: 80px 0 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(42px, 6vw, 78px); line-height: 1.08; letter-spacing: -.04em; color: #11100f; }
 .quote-detail .quote-author { font-size: 16px; margin-top: 30px; }
 .quote-detail .copy-button { margin-top: 28px; }
