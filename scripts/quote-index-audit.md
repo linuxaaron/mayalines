@@ -1,0 +1,1 @@
+The quote dataset is generated from Wikisource's *Three Thousand Selected Quotations from Brilliant Writers*. The source page identifies the work as public domain worldwide. The build must produce exactly 2,000 records, each with source provenance, attribution metadata, and indexable=true. The audit rejects incomplete, duplicated, or uncleared records.
