@@ -25,7 +25,7 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ action: nextLiked ? "like" : "unlike" }),
       });
-      if (!response.ok) throw new Error("Like failed");
+      if (!response.ok) throw new Error("Bewertung fehlgeschlagen");
       const data = await response.json();
       setLikes(Math.max(0, Number(data.likes) || 0));
     } catch {
@@ -37,11 +37,11 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
 
   return (
     <div className="like-control">
-      <button className={`like-button${liked ? " is-liked" : ""}`} type="button" onClick={toggleLike} disabled={pending} aria-pressed={liked} aria-label={liked ? `Unlike quote by ${author}` : `Like quote by ${author}`}>
+      <button className={`like-button${liked ? " is-liked" : ""}`} type="button" onClick={toggleLike} disabled={pending} aria-pressed={liked} aria-label={liked ? `Gefällt mir nicht mehr für das Zitat von ${author}` : `Zitat von ${author} gefällt mir`}>
         <span className="heart-icon" aria-hidden="true">♥</span>
-        <span className="sr-only">{liked ? "Liked" : "Like"}</span>
+        <span className="sr-only">{liked ? "Gefällt mir" : "Gefällt mir nicht"}</span>
       </button>
-      <span className="like-count" aria-live="polite">{likes.toLocaleString()}</span>
+      <span className="like-count" aria-live="polite">{likes.toLocaleString("de-DE")}</span>
     </div>
   );
 }
