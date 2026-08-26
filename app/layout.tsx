@@ -7,23 +7,22 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Mayalines — Quotes, Nietzsche & Words Worth Keeping",
+    default: "Mayalines – Zitate, Gedanken und Worte, die bleiben",
     template: "%s | Mayalines",
   },
-  description: "Discover memorable quotes, famous sayings, Nietzsche quotes, inspirational words and ideas on Mayalines. Read, explore and copy quotes instantly.",
+  description: "Entdecke bemerkenswerte Zitate, bekannte Worte, inspirierende Gedanken und Autoren auf Mayalines. Lesen, entdecken und Zitate direkt kopieren.",
   applicationName: "Mayalines",
   keywords: [
-    "quotes",
-    "quotes collection",
-    "famous quotes",
-    "best quotes",
-    "cool quotes",
-    "Nietzsche quotes",
-    "inspirational quotes",
-    "motivational quotes",
-    "life quotes",
-    "wisdom quotes",
-    "Maya Angelou quotes",
+    "Zitate",
+    "Zitatesammlung",
+    "bekannte Zitate",
+    "berühmte Zitate",
+    "beste Zitate",
+    "inspirierende Zitate",
+    "Motivationszitate",
+    "Lebenszitate",
+    "Weisheiten",
+    "Zitate von Autoren",
     "Mayalines",
   ],
   alternates: { canonical: "/" },
@@ -32,13 +31,13 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "Mayalines",
-    title: "Mayalines — Quotes, Nietzsche & Words Worth Keeping",
-    description: "Discover memorable quotes, famous sayings, Nietzsche quotes and inspirational words. Read, explore and copy quotes instantly.",
+    title: "Mayalines – Zitate, Gedanken und Worte, die bleiben",
+    description: "Entdecke bemerkenswerte Zitate, bekannte Worte und inspirierende Gedanken. Lesen, entdecken und Zitate direkt kopieren.",
   },
   twitter: {
     card: "summary",
-    title: "Mayalines — Quotes, Nietzsche & Words Worth Keeping",
-    description: "Discover memorable quotes, famous sayings, Nietzsche quotes and inspirational words.",
+    title: "Mayalines – Zitate, Gedanken und Worte, die bleiben",
+    description: "Entdecke bemerkenswerte Zitate, bekannte Worte und inspirierende Gedanken.",
   },
 };
 
@@ -55,7 +54,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "WebSite",
     name: "Mayalines",
     url: siteUrl,
-    description: "A curated collection of memorable quotes, famous sayings, authors and ideas.",
+    description: "Eine kuratierte Sammlung bemerkenswerter Zitate, bekannter Autoren und Gedanken.",
     potentialAction: {
       "@type": "SearchAction",
       target: `${siteUrl}/?q={search_term_string}`,
@@ -64,7 +63,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   };
 
   return (
-    <html lang="en">
+    <html lang="de">
       <body>
         <StructuredData data={websiteSchema} />
         {children}
