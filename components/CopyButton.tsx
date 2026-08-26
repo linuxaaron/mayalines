@@ -15,5 +15,5 @@ export default function CopyButton({ quote, author }: { quote: string; author: s
     }
   }
 
-  return <button className="copy-button" type="button" onClick={handleCopy}>{copied ? "COPIED" : "COPY QUOTE"}</button>;
+  return <button className="copy-button" type="button" onClick={handleCopy}>{copied ? "KOPIERT" : "ZITAT KOPIEREN"}</button>;
 }
