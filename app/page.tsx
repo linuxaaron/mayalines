@@ -12,12 +12,17 @@ type Quote = {
   sourceName: string;
   attributionStatus: string;
   copyrightStatus: string;
+  indexable?: boolean;
   slug: string;
 };
 
 const quotes = quotesData as Quote[];
 const categories = ["All", ...Array.from(new Set(quotes.map((item) => item.category))).sort()];
 const authors = Array.from(new Set(quotes.map((item) => item.author))).sort();
+
+function slugify(value: string) {
+  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -87,8 +92,10 @@ export default function Home() {
         {filteredQuotes.length === 0 && <p className="hero-copy">No quotes match your search. Try another author, topic, or category.</p>}
 
         <div className="category-rail" aria-label="Quote categories">
-          {categories.map((item) => (
+          {categories.map((item) => item === "All" ? (
             <button key={item} type="button" onClick={() => setCategory(item)} aria-pressed={category === item}>{item}</button>
+          ) : (
+            <a key={item} href={`/categories/${slugify(item)}`}>{item}</a>
           ))}
         </div>
 
@@ -101,7 +108,7 @@ export default function Home() {
         <section className="author-index" id="authors">
           <div className="section-heading">Explore by author</div>
           <div className="author-row">
-            {authors.slice(0, 24).map((author) => <a href="#authors" key={author}>{author}</a>)}
+            {authors.slice(0, 24).map((author) => <a href={`/authors/${slugify(author)}`} key={author}>{author}</a>)}
           </div>
         </section>
       </section>
