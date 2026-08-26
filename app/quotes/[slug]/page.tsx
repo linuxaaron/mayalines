@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: quote ? `${quote.author} — Quote` : "Quote",
     description: quote?.quote,
+    robots: quote?.indexable === false ? { index: false, follow: true } : undefined,
   };
 }
 
@@ -30,6 +31,7 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
       <p className="quote-author">— {quote.author}</p>
       <CopyButton quote={quote.quote} author={quote.author} />
       <p className="source-note">Source: {quote.sourceName}</p>
+      <p className="source-note">Attribution: {quote.attributionStatus} · Publication review: {quote.copyrightStatus}</p>
     </main>
   );
 }
