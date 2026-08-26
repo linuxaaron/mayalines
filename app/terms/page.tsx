@@ -1,38 +1,38 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Use | Mayalines",
-  description: "Terms of use for Mayalines.",
+  title: "Nutzungsbedingungen | Mayalines",
+  description: "Nutzungsbedingungen für Mayalines.",
   robots: { index: true, follow: true },
 };
 
 export default function TermsPage() {
   return (
     <main className="legal-page">
-      <a className="skip-link" href="#content">Skip to content</a>
-      <nav className="legal-nav" aria-label="Legal navigation"><a href="/">← Mayalines</a></nav>
+      <a className="skip-link" href="#content">Zum Inhalt springen</a>
+      <nav className="legal-nav" aria-label="Navigation zu rechtlichen Informationen"><a href="/">← Mayalines</a></nav>
       <article id="content">
-        <p className="eyebrow">LEGAL</p>
-        <h1>Terms of Use</h1>
-        <p>Mayalines provides a searchable collection of quotations and related editorial information. Use of the website is subject to applicable law and these terms.</p>
+        <p className="eyebrow">RECHTLICHES</p>
+        <h1>Nutzungsbedingungen</h1>
+        <p>Mayalines stellt eine durchsuchbare Sammlung von Zitaten und zugehörigen redaktionellen Informationen bereit. Die Nutzung der Website unterliegt dem anwendbaren Recht und diesen Bedingungen.</p>
 
-        <h2>1. Informational service</h2>
-        <p>Content is provided for informational and inspirational purposes. Mayalines does not guarantee that every attribution, translation, quotation or historical statement is error-free.</p>
+        <h2>1. Informationsangebot</h2>
+        <p>Die Inhalte dienen der Information und Inspiration. Mayalines garantiert nicht, dass jede Zuordnung, Übersetzung, jedes Zitat oder jede historische Angabe fehlerfrei ist.</p>
 
-        <h2>2. Intellectual property</h2>
-        <p>Rights in quotation text, names, photographs, trademarks and other third-party material remain with their respective rights holders unless otherwise stated. Users must independently verify whether copying, redistribution or commercial use is permitted.</p>
+        <h2>2. Geistiges Eigentum</h2>
+        <p>Rechte an Zitattexten, Namen, Fotos, Marken und sonstigen Inhalten Dritter verbleiben bei den jeweiligen Rechteinhabern, sofern nichts anderes angegeben ist. Nutzer müssen selbst prüfen, ob Kopieren, Weiterverbreitung oder kommerzielle Nutzung zulässig sind.</p>
 
-        <h2>3. Acceptable use</h2>
-        <p>Users must not use the service unlawfully, attempt to interfere with its operation, circumvent security controls, or infringe the rights of others.</p>
+        <h2>3. Zulässige Nutzung</h2>
+        <p>Nutzer dürfen den Dienst nicht rechtswidrig verwenden, seinen Betrieb nicht absichtlich stören, keine Sicherheitsmaßnahmen umgehen und keine Rechte Dritter verletzen.</p>
 
-        <h2>4. Third-party services</h2>
-        <p>Mayalines may link to or later use third-party services. Their own terms and privacy notices apply to their services. The active third-party services will be documented in the privacy policy.</p>
+        <h2>4. Dienste Dritter</h2>
+        <p>Mayalines kann auf Dienste Dritter verlinken oder solche künftig einsetzen. Für diese Dienste gelten deren eigene Nutzungs- und Datenschutzhinweise. Die tatsächlich aktiven Drittanbieterdienste werden in der Datenschutzerklärung dokumentiert.</p>
 
-        <h2>5. Availability and changes</h2>
-        <p>The operator may change, suspend or remove content or functionality where necessary for maintenance, security, legal compliance or editorial correction.</p>
+        <h2>5. Verfügbarkeit und Änderungen</h2>
+        <p>Der Betreiber kann Inhalte oder Funktionen ändern, vorübergehend aussetzen oder entfernen, wenn dies für Wartung, Sicherheit, rechtliche Anforderungen oder redaktionelle Korrekturen erforderlich ist.</p>
 
-        <h2>6. Legal limitations</h2>
-        <p>Nothing on this page excludes liability or statutory rights that cannot lawfully be excluded. The final version must be reviewed against the law applicable to the operator and the actual service.</p>
+        <h2>6. Rechtliche Grenzen</h2>
+        <p>Diese Seite schließt keine Haftung oder gesetzlichen Rechte aus, die rechtlich nicht ausgeschlossen werden können. Die endgültige Fassung sollte anhand des für den Betreiber und den tatsächlichen Dienst geltenden Rechts geprüft werden.</p>
       </article>
     </main>
   );
