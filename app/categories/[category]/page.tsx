@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import quotesData from "../../../data/quotes.json";
+import quotesData from "../../../data/quotes";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 
