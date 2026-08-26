@@ -1,1 +1,7 @@
-The quote dataset is generated from Wikisource's *Three Thousand Selected Quotations from Brilliant Writers*. The source page identifies the work as public domain worldwide. The build must produce exactly 2,000 records, each with source provenance, attribution metadata, and indexable=true. The audit rejects incomplete, duplicated, or uncleared records.
+# Prüfung der Zitatindexierung
+
+Der Zitatdatensatz wird aus Wikisources *Three Thousand Selected Quotations from Brilliant Writers* erzeugt. Die Quellseite kennzeichnet das Werk als weltweit gemeinfrei.
+
+Der Build muss exakt 2.000 Datensätze erzeugen. Jeder Datensatz benötigt Angaben zur Quellenherkunft, Zuordnungsmetadaten und `indexable=true`.
+
+Die Prüfung lehnt unvollständige, doppelte oder nicht ausreichend geklärte Datensätze ab.
