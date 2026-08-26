@@ -19,7 +19,10 @@ type Quote = {
 const quotes = quotesData as Quote[];
 const categories = ["All", ...Array.from(new Set(quotes.map((item) => item.category))).sort()];
 const authors = Array.from(new Set(quotes.map((item) => item.author))).sort();
-const PAGE_SIZE = 12;
+
+// Keep the first render useful without putting all 2,000+ records into the DOM.
+// Users can progressively load the rest with the accessible load-more control.
+const PAGE_SIZE = 48;
 
 function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -95,7 +98,7 @@ export default function Home() {
 
       <section className="library" id="main-content" aria-labelledby="library-title">
         <div className="section-heading" id="library-title">Quote library</div>
-        <p className="library-meta" aria-live="polite">{filteredQuotes.length.toLocaleString()} quotes · {authors.length.toLocaleString()} authors</p>
+        <p className="library-meta" aria-live="polite">Showing {visibleQuotes.length.toLocaleString()} of {filteredQuotes.length.toLocaleString()} quotes · {authors.length.toLocaleString()} authors</p>
 
         <div className="quote-grid">
           {visibleQuotes.map((item) => (
@@ -116,7 +119,7 @@ export default function Home() {
         {hasMore && (
           <div className="load-more-wrap">
             <button className="load-more-button" type="button" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}>
-              Load more quotes
+              Load 48 more quotes
             </button>
           </div>
         )}
