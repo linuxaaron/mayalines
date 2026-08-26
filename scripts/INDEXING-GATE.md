@@ -1,1 +1,7 @@
-Indexing policy: only records with indexable=true, attributionStatus=source-attributed and copyrightStatus=public-domain-source are eligible for indexing. The production dataset is generated from Wikisource's public-domain worldwide edition of Three Thousand Selected Quotations from Brilliant Writers. Build must produce exactly 2,000 records.
+# Indexierungs-Gate
+
+Für die Indexierung sind ausschließlich Datensätze zugelassen, die `indexable=true`, `attributionStatus=source-attributed` und `copyrightStatus=public-domain-source` erfüllen.
+
+Der Produktionsdatensatz wird aus der von Wikisource als weltweit gemeinfrei gekennzeichneten Ausgabe von *Three Thousand Selected Quotations from Brilliant Writers* erzeugt.
+
+Der Build muss exakt 2.000 Datensätze erzeugen.
