@@ -1,10 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import quotesData from "../data/quotes.json";
+import quotesData from "../data/quotes";
 import PersistentLikeButton from "../components/PersistentLikeButton";
 
-type Quote = { id: string; quote: string; author: string; category: string; source: string; sourceName: string; attributionStatus: string; copyrightStatus: string; indexable?: boolean; slug: string };
+type Quote = (typeof quotesData)[number];
 const quotes = quotesData as Quote[];
 const categoryLabels: Record<string, string> = { Love: "Love", Wisdom: "Wisdom", Success: "Success", Life: "Life", Courage: "Courage", Character: "Character", Education: "Education", Freedom: "Freedom", Faith: "Faith", Quotes: "Quotes", Motivation: "Motivation", Inspiration: "Inspiration", Happiness: "Happiness", Friendship: "Friendship", Science: "Science", Philosophy: "Philosophy" };
 const categories = ["All", ...Array.from(new Set(quotes.map((item) => item.category))).sort()];
