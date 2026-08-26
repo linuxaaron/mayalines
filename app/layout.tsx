@@ -5,6 +5,7 @@ import StructuredData from "../components/StructuredData";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 const siteTitle = "Famous Quotes, Inspirational & Motivational Quotes | Mayalines";
 const siteDescription = "Discover famous quotes, inspirational quotes, motivational quotes, life quotes and timeless wisdom from notable authors. Search, read and copy sourced quotes on Mayalines.";
+const socialImage = `${siteUrl}/mayalines-og.svg`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -34,11 +35,13 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: siteTitle,
     description: siteDescription,
+    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — Famous Quotes and timeless wisdom" }],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: siteTitle,
     description: siteDescription,
+    images: [socialImage],
   },
 };
 
@@ -57,6 +60,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     url: siteUrl,
     inLanguage: "en-US",
     description: siteDescription,
+    image: socialImage,
   };
 
   return (
