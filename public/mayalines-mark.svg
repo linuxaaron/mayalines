@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">Mayalines heart mark</title>
+  <desc id="desc">A heart enclosed by two circular arrows.</desc>
+  <g fill="none" stroke="#11100f" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M91 38a43 43 0 0 0-72 6"/>
+    <path fill="#11100f" stroke="none" d="M15 45 34 48 23 64Z"/>
+    <path d="M29 82a43 43 0 0 0 72-6"/>
+    <path fill="#11100f" stroke="none" d="m105 75-19-3 11-16Z"/>
+  </g>
+  <path fill="#11100f" d="M60 86 39 66c-14-14-5-32 9-32 7 0 11 4 12 8 2-4 6-8 13-8 14 0 23 18 9 32Z"/>
+</svg>
