@@ -13,6 +13,7 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
   const [likes, setLikes] = useState(0);
   const [pending, setPending] = useState(false);
   const [ready, setReady] = useState(false);
+  const [persistent, setPersistent] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -25,10 +26,14 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
         if (cancelled || !data) return;
         setLikes(Math.max(0, Number(data.likes) || 0));
         setLiked(Boolean(data.liked));
+        setPersistent(data.persistent !== false);
         setReady(true);
       })
       .catch(() => {
-        if (!cancelled) setReady(true);
+        if (!cancelled) {
+          setPersistent(false);
+          setReady(true);
+        }
       });
 
     return () => {
@@ -37,13 +42,12 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
   }, [quoteId]);
 
   async function toggleLike() {
-    if (pending || !ready) return;
+    if (pending || !ready || !persistent) return;
 
     const nextLiked = !liked;
     const previousLiked = liked;
     const previousLikes = likes;
 
-    // Optimistic UI: the heart and counter respond immediately.
     setLiked(nextLiked);
     setLikes(Math.max(0, previousLikes + (nextLiked ? 1 : -1)));
     setPending(true);
@@ -59,6 +63,7 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
       if (!response.ok) throw new Error("Like request failed");
 
       const data = await response.json() as LikeResponse;
+      if (data.persistent === false) throw new Error("Persistent like storage unavailable");
       setLikes(Math.max(0, Number(data.likes) || 0));
       setLiked(Boolean(data.liked));
     } catch {
@@ -69,16 +74,23 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
     }
   }
 
+  const disabled = pending || !ready || !persistent;
+  const label = !persistent
+    ? "Like storage is currently unavailable"
+    : liked
+      ? `Remove like from the quote by ${author}`
+      : `Like the quote by ${author}`;
+
   return (
-    <div className="like-control">
+    <div className="like-control" data-persistent={persistent ? "true" : "false"}>
       <button
         className={`like-button${liked ? " is-liked" : ""}`}
         type="button"
         onClick={toggleLike}
-        disabled={pending || !ready}
+        disabled={disabled}
         aria-pressed={liked}
-        aria-label={liked ? `Remove like from the quote by ${author}` : `Like the quote by ${author}`}
-        title={liked ? "Unlike" : "Like this quote"}
+        aria-label={label}
+        title={!ready ? "Loading likes" : !persistent ? "Like storage unavailable" : liked ? "Unlike" : "Like this quote"}
       >
         <span className="heart-icon" aria-hidden="true">♥</span>
         <span className="sr-only">{liked ? "Liked" : "Like"}</span>
