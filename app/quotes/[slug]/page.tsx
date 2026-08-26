@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const isIndexable = quote?.indexable === true && quote?.attributionStatus === "verified" && quote?.copyrightStatus === "cleared";
   const quotePreview = quote?.quote.replace(/\s+/g, " ").trim() ?? "";
   const description = quote
-    ? `Read this famous quote by ${quote.author}: “${quotePreview.slice(0, 145)}${quotePreview.length > 145 ? "…" : ""}” on Mayalines."
+    ? `Read this famous quote by ${quote.author}: “${quotePreview.slice(0, 145)}${quotePreview.length > 145 ? "…" : ""}” on Mayalines.`
     : "Read famous, inspirational and timeless quotes from notable authors on Mayalines.";
 
   return {
