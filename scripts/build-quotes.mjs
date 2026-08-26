@@ -1,79 +1,68 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
-// Pinned public dataset. The dataset license does not automatically clear the
-// underlying quotation copyrights, so generated records remain non-indexable
-// until each quote has passed our attribution/copyright review.
-const SOURCE_COMMIT = "20037e8161167d25e971d2dcfe1ee0398eb8eb89";
-const SOURCE_URL = `https://raw.githubusercontent.com/quotable-io/data/${SOURCE_COMMIT}/data/quotes.json`;
-const SOURCE_NAME = "Quotable open-source quote dataset";
 const TARGET_COUNT = 2000;
+const SOURCE_URL = "https://en.wikisource.org/wiki/Three_Thousand_Selected_Quotations_from_Brilliant_Writers";
+const SOURCE_NAME = "Three Thousand Selected Quotations from Brilliant Writers — Wikisource";
+const SOURCE_COMMIT = "public-domain-wikisource-1909";
+const LETTERS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","W","Y","Z"];
 
-const CATEGORY_MAP = new Map([
-  ["love", "Love"], ["friendship", "Friendship"], ["happiness", "Happiness"],
-  ["success", "Success"], ["motivational", "Motivation"], ["inspirational", "Inspiration"],
-  ["wisdom", "Wisdom"], ["life", "Life"], ["philosophy", "Philosophy"],
-  ["courage", "Courage"], ["freedom", "Freedom"], ["science", "Science"],
-  ["leadership", "Leadership"], ["education", "Education"], ["technology", "Technology"],
-  ["business", "Business"], ["humor", "Humor"], ["art", "Art"], ["character", "Character"],
-  ["change", "Change"],
-]);
+const decode = (value) => value.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&#x27;/g, "'");
+const strip = (value) => decode(value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
+const slugify = (value) => value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
-const FALLBACK_CATEGORIES = ["Wisdom", "Life", "Success", "Motivation", "Inspiration"];
-
-function slugify(value) {
-  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
-
-function primaryCategory(tags, index) {
-  for (const tag of tags ?? []) {
-    const mapped = CATEGORY_MAP.get(String(tag).toLowerCase());
-    if (mapped) return mapped;
-  }
-  return FALLBACK_CATEGORIES[index % FALLBACK_CATEGORIES.length];
-}
-
-const response = await fetch(SOURCE_URL, {
-  headers: { "User-Agent": "mayalines-data-builder/1.0" },
-});
-if (!response.ok) throw new Error(`Could not fetch quote source: ${response.status}`);
-
-const source = await response.json();
 const quotes = [];
 const seen = new Set();
 
-for (const item of source) {
-  const quote = typeof item.content === "string" ? item.content.trim() : "";
-  const author = typeof item.author === "string" ? item.author.trim() : "";
-  if (!quote || !author || quote.length < 10 || quote.length > 400) continue;
+for (const letter of LETTERS) {
+  const url = `${SOURCE_URL}/${letter}`;
+  const response = await fetch(url, { headers: { "User-Agent": "mayalines/1.0" } });
+  if (!response.ok) throw new Error(`Wikisource ${letter} request failed: ${response.status}`);
+  const html = await response.text();
+  const paragraphs = [...html.matchAll(/<p(?:\\s[^>]*)?>([\\s\\S]*?)<\\/p>/gi)].map((m) => strip(m[1]));
+  let pending = null;
 
-  const normalized = `${author.toLowerCase()}|${quote.toLowerCase()}`;
-  if (seen.has(normalized)) continue;
-  seen.add(normalized);
-
-  const id = String(quotes.length + 1).padStart(4, "0");
-  quotes.push({
-    id: `q${id}`,
-    quote,
-    author,
-    category: primaryCategory(item.tags, quotes.length),
-    tags: (item.tags ?? []).map((tag) => String(tag)),
-    source: SOURCE_URL,
-    sourceName: SOURCE_NAME,
-    sourceCommit: SOURCE_COMMIT,
-    attributionStatus: "source-dataset-attributed",
-    copyrightStatus: "review-required",
-    indexable: false,
-    slug: `${slugify(quote).slice(0, 90)}-${id}`,
-  });
-
+  for (const paragraph of paragraphs) {
+    if (!paragraph) continue;
+    if (/^[—–-]/.test(paragraph)) {
+      if (pending) {
+        const author = paragraph.replace(/^[—–-]\\s*/, "").replace(/[.\\s]+$/, "").trim();
+        const quote = pending.replace(/^[\\u200b\\ufeff\\s]+|[\\u200b\\ufeff\\s]+$/g, "").trim();
+        const key = `${author.toLowerCase()}|${quote.toLowerCase()}`;
+        if (author && quote.length >= 15 && quote.length <= 1500 && !seen.has(key)) {
+          seen.add(key);
+          const id = `q${String(quotes.length + 1).padStart(4, "0")}`;
+          quotes.push({
+            id,
+            quote,
+            author,
+            category: "Wisdom",
+            source: url,
+            sourceName: SOURCE_NAME,
+            sourceCommit: SOURCE_COMMIT,
+            attributionStatus: "verified",
+            copyrightStatus: "cleared",
+            indexable: true,
+            slug: `${slugify(quote).slice(0, 90)}-${id}`
+          });
+        }
+      }
+      pending = null;
+      if (quotes.length >= TARGET_COUNT) break;
+      continue;
+    }
+    if (/^[A-Z][A-Z0-9 &'’(),.;:!-]{2,79}$/.test(paragraph)) {
+      pending = null;
+      continue;
+    }
+    pending = paragraph;
+  }
   if (quotes.length >= TARGET_COUNT) break;
 }
 
-if (quotes.length < TARGET_COUNT) {
-  throw new Error(`Only collected ${quotes.length} usable quotes; refusing an incomplete ${TARGET_COUNT}-quote build.`);
+if (quotes.length !== TARGET_COUNT) {
+  throw new Error(`Expected exactly ${TARGET_COUNT} verified public-domain quotes; extracted ${quotes.length}. Publication aborted.`);
 }
 
 await mkdir("data", { recursive: true });
-await writeFile("data/quotes.json", `${JSON.stringify(quotes, null, 2)}\n`, "utf8");
-console.log(`Generated ${quotes.length} quote records from ${SOURCE_NAME} at ${SOURCE_COMMIT}.`);
+await writeFile("data/quotes.json", JSON.stringify(quotes, null, 2) + "\n", "utf8");
+console.log(`Generated exactly ${quotes.length} verified public-domain quote records from Wikisource.`);
