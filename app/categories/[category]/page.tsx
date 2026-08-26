@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category } = await params;
   const title = category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   return {
-    title: `${title} Quotes`,
+    title: `${title} Quotes | Mayalines`,
     description: descriptions[category] ?? `Explore a curated collection of ${title.toLowerCase()} quotes from notable authors.`,
     alternates: { canonical: `/categories/${category}` },
   };
@@ -42,22 +42,22 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const { category } = await params;
   const title = category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   const quotes = quotesData.filter((quote) => slugify(quote.category) === category);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://quotes-git-main-aaron-727f.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `${title} Quotes`,
-    description: descriptions[category] ?? `Explore ${title.toLowerCase()} quotes from the archive.`,
+    name: `${title} Quotes | Mayalines`,
+    description: descriptions[category] ?? `Explore ${title.toLowerCase()} quotes from Mayalines.`,
     url: `${siteUrl}/categories/${category}`,
-    isPartOf: { "@type": "WebSite", name: "Quote Archive", url: siteUrl },
+    isPartOf: { "@type": "WebSite", name: "Mayalines", url: siteUrl },
   };
 
   return (
     <main className="quote-detail">
       <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Categories", url: "/#categories" }, { name: `${title} Quotes`, url: `/categories/${category}` }]} />
-      <p className="eyebrow">QUOTE CATEGORY</p>
+      <p className="eyebrow">MAYALINES CATEGORY</p>
       <h1>{title} Quotes</h1>
-      <p className="hero-copy">{descriptions[category] ?? `Explore ${title.toLowerCase()} quotes from the archive.`}</p>
+      <p className="hero-copy">{descriptions[category] ?? `Explore ${title.toLowerCase()} quotes from Mayalines.`}</p>
       <p className="library-meta">{quotes.length.toLocaleString()} quotes in this category.</p>
       <div className="quote-grid">
         {quotes.slice(0, 60).map((quote) => (
