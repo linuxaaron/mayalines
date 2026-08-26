@@ -48,7 +48,8 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   const collection = collections[slug as CollectionSlug];
   if (!collection) return <main className="collection-page"><div className="collection-wrap"><h1>Collection not found</h1><a href="/collections">Browse collections →</a></div></main>;
 
-  const quotes = quotesData.filter((quote) => quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared" && quote.category === collection.category && (!collection.short || quote.quote.length <= 120));
+  const isShortCollection = "short" in collection && collection.short === true;
+  const quotes = quotesData.filter((quote) => quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared" && quote.category === collection.category && (!isShortCollection || quote.quote.length <= 120));
   const related = Object.entries(collections).filter(([otherSlug]) => otherSlug !== slug).slice(0, 5);
 
   return <main className="collection-page">
