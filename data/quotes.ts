@@ -1,10 +1,16 @@
 import quotesJson from "./quotes.json";
+import nietzscheQuotes from "./quotes.pending.json";
 
-export type Quote = (typeof quotesJson)[number] & {
+type BaseQuote = (typeof quotesJson)[number];
+type NietzscheQuote = (typeof nietzscheQuotes)[number];
+
+export type Quote = (BaseQuote | NietzscheQuote) & {
   indexable: boolean;
 };
 
-export const quotes: Quote[] = quotesJson.map((quote) => ({
+const allQuotes = [...quotesJson, ...nietzscheQuotes];
+
+export const quotes: Quote[] = allQuotes.map((quote) => ({
   ...quote,
   indexable: quote.indexable === true || (quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared"),
 }));
