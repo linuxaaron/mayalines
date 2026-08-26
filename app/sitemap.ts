@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
+    { url: `${siteUrl}/poems`, changeFrequency: "weekly", priority: 0.95 },
     { url: `${siteUrl}/categories`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/authors`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/imprint`, changeFrequency: "yearly", priority: 0.2 },
