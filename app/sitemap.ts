@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import quotesData from "../data/quotes.json";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://quotes-git-main-aaron-727f.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 
 function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
