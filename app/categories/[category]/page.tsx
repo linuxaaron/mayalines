@@ -5,6 +5,7 @@ import StructuredData from "../../../components/StructuredData";
 
 export const dynamicParams = false;
 
+const labels: Record<string, string> = { motivation: "Motivation", inspiration: "Inspiration", wisdom: "Weisheit", life: "Leben", love: "Liebe", success: "Erfolg", courage: "Mut", philosophy: "Philosophie", happiness: "Glück", friendship: "Freundschaft", freedom: "Freiheit", science: "Wissenschaft", character: "Charakter", education: "Bildung", faith: "Glaube", quotes: "Zitate" };
 const descriptions: Record<string, string> = {
   motivation: "Eine kuratierte Sammlung motivierender Zitate über Handeln, Ausdauer, Disziplin und den nächsten Schritt.",
   inspiration: "Inspirierende Zitate über Klarheit, Perspektive, Kreativität und neue Möglichkeiten.",
@@ -34,7 +35,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category } = await params;
-  const title = category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const title = labels[category] ?? category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   const hasClearedQuotes = quotesData.some((quote) => slugify(quote.category) === category && isIndexable(quote));
   return {
     title: `${title} – Zitate | Mayalines`,
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
-  const title = category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const title = labels[category] ?? category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   const quotes = quotesData.filter((quote) => slugify(quote.category) === category);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const collectionSchema = {
