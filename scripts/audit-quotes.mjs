@@ -25,9 +25,13 @@ for (const [index, quote] of (quotes ?? []).entries()) {
   if (!quote?.author) errors.push(`${label}: missing author`);
   if (!quote?.category) errors.push(`${label}: missing category`);
   if (!quote?.slug) errors.push(`${label}: missing slug`);
-  if (!quote?.source) errors.push(`${label}: missing source`);
+  if (!quote?.source) errors.push(`${label}: missing source URL`);
+  if (!quote?.sourceName) errors.push(`${label}: missing source name`);
+  if (!quote?.sourceCommit) errors.push(`${label}: missing source commit`);
+
   if (quote?.attributionStatus !== "verified") warnings.push(`${label}: attribution is not verified`);
   if (quote?.copyrightStatus !== "cleared") warnings.push(`${label}: copyright status is not cleared`);
+  if (quote?.indexable !== false && quote?.indexable !== true) errors.push(`${label}: indexable must be explicitly true or false`);
   if (quote?.indexable === true && (quote?.attributionStatus !== "verified" || quote?.copyrightStatus !== "cleared")) {
     errors.push(`${label}: indexable quote is not fully cleared`);
   }
@@ -46,7 +50,9 @@ for (const [index, quote] of (quotes ?? []).entries()) {
 const expected = Number(process.env.EXPECTED_QUOTES ?? "2000");
 if ((quotes?.length ?? 0) !== expected) errors.push(`Expected ${expected} quotes, found ${quotes?.length ?? 0}.`);
 
+const indexableCount = (quotes ?? []).filter((quote) => quote?.indexable === true).length;
 console.log(`Quote audit: ${quotes?.length ?? 0} records`);
+console.log(`Indexable: ${indexableCount}`);
 console.log(`Categories: ${categories.size}`);
 for (const [category, count] of [...categories.entries()].sort((a, b) => b[1] - a[1])) {
   console.log(`  ${category}: ${count}`);
