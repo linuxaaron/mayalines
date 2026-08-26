@@ -19,6 +19,7 @@ type Quote = {
 const quotes = quotesData as Quote[];
 const categories = ["All", ...Array.from(new Set(quotes.map((item) => item.category))).sort()];
 const authors = Array.from(new Set(quotes.map((item) => item.author))).sort();
+const PAGE_SIZE = 12;
 
 function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -28,6 +29,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
   const [copied, setCopied] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const filteredQuotes = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -47,6 +49,19 @@ export default function Home() {
       setCopied(null);
     }
   }
+
+  function handleSearch(value: string) {
+    setQuery(value);
+    setVisibleCount(PAGE_SIZE);
+  }
+
+  function handleCategory(value: string) {
+    setCategory(value);
+    setVisibleCount(PAGE_SIZE);
+  }
+
+  const visibleQuotes = filteredQuotes.slice(0, visibleCount);
+  const hasMore = visibleCount < filteredQuotes.length;
 
   return (
     <main className="site-shell">
@@ -74,7 +89,7 @@ export default function Home() {
         <p className="hero-copy">A considered collection of memorable words, ideas, and voices.</p>
         <label className="search-box">
           <span className="sr-only">Search quotes, authors, and topics</span>
-          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search quotes, authors, topics…" autoComplete="off" />
+          <input type="search" value={query} onChange={(event) => handleSearch(event.target.value)} placeholder="Search quotes, authors, topics…" autoComplete="off" />
         </label>
       </section>
 
@@ -83,7 +98,7 @@ export default function Home() {
         <p className="library-meta" aria-live="polite">{filteredQuotes.length.toLocaleString()} quotes · {authors.length.toLocaleString()} authors</p>
 
         <div className="quote-grid">
-          {filteredQuotes.slice(0, 12).map((item) => (
+          {visibleQuotes.map((item) => (
             <article className="quote-card" key={item.id}>
               <div className="quote-mark" aria-hidden="true">“</div>
               <p className="quote-text">{item.quote}</p>
@@ -98,9 +113,17 @@ export default function Home() {
 
         {filteredQuotes.length === 0 && <p className="hero-copy" role="status">No quotes match your search. Try another author, topic, or category.</p>}
 
+        {hasMore && (
+          <div className="load-more-wrap">
+            <button className="load-more-button" type="button" onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}>
+              Load more quotes
+            </button>
+          </div>
+        )}
+
         <div className="category-rail" id="categories" aria-label="Quote categories">
           {categories.map((item) => item === "All" ? (
-            <button key={item} type="button" onClick={() => setCategory(item)} aria-pressed={category === item}>{item}</button>
+            <button key={item} type="button" onClick={() => handleCategory(item)} aria-pressed={category === item}>{item}</button>
           ) : (
             <a key={item} href={`/categories/${slugify(item)}`}>{item}</a>
           ))}
