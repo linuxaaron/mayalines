@@ -14,33 +14,35 @@ export default function ImprintPage() {
       <article id="content">
         <p className="eyebrow">LEGAL</p>
         <h1>Imprint</h1>
-        <p className="legal-warning"><strong>Launch requirement:</strong> The operator information below must be completed before Mayalines is operated commercially. Do not publish placeholder identity or address data.</p>
 
         <h2>Service provider / publisher</h2>
         <address>
-          <strong>[LEGAL NAME / COMPANY]</strong><br />
-          [STREET AND HOUSE NUMBER]<br />
-          [POSTAL CODE] [CITY]<br />
-          [COUNTRY]
+          <strong>Joscha Aaron Schmidt</strong><br />
+          Im Sinnighofen 8b<br />
+          79189 Bad Krozingen<br />
+          Germany
         </address>
 
         <h2>Contact</h2>
-        <p>Email: <a href="mailto:[CONTACT EMAIL]">[CONTACT EMAIL]</a></p>
-        <p>For legal notices and copyright matters, use the contact address above.</p>
+        <p>For legal notices, copyright matters and corrections, please use the contact details provided on this website.</p>
 
         <h2>Responsible for editorial content</h2>
-        <p>[NAME OF RESPONSIBLE PERSON]</p>
-        <p>[ADDRESS OF RESPONSIBLE PERSON]</p>
+        <p>Joscha Aaron Schmidt</p>
+        <address>
+          Im Sinnighofen 8b<br />
+          79189 Bad Krozingen<br />
+          Germany
+        </address>
 
         <h2>Copyright and quotation sources</h2>
-        <p>Mayalines attempts to identify authorship and source information for quotations. A quotation is not treated as public-domain material merely because it appears in a public dataset. Publication, attribution and copyright status are reviewed separately.</p>
-        <p>If you believe a quotation is incorrectly attributed, unlawfully reproduced, or otherwise infringes your rights, contact us with the URL, the relevant text, your rights basis and supporting information. We will review substantiated notices and, where appropriate, restrict or remove the material while the matter is investigated.</p>
+        <p>Mayalines aims to provide accurate authorship and source information for quotations. A quotation being available online or in an open dataset does not, by itself, establish that it is in the public domain or licensed for commercial republication.</p>
+        <p>If you believe a quotation is incorrectly attributed, unlawfully reproduced, or otherwise infringes your rights, please contact the operator with the URL, the relevant material, your rights basis and supporting information.</p>
 
         <h2>External services</h2>
-        <p>Hosting, analytics, advertising, consent-management and other third-party services will only be listed here and in the privacy policy when they are actually enabled. Their legal and technical configuration must be reviewed before activation.</p>
+        <p>Hosting, analytics, advertising, consent-management and other third-party services are disclosed in the privacy policy when they are enabled.</p>
 
         <h2>Legal information</h2>
-        <p>This page is part of the website implementation and does not replace individual legal advice. The final obligations depend on the operator, business model, target markets and services used.</p>
+        <p>This imprint provides the operator information currently supplied for Mayalines. It does not constitute individual legal advice. Additional requirements may apply depending on the services, advertising providers and markets targeted by the website.</p>
       </article>
     </main>
   );
