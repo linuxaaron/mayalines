@@ -1,6 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
-const SOURCE_URL = "https://raw.githubusercontent.com/quotable-io/data/master/data/quotes.json";
+// Pin the upstream dataset to an immutable commit for reproducible builds.
+const SOURCE_COMMIT = "20037e8161167d25e971d2dcfe1ee0398eb8eb89";
+const SOURCE_URL = `https://raw.githubusercontent.com/quotable-io/data/${SOURCE_COMMIT}/data/quotes.json`;
 const SOURCE_NAME = "Quotable open-source quote dataset";
 const TARGET_COUNT = 2000;
 
@@ -57,6 +59,7 @@ for (const item of source) {
     tags: (item.tags ?? []).map((tag) => String(tag)),
     source: SOURCE_URL,
     sourceName: SOURCE_NAME,
+    sourceCommit: SOURCE_COMMIT,
     attributionStatus: "source-dataset-attributed",
     copyrightStatus: "review-required",
     indexable: false,
@@ -72,4 +75,4 @@ if (quotes.length < TARGET_COUNT) {
 
 await mkdir("data", { recursive: true });
 await writeFile("data/quotes.json", `${JSON.stringify(quotes, null, 2)}\n`, "utf8");
-console.log(`Generated ${quotes.length} quote records from ${SOURCE_NAME}.`);
+console.log(`Generated ${quotes.length} quote records from ${SOURCE_NAME} at ${SOURCE_COMMIT}.`);
