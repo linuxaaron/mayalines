@@ -17,6 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ author: s
   return {
     title: authorName ? `${authorName} Quotes` : "Author Quotes",
     description: authorName ? `Memorable quotes by ${authorName}.` : "Explore memorable quotes by author.",
+    robots: { index: false, follow: true },
   };
 }
 
