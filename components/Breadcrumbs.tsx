@@ -2,6 +2,12 @@ import StructuredData from "./StructuredData";
 
 type Breadcrumb = { name: string; url: string };
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://quotes-git-main-aaron-727f.vercel.app";
+
+function absoluteUrl(url: string) {
+  return new URL(url, siteUrl).toString();
+}
+
 export default function Breadcrumbs({ items }: { items: Breadcrumb[] }) {
   const data = {
     "@context": "https://schema.org",
@@ -10,7 +16,7 @@ export default function Breadcrumbs({ items }: { items: Breadcrumb[] }) {
       "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: item.url,
+      item: absoluteUrl(item.url),
     })),
   };
 
