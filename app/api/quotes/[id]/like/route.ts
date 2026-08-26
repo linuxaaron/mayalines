@@ -6,7 +6,7 @@ export const runtime = "nodejs";
 
 const VOTER_COOKIE = "mayalines_voter";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 2;
-const TRENDING_KEY = "quotes:trending";
+const RANKING_KEY = "quotes:ranking";
 
 function getRedis() {
   const url = process.env.UPSTASH_REDIS_REST_URL;
@@ -53,7 +53,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (!isValidId(id)) return NextResponse.json({ error: "Invalid quote id" }, { status: 400 });
 
   const redis = getRedis();
-  if (!redis) return NextResponse.json({ likes: 0, liked: false, persistent: false });
+  if (!redis) return NextResponse.json({ likes: 0, liked: false, persistent: false }, { headers: { "Cache-Control": "no-store" } });
 
   const voterId = getOrCreateVoter(request);
   const { likes, liked } = await getLikeState(redis, id, voterId);
@@ -87,19 +87,26 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const added = await redis.sadd(state.voterKey, voterId);
     if (added === 1) {
       const likes = await redis.incr(state.counterKey);
-      await redis.zadd(TRENDING_KEY, { score: Date.now(), member: id });
-      void likes;
+      await redis.zadd(RANKING_KEY, { score: Number(likes), member: id });
     }
   } else {
     const removed = await redis.srem(state.voterKey, voterId);
     if (removed === 1) {
       const current = Math.max(0, Number((await redis.get<number>(state.counterKey)) ?? 0));
-      await redis.set(state.counterKey, Math.max(0, current - 1));
+      const likes = Math.max(0, current - 1);
+      if (likes === 0) {
+        await Promise.all([redis.set(state.counterKey, 0), redis.zrem(RANKING_KEY, id)]);
+      } else {
+        await Promise.all([redis.set(state.counterKey, likes), redis.zadd(RANKING_KEY, { score: likes, member: id })]);
+      }
     }
   }
 
   const updated = await getLikeState(redis, id, voterId);
-  const response = NextResponse.json({ likes: updated.likes, liked: updated.liked, persistent: true }, { headers: { "Cache-Control": "no-store" } });
+  const response = NextResponse.json(
+    { likes: updated.likes, liked: updated.liked, persistent: true },
+    { headers: { "Cache-Control": "no-store" } },
+  );
   setVoterCookie(response, voterId);
   return response;
 }
