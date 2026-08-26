@@ -3,8 +3,8 @@ import "./globals.css";
 import StructuredData from "../components/StructuredData";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
-const siteTitle = "Famous Quotes & Inspirational Quotes | Mayalines";
-const siteDescription = "Explore famous quotes, inspirational quotes, motivational quotes, life quotes and timeless wisdom from notable authors. Read, search and copy verified quotes on Mayalines.";
+const siteTitle = "Famous Quotes, Inspirational & Motivational Quotes | Mayalines";
+const siteDescription = "Discover famous quotes, inspirational quotes, motivational quotes, life quotes and timeless wisdom from notable authors. Search, read and copy sourced quotes on Mayalines.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -35,7 +35,11 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
   },
-  twitter: { card: "summary", title: siteTitle, description: siteDescription },
+  twitter: {
+    card: "summary",
+    title: siteTitle,
+    description: siteDescription,
+  },
 };
 
 export const viewport: Viewport = {
