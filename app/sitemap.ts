@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import quotesData from "../data/quotes.json";
+import quotesData from "../data/quotes";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 function slugify(value: string) { return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function isIndexable(quote: (typeof quotesData)[number]) { return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared"; }
