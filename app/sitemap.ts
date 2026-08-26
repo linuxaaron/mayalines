@@ -4,12 +4,7 @@ import quotesData from "../data/quotes";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 
 function slugify(value: string) {
-  return value
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
 function isIndexable(quote: (typeof quotesData)[number]) {
@@ -23,6 +18,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
+    { url: `${siteUrl}/categories`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/authors`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/imprint`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/privacy`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/terms`, changeFrequency: "yearly", priority: 0.2 },
