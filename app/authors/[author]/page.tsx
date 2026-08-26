@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
-import quotesData from "../../../data/quotes.json";
+import quotesData from "../../../data/quotes";
 
 export const dynamicParams = false;
 
