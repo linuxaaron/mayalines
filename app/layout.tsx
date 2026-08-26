@@ -42,11 +42,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     name: "Quote Archive",
     url: siteUrl,
     description: "A fast, readable and searchable collection of memorable quotes, authors and ideas.",
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${siteUrl}/?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 
   return (
