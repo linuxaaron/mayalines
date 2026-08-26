@@ -18,12 +18,28 @@ Diese Website ist diesem Menschen gewidmet und soll einen Ort schaffen, an dem b
 - React
 - TypeScript
 - Vercel
+- Upstash Redis für persistente Likes und Community-Rankings
 
 ## Zitatdaten
 
 Der Produktionsdatensatz enthält 2.000 Zitate aus einer festgelegten öffentlichen Quelle. Jeder Datensatz ist dedupliziert, kategorisiert, mit seiner Quelle verknüpft und wird vor der Indexierung durch das Indexierungs-Gate geprüft.
 
 Die erzeugte Datei `data/quotes.json` enthält die produktiven Zitatdaten. Das Indexierungs-Gate berücksichtigt ausschließlich Datensätze mit verifizierter Zuordnung, geklärtem Veröffentlichungsstatus und aktivierter Indexierung.
+
+## Likes und Rankings
+
+Likes werden serverseitig in Upstash Redis gespeichert. Ein langlebiges, HTTP-only Cookie identifiziert den Besucher, sodass ein Like nach einem Reload erhalten bleibt und pro Besucher nicht mehrfach gezählt wird.
+
+Die Seite `/popular` zeigt die meistgelikten Zitate als Community-Ranking. `/trending` verwendet ein separates Redis-Sorted-Set für die zuletzt gelikten Zitate.
+
+Für Vercel Production müssen diese Variablen gesetzt sein:
+
+```text
+UPSTASH_REDIS_REST_URL
+UPSTASH_REDIS_REST_TOKEN
+```
+
+Eine Vorlage befindet sich in `.env.example`.
 
 ## Entwicklung
 
