@@ -9,20 +9,17 @@ function slugify(value: string) {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const categories = [...new Set(quotesData.map((quote) => quote.category))];
-  const authors = [...new Set(quotesData.map((quote) => quote.author))];
   const indexableQuotes = quotesData.filter((quote) => quote.indexable !== false);
 
   return [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
+    { url: `${siteUrl}/imprint`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/privacy`, changeFrequency: "yearly", priority: 0.2 },
+    { url: `${siteUrl}/accessibility`, changeFrequency: "yearly", priority: 0.2 },
     ...categories.map((category) => ({
       url: `${siteUrl}/categories/${slugify(category)}`,
       changeFrequency: "weekly" as const,
       priority: 0.8,
-    })),
-    ...authors.map((author) => ({
-      url: `${siteUrl}/authors/${slugify(author)}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
     })),
     ...indexableQuotes.map((quote) => ({
       url: `${siteUrl}/quotes/${quote.slug}`,
