@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/build-quotes.mjs && next dev",
     "prebuild": "node scripts/build-quotes.mjs",
     "build": "next build",
     "start": "next start",
