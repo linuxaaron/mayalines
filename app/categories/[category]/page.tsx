@@ -6,18 +6,18 @@ import StructuredData from "../../../components/StructuredData";
 export const dynamicParams = false;
 
 const descriptions: Record<string, string> = {
-  motivation: "A curated collection of motivational quotes about action, persistence, discipline, and moving forward.",
-  inspiration: "Inspirational quotes selected for clarity, perspective, creativity, and a sense of possibility.",
-  wisdom: "Wisdom quotes exploring judgment, experience, truth, character, and the lessons people carry through life.",
-  life: "Quotes about life, change, time, relationships, purpose, and the experiences that shape us.",
-  love: "Quotes about love, affection, connection, friendship, and the complexity of human relationships.",
-  success: "Quotes about achievement, work, ambition, discipline, and the habits behind meaningful success.",
-  courage: "Quotes about courage, fear, resilience, conviction, and acting when the outcome is uncertain.",
-  philosophy: "Philosophical quotes exploring existence, morality, meaning, nature, and the human condition.",
-  happiness: "Quotes about happiness, contentment, gratitude, and the pursuit of a good life.",
-  friendship: "Quotes about friendship, loyalty, trust, companionship, and the relationships that last.",
-  freedom: "Quotes about freedom, independence, responsibility, and the choices that define a life.",
-  science: "Quotes about science, discovery, curiosity, evidence, and the pursuit of knowledge.",
+  motivation: "Eine kuratierte Sammlung motivierender Zitate über Handeln, Ausdauer, Disziplin und den nächsten Schritt.",
+  inspiration: "Inspirierende Zitate über Klarheit, Perspektive, Kreativität und neue Möglichkeiten.",
+  wisdom: "Zitate über Urteilskraft, Erfahrung, Wahrheit, Charakter und die Lehren des Lebens.",
+  life: "Zitate über Leben, Veränderung, Zeit, Beziehungen, Sinn und prägende Erfahrungen.",
+  love: "Zitate über Liebe, Zuneigung, Verbundenheit, Freundschaft und menschliche Beziehungen.",
+  success: "Zitate über Leistung, Arbeit, Ehrgeiz, Disziplin und die Grundlagen nachhaltigen Erfolgs.",
+  courage: "Zitate über Mut, Angst, Widerstandskraft, Überzeugung und Handeln trotz Unsicherheit.",
+  philosophy: "Philosophische Zitate über Existenz, Moral, Sinn, Natur und die menschliche Verfassung.",
+  happiness: "Zitate über Glück, Zufriedenheit, Dankbarkeit und die Suche nach einem guten Leben.",
+  friendship: "Zitate über Freundschaft, Loyalität, Vertrauen, Verbundenheit und dauerhafte Beziehungen.",
+  freedom: "Zitate über Freiheit, Unabhängigkeit, Verantwortung und Entscheidungen, die ein Leben prägen.",
+  science: "Zitate über Wissenschaft, Entdeckung, Neugier, Belege und die Suche nach Wissen.",
 };
 
 function slugify(value: string) {
@@ -37,8 +37,8 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const title = category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   const hasClearedQuotes = quotesData.some((quote) => slugify(quote.category) === category && isIndexable(quote));
   return {
-    title: `${title} Quotes | Mayalines`,
-    description: descriptions[category] ?? `Explore a curated collection of ${title.toLowerCase()} quotes from notable authors.`,
+    title: `${title} – Zitate | Mayalines`,
+    description: descriptions[category] ?? `Entdecke eine kuratierte Sammlung von Zitaten zum Thema ${title.toLowerCase()} von bekannten Autoren.`,
     alternates: { canonical: `/categories/${category}` },
     robots: { index: hasClearedQuotes, follow: true },
   };
@@ -52,26 +52,26 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const collectionSchema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `${title} Quotes | Mayalines`,
-    description: descriptions[category] ?? `Explore ${title.toLowerCase()} quotes from Mayalines.`,
+    name: `${title} – Zitate | Mayalines`,
+    description: descriptions[category] ?? `Entdecke ${title.toLowerCase()}-Zitate auf Mayalines.`,
     url: `${siteUrl}/categories/${category}`,
     isPartOf: { "@type": "WebSite", name: "Mayalines", url: siteUrl },
   };
 
   return (
     <main className="quote-detail">
-      <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Categories", url: "/#categories" }, { name: `${title} Quotes`, url: `/categories/${category}` }]} />
-      <p className="eyebrow">MAYALINES CATEGORY</p>
-      <h1>{title} Quotes</h1>
-      <p className="hero-copy">{descriptions[category] ?? `Explore ${title.toLowerCase()} quotes from Mayalines.`}</p>
-      <p className="library-meta">{quotes.length.toLocaleString()} quotes in this category.</p>
+      <Breadcrumbs items={[{ name: "Startseite", url: "/" }, { name: "Kategorien", url: "/#categories" }, { name: `${title} – Zitate`, url: `/categories/${category}` }]} />
+      <p className="eyebrow">MAYALINES KATEGORIE</p>
+      <h1>{title} – Zitate</h1>
+      <p className="hero-copy">{descriptions[category] ?? `Entdecke ${title.toLowerCase()}-Zitate auf Mayalines.`}</p>
+      <p className="library-meta">{quotes.length.toLocaleString("de-DE")} Zitate in dieser Kategorie.</p>
       <div className="quote-grid">
         {quotes.slice(0, 60).map((quote) => (
           <article className="quote-card" key={quote.id}>
             <div className="quote-mark" aria-hidden="true">“</div>
             <p className="quote-text">{quote.quote}</p>
             <p className="quote-author">— {quote.author}</p>
-            <a className="copy-button" href={`/quotes/${quote.slug}`}>READ QUOTE</a>
+            <a className="copy-button" href={`/quotes/${quote.slug}`}>ZITAT LESEN</a>
           </article>
         ))}
       </div>
