@@ -1,36 +1,34 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
-// CC0 dataset. The dataset license does not automatically clear the underlying
-// quotation copyrights, so generated records remain non-indexable until reviewed.
-const SOURCE_URL = "https://raw.githubusercontent.com/alvations/Quotables/master/author-quote.txt";
-const SOURCE_NAME = "alvations/Quotables — CC0 dataset";
+// Pinned public dataset. The dataset license does not automatically clear the
+// underlying quotation copyrights, so generated records remain non-indexable
+// until each quote has passed our attribution/copyright review.
+const SOURCE_COMMIT = "20037e8161167d25e971d2dcfe1ee0398eb8eb89";
+const SOURCE_URL = `https://raw.githubusercontent.com/quotable-io/data/${SOURCE_COMMIT}/data/quotes.json`;
+const SOURCE_NAME = "Quotable open-source quote dataset";
 const TARGET_COUNT = 2000;
 
+const CATEGORY_MAP = new Map([
+  ["love", "Love"], ["friendship", "Friendship"], ["happiness", "Happiness"],
+  ["success", "Success"], ["motivational", "Motivation"], ["inspirational", "Inspiration"],
+  ["wisdom", "Wisdom"], ["life", "Life"], ["philosophy", "Philosophy"],
+  ["courage", "Courage"], ["freedom", "Freedom"], ["science", "Science"],
+  ["leadership", "Leadership"], ["education", "Education"], ["technology", "Technology"],
+  ["business", "Business"], ["humor", "Humor"], ["art", "Art"], ["character", "Character"],
+  ["change", "Change"],
+]);
+
 const FALLBACK_CATEGORIES = ["Wisdom", "Life", "Success", "Motivation", "Inspiration"];
-const CATEGORY_RULES = [
-  ["Love", /\b(love|heart|romance|lover|affection|marriage|friendship)\b/i],
-  ["Success", /\b(success|achievement|accomplish|goal|victory|winning|failure)\b/i],
-  ["Motivation", /\b(action|courage|effort|discipline|perseverance|determination|work|try|dare)\b/i],
-  ["Wisdom", /\b(wisdom|wise|truth|knowledge|understand|learn|reason|mind)\b/i],
-  ["Life", /\b(life|living|death|born|age|future|past|present|time)\b/i],
-  ["Happiness", /\b(happy|happiness|joy|pleasure|delight|content)\b/i],
-  ["Freedom", /\b(freedom|liberty|free|independence)\b/i],
-  ["Courage", /\b(brave|bravery|fear|courage|bold)\b/i],
-  ["Leadership", /\b(leader|leadership|command|government|king|president)\b/i],
-  ["Education", /\b(education|school|teacher|student|study|book)\b/i],
-  ["Science", /\b(science|scientist|nature|universe|physics|mathematics)\b/i],
-  ["Art", /\b(art|artist|music|poetry|poet|beauty|literature)\b/i],
-  ["Humor", /\b(laugh|laughing|humor|funny|joke|wit)\b/i],
-];
 
 function slugify(value) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-function categoryFor(quote, index) {
-  for (const [category, pattern] of CATEGORY_RULES) {
-    if (pattern.test(quote)) return category;
+function primaryCategory(tags, index) {
+  for (const tag of tags ?? []) {
+    const mapped = CATEGORY_MAP.get(String(tag).toLowerCase());
+    if (mapped) return mapped;
   }
   return FALLBACK_CATEGORIES[index % FALLBACK_CATEGORIES.length];
 }
@@ -40,17 +38,14 @@ const response = await fetch(SOURCE_URL, {
 });
 if (!response.ok) throw new Error(`Could not fetch quote source: ${response.status}`);
 
-const raw = await response.text();
+const source = await response.json();
 const quotes = [];
 const seen = new Set();
 
-for (const line of raw.split(/\r?\n/)) {
-  const separator = line.indexOf("\t");
-  if (separator <= 0) continue;
-
-  const author = line.slice(0, separator).trim();
-  const quote = line.slice(separator + 1).trim();
-  if (!author || !quote || quote.length < 10 || quote.length > 400) continue;
+for (const item of source) {
+  const quote = typeof item.content === "string" ? item.content.trim() : "";
+  const author = typeof item.author === "string" ? item.author.trim() : "";
+  if (!quote || !author || quote.length < 10 || quote.length > 400) continue;
 
   const normalized = `${author.toLowerCase()}|${quote.toLowerCase()}`;
   if (seen.has(normalized)) continue;
@@ -61,10 +56,11 @@ for (const line of raw.split(/\r?\n/)) {
     id: `q${id}`,
     quote,
     author,
-    category: categoryFor(quote, quotes.length),
-    tags: [],
+    category: primaryCategory(item.tags, quotes.length),
+    tags: (item.tags ?? []).map((tag) => String(tag)),
     source: SOURCE_URL,
     sourceName: SOURCE_NAME,
+    sourceCommit: SOURCE_COMMIT,
     attributionStatus: "source-dataset-attributed",
     copyrightStatus: "review-required",
     indexable: false,
@@ -80,4 +76,4 @@ if (quotes.length < TARGET_COUNT) {
 
 await mkdir("data", { recursive: true });
 await writeFile("data/quotes.json", `${JSON.stringify(quotes, null, 2)}\n`, "utf8");
-console.log(`Generated ${quotes.length} quote records from ${SOURCE_NAME}.`);
+console.log(`Generated ${quotes.length} quote records from ${SOURCE_NAME} at ${SOURCE_COMMIT}.`);
