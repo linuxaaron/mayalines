@@ -13,11 +13,15 @@ function isIndexable(quote: (typeof quotesData)[number]) {
 
 const collectionSlugs = [
   "quotes-about-life",
-  "famous-love-quotes",
+  "quotes-about-love",
   "quotes-about-success",
-  "motivational-quotes",
-  "wisdom-quotes",
+  "quotes-about-motivation",
+  "quotes-about-wisdom",
   "short-inspirational-quotes",
+  "quotes-about-friendship",
+  "quotes-about-courage",
+  "quotes-about-happiness",
+  "quotes-about-hope",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -37,20 +41,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/terms`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/copyright`, changeFrequency: "monthly", priority: 0.3 },
     { url: `${siteUrl}/accessibility`, changeFrequency: "yearly", priority: 0.2 },
-    ...categories.map((category) => ({
-      url: `${siteUrl}/categories/${slugify(category)}`,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    })),
-    ...authors.map((author) => ({
-      url: `${siteUrl}/authors/${slugify(author)}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-    })),
-    ...indexableQuotes.map((quote) => ({
-      url: `${siteUrl}/quotes/${quote.slug}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
+    ...categories.map((category) => ({ url: `${siteUrl}/categories/${slugify(category)}`, changeFrequency: "weekly" as const, priority: 0.8 })),
+    ...authors.map((author) => ({ url: `${siteUrl}/authors/${slugify(author)}`, changeFrequency: "monthly" as const, priority: 0.7 })),
+    ...indexableQuotes.map((quote) => ({ url: `${siteUrl}/quotes/${quote.slug}`, changeFrequency: "monthly" as const, priority: 0.6 })),
   ];
 }
