@@ -59,5 +59,19 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     description: siteDescription,
   };
 
-  return <html lang="en"><body><StructuredData data={websiteSchema} />{children}</body></html>;
+  return (
+    <html lang="en">
+      <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2162793628214003"
+          crossOrigin="anonymous"
+        />
+      </head>
+      <body>
+        <StructuredData data={websiteSchema} />
+        {children}
+      </body>
+    </html>
+  );
 }
