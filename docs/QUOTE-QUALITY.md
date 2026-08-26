@@ -1,46 +1,40 @@
-# Quote quality and publication policy
+# Qualität und Veröffentlichungsrichtlinie für Zitate
 
-## Goal
+## Ziel
 
-The project targets 2,000 English quote records, but quantity is not sufficient for publication or SEO indexing.
+Das Projekt enthält 2.000 englischsprachige Zitatdatensätze. Die Anzahl allein reicht jedoch nicht für eine Veröffentlichung oder Suchmaschinenindexierung aus.
 
-## Source staging
+## Quellenbasis
 
-The current build pipeline stages records from the public Quotable data repository. The upstream project describes its API and data as open source, but the repository page does not by itself establish that every individual quotation is public domain or commercially reusable in every jurisdiction.
+Die aktuelle Importpipeline verwendet das Werk *Three Thousand Selected Quotations from Brilliant Writers* über Wikisource. Die Datensätze werden mit der Quelle verknüpft, dedupliziert und mit einem Veröffentlichungsstatus versehen.
 
-Therefore imported records remain:
+Die Angabe einer offenen Quelle bedeutet nicht automatisch, dass jede einzelne Zuordnung oder jede Nutzung in jeder Rechtsordnung abschließend geklärt ist.
 
-- `attributionStatus: source-dataset-attributed`
-- `copyrightStatus: review-required`
-- `indexable: false`
+## Anforderungen an die Prüfung
 
-No record should be changed to `indexable: true` until attribution and rights have been reviewed for the intended publication use.
+Für jedes Zitat, das für die öffentliche Indexierung vorgesehen ist:
 
-## Review requirements
+1. Wortlaut mit einer zuverlässigen Primär- oder maßgeblichen Quelle abgleichen.
+2. Zuordnung zum genannten Autor prüfen.
+3. Titel, Erscheinungsjahr oder Ausgabe und eine geeignete Quellen-URL dokumentieren, soweit verfügbar.
+4. Prüfen, ob der Text gemeinfrei ist, für den vorgesehenen Zweck lizenziert wurde oder eine Genehmigung benötigt.
+5. Strittige oder unbelegte Zuordnungen nicht als eindeutig verifiziert veröffentlichen.
+6. Exakte und nahezu identische Duplikate prüfen.
+7. Eine primäre Kategorie vergeben und Quellenangaben getrennt erhalten.
+8. Für Seiten mit Suchmaschinenziel einen echten redaktionellen Mehrwert ergänzen.
 
-For each quote intended for public indexing:
+## SEO- und Werberegel
 
-1. Verify the wording against a reliable primary or authoritative source.
-2. Verify the attribution to the named author.
-3. Record the source title, date or edition where available, and a source URL where appropriate.
-4. Determine whether the text is public domain, licensed for the intended use, or requires permission.
-5. Reject disputed or unsupported attributions unless the page clearly presents them as disputed and the editorial value justifies publication.
-6. Check for exact and near-duplicate wording.
-7. Assign one primary category and retain source tags separately.
-8. Add useful editorial context where the page is intended for search traffic.
+Zitatseiten nicht allein deshalb massenhaft indexieren, weil sie in einem Datensatz vorhanden sind. Automatisch erzeugte oder kopierte Inhalte benötigen zusätzlichen redaktionellen, kuratorischen oder sonstigen eigenständigen Mehrwert.
 
-## SEO / AdSense rule
+Das Projekt verwendet `indexable` deshalb als ausdrückliches Veröffentlichungs-Gate. Kategorien- und Autorenseiten benötigen sinnvolle redaktionelle Informationen, bevor sie indexiert werden sollten. Einzelne Zitatseiten sollen erst nach abgeschlossener Prüfung und mit zusätzlichem Seitenwert indexiert werden.
 
-Do not mass-index automatically generated quote pages merely because the dataset contains them. Google Publisher Policies prohibit Google-served ads on screens containing copied or automatically generated content without additional commentary, curation, or other value. The site therefore uses `indexable` as an explicit publication gate.
+## Prüfung
 
-Category and author pages should contain meaningful editorial information before indexing. Quote pages should be indexed only after the underlying quote is cleared and the page provides more than a bare copied quotation.
-
-## Audit
-
-Run:
+Ausführen:
 
 ```bash
 npm run audit:quotes
 ```
 
-The audit fails the build-quality check when records are missing required fields, duplicate author/quote pairs exist, the expected count is wrong, or an uncleared record has been marked indexable.
+Die Prüfung schlägt fehl, wenn Pflichtfelder fehlen, doppelte Autor-/Zitat-Paare existieren, die erwartete Anzahl nicht stimmt oder ein nicht ausreichend geklärter Datensatz als indexierbar markiert wurde.
