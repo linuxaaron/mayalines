@@ -3,7 +3,7 @@ import CopyButton from "../../../components/CopyButton";
 import PersistentLikeButton from "../../../components/PersistentLikeButton";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
-import quotesData from "../../../data/quotes.json";
+import quotesData from "../../../data/quotes";
 export const dynamicParams = false;
 export function generateStaticParams(){return quotesData.map((quote)=>({slug:quote.slug}));}
 export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const {slug}=await params;const quote=quotesData.find((item)=>item.slug===slug);const isIndexable=quote?.indexable===true&&quote?.attributionStatus==="verified"&&quote?.copyrightStatus==="cleared";return{title:quote?`${quote.author}: “${quote.quote.slice(0,58)}${quote.quote.length>58?"…":""}” | Mayalines`:"Quote | Mayalines",description:quote?.quote,alternates:quote?{canonical:`/quotes/${quote.slug}`} : undefined,robots:{index:isIndexable,follow:true}};}
