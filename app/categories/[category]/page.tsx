@@ -24,6 +24,10 @@ function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
+function isIndexable(quote: (typeof quotesData)[number]) {
+  return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared";
+}
+
 export function generateStaticParams() {
   return [...new Set(quotesData.map((quote) => quote.category))].map((category) => ({ category: slugify(category) }));
 }
@@ -31,10 +35,12 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category } = await params;
   const title = category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
+  const hasClearedQuotes = quotesData.some((quote) => slugify(quote.category) === category && isIndexable(quote));
   return {
     title: `${title} Quotes | Mayalines`,
     description: descriptions[category] ?? `Explore a curated collection of ${title.toLowerCase()} quotes from notable authors.`,
     alternates: { canonical: `/categories/${category}` },
+    robots: { index: hasClearedQuotes, follow: true },
   };
 }
 
