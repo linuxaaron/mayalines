@@ -7,24 +7,38 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Mayalines — Words Worth Keeping",
+    default: "Mayalines — Quotes, Nietzsche & Words Worth Keeping",
     template: "%s | Mayalines",
   },
-  description: "Mayalines is a carefully curated collection of memorable quotes, authors and ideas — made to read, remember and share.",
+  description: "Discover memorable quotes, famous sayings, Nietzsche quotes, inspirational words and ideas on Mayalines. Read, explore and copy quotes instantly.",
   applicationName: "Mayalines",
+  keywords: [
+    "quotes",
+    "quotes collection",
+    "famous quotes",
+    "best quotes",
+    "cool quotes",
+    "Nietzsche quotes",
+    "inspirational quotes",
+    "motivational quotes",
+    "life quotes",
+    "wisdom quotes",
+    "Maya Angelou quotes",
+    "Mayalines",
+  ],
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     url: "/",
     siteName: "Mayalines",
-    title: "Mayalines — Words Worth Keeping",
-    description: "A carefully curated collection of memorable quotes, authors and ideas.",
+    title: "Mayalines — Quotes, Nietzsche & Words Worth Keeping",
+    description: "Discover memorable quotes, famous sayings, Nietzsche quotes and inspirational words. Read, explore and copy quotes instantly.",
   },
   twitter: {
     card: "summary",
-    title: "Mayalines — Words Worth Keeping",
-    description: "A carefully curated collection of memorable quotes, authors and ideas.",
+    title: "Mayalines — Quotes, Nietzsche & Words Worth Keeping",
+    description: "Discover memorable quotes, famous sayings, Nietzsche quotes and inspirational words.",
   },
 };
 
@@ -41,7 +55,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "WebSite",
     name: "Mayalines",
     url: siteUrl,
-    description: "A carefully curated collection of memorable quotes, authors and ideas.",
+    description: "A curated collection of memorable quotes, famous sayings, authors and ideas.",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
   };
 
   return (
