@@ -13,12 +13,13 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const quote = quotesData.find((item) => item.slug === slug);
+  const isIndexable = quote?.indexable === true && quote?.attributionStatus === "verified" && quote?.copyrightStatus === "cleared";
+
   return {
     title: quote ? `${quote.author}: “${quote.quote.slice(0, 58)}${quote.quote.length > 58 ? "…" : ""}” | Mayalines` : "Quote | Mayalines",
     description: quote?.quote,
     alternates: quote ? { canonical: `/quotes/${quote.slug}` } : undefined,
-    // Individual quote pages stay out of search until attribution and commercial publication rights are explicitly cleared.
-    robots: { index: false, follow: true },
+    robots: { index: isIndexable, follow: true },
   };
 }
 
