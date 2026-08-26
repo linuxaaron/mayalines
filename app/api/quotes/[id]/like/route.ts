@@ -34,6 +34,20 @@ function setVoterCookie(response: NextResponse, voterId: string) {
   });
 }
 
+async function getLikeState(redis: Redis, id: string, voterId: string) {
+  const counterKey = `quote:likes:${id}`;
+  const voterKey = `quote:voters:${id}`;
+  const [counter, voterCount, liked] = await Promise.all([
+    redis.get<number>(counterKey),
+    redis.scard(voterKey),
+    redis.sismember(voterKey, voterId),
+  ]);
+
+  // Keep historical counters while the new voter set is populated.
+  const likes = Math.max(0, Number(counter) || 0, Number(voterCount) || 0);
+  return { likes, liked: Boolean(liked), voterKey, counterKey };
+}
+
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!isValidId(id)) return NextResponse.json({ error: "Invalid quote id" }, { status: 400 });
@@ -42,21 +56,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (!redis) return NextResponse.json({ likes: 0, liked: false, persistent: false });
 
   const voterId = getOrCreateVoter(request);
-  const key = `quote:likes:${id}`;
-  const voterKey = `quote:voters:${id}`;
-  const [likes, liked] = await Promise.all([
-    redis.scard(voterKey),
-    redis.sismember(voterKey, voterId),
-  ]);
-
-  const response = NextResponse.json({
-    likes: Math.max(0, Number(likes) || 0),
-    liked: Boolean(liked),
-    persistent: true,
-  }, { headers: { "Cache-Control": "no-store" } });
-
-  // Keep the legacy counter in sync for compatibility with existing data.
-  await redis.set(key, Math.max(0, Number(likes) || 0));
+  const { likes, liked } = await getLikeState(redis, id, voterId);
+  const response = NextResponse.json({ likes, liked, persistent: true }, {
+    headers: { "Cache-Control": "no-store" },
+  });
   setVoterCookie(response, voterId);
   return response;
 }
@@ -80,21 +83,26 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   const voterId = getOrCreateVoter(request);
-  const voterKey = `quote:voters:${id}`;
+  const state = await getLikeState(redis, id, voterId);
 
   if (body.action === "like") {
-    await redis.sadd(voterKey, voterId);
+    // SADD is idempotent: repeated clicks from the same browser cannot inflate the count.
+    const added = await redis.sadd(state.voterKey, voterId);
+    if (added === 1) await redis.incr(state.counterKey);
   } else {
-    await redis.srem(voterKey, voterId);
+    const removed = await redis.srem(state.voterKey, voterId);
+    if (removed === 1) {
+      const current = Math.max(0, Number((await redis.get<number>(state.counterKey)) ?? 0));
+      await redis.set(state.counterKey, Math.max(0, current - 1));
+    }
   }
 
-  const likes = Math.max(0, Number(await redis.scard(voterKey)) || 0);
-  await redis.set(`quote:likes:${id}`, likes);
-  const liked = Boolean(await redis.sismember(voterKey, voterId));
-
-  const response = NextResponse.json({ likes, liked, persistent: true }, {
-    headers: { "Cache-Control": "no-store" },
-  });
+  const updated = await getLikeState(redis, id, voterId);
+  const response = NextResponse.json({
+    likes: updated.likes,
+    liked: updated.liked,
+    persistent: true,
+  }, { headers: { "Cache-Control": "no-store" } });
   setVoterCookie(response, voterId);
   return response;
 }
