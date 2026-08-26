@@ -148,6 +148,8 @@ export default function Home() {
         <nav className="footer-links" aria-label="Legal and accessibility navigation">
           <a href="/imprint">Imprint</a>
           <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/copyright">Copyright</a>
           <a href="/accessibility">Accessibility</a>
         </nav>
       </footer>
