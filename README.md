@@ -1,30 +1,30 @@
 # MAYALINES
 
-**Words Worth Keeping.**
+**Worte, die bleiben.**
 
-MAYALINES is a fast, minimal and searchable collection of memorable quotes, authors and ideas.
+MAYALINES ist eine schnelle, minimalistische und durchsuchbare Sammlung bemerkenswerter Zitate, Autoren und Gedanken.
 
-## Stack
+## Technologie
 
 - Next.js
 - React
 - TypeScript
 - Vercel
 
-## Quote data
+## Zitatdaten
 
-The production build deterministically generates 2,000 quote records from a pinned Quotable dataset commit. Each record is deduplicated, categorized, attributed to the source dataset and marked `review-required` for copyright review before indexing.
+Die Produktionsversion enthält 2.000 Zitatdatensätze aus einer festgelegten öffentlichen Quelle. Jeder Datensatz wird dedupliziert, kategorisiert, mit seiner Quelle verknüpft und vor der Suchmaschinenindexierung durch das Indexierungs-Gate geprüft.
 
-The generated `data/quotes.json` is a build artifact and is recreated during `prebuild`.
+Die generierte `data/quotes.json` enthält die produktiven Zitatdaten. Das Indexierungs-Gate berücksichtigt nur Datensätze mit bestätigter Zuordnung, geklärtem Veröffentlichungsstatus und aktivierter Indexierung.
 
-## Development
+## Entwicklung
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Production build
+## Produktions-Build
 
 ```bash
 npm run build
@@ -33,4 +33,8 @@ npm start
 
 ## Repository
 
-The repository is currently being migrated from the original `quotes` project name to the MAYALINES brand.
+MAYALINES ist die aktuelle Marke des früheren Projekts `quotes`.
+
+## Ziel
+
+Die Website soll eine schnelle, übersichtliche und suchmaschinenfreundliche Anlaufstelle für Zitate, Autoren und Themen sein. Zitate können direkt kopiert, nach Autoren durchsucht und nach Kategorien gefiltert werden.
