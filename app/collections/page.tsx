@@ -2,22 +2,26 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Quote Collections | MAYALINES",
-  description: "Explore curated collections of famous quotes about life, love, success, motivation, wisdom and more.",
+  description: "Explore curated collections of famous quotes about life, love, success, motivation, wisdom, courage, happiness, friendship and hope.",
   alternates: { canonical: "https://mayalines.com/collections" },
   openGraph: {
     title: "Quote Collections | MAYALINES",
-    description: "Curated quote collections for life, love, success, motivation and wisdom.",
+    description: "Curated quote collections for life, love, success, motivation, wisdom and more.",
     images: [{ url: "/mayalines-poetry.svg", width: 1200, height: 675, alt: "MAYALINES curated words illustration" }],
   },
 };
 
 const collections = [
-  { slug: "quotes-about-life", title: "Quotes About Life", description: "Thoughtful words about life, experience, change and the way we choose to live.", category: "Life" },
-  { slug: "famous-love-quotes", title: "Famous Love Quotes", description: "Memorable words about love, affection, devotion and human connection.", category: "Love" },
-  { slug: "quotes-about-success", title: "Quotes About Success", description: "Perspectives on achievement, ambition, work, discipline and success.", category: "Success" },
-  { slug: "motivational-quotes", title: "Motivational Quotes", description: "Words about courage, action, persistence and moving forward.", category: "Motivation" },
-  { slug: "wisdom-quotes", title: "Wisdom Quotes", description: "Timeless observations from writers and thinkers on character, knowledge and life.", category: "Wisdom" },
-  { slug: "short-inspirational-quotes", title: "Short Inspirational Quotes", description: "Concise, memorable lines for moments when a few words are enough.", category: "Inspiration", short: true },
+  { slug: "quotes-about-life", title: "Quotes About Life", description: "Thoughtful words about life, experience, change and the way we choose to live." },
+  { slug: "quotes-about-love", title: "Love Quotes", description: "Memorable words about love, affection, devotion and human connection." },
+  { slug: "quotes-about-success", title: "Quotes About Success", description: "Perspectives on achievement, ambition, work, discipline and success." },
+  { slug: "quotes-about-motivation", title: "Motivational Quotes", description: "Words about courage, action, persistence and moving forward." },
+  { slug: "quotes-about-wisdom", title: "Wisdom Quotes", description: "Timeless observations on character, knowledge, perspective and life." },
+  { slug: "short-inspirational-quotes", title: "Short Inspirational Quotes", description: "Concise, memorable lines for moments when a few words are enough." },
+  { slug: "quotes-about-friendship", title: "Friendship Quotes", description: "Quotes about loyalty, trust, companionship and lasting friendships." },
+  { slug: "quotes-about-courage", title: "Courage Quotes", description: "Words about bravery, fear, resilience and finding the strength to act." },
+  { slug: "quotes-about-happiness", title: "Happiness Quotes", description: "Quotes about joy, contentment and meaningful living." },
+  { slug: "quotes-about-hope", title: "Hope Quotes", description: "Timeless words about hope, renewal and perseverance." },
 ];
 
 export default function CollectionsPage() {
