@@ -28,7 +28,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
   const authorName = Array.from(new Set(quotesData.map((quote) => quote.author))).find((name) => slugify(name) === slug);
   if (!authorName) return null;
   const quotes = quotesData.filter((quote) => quote.author === authorName);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://quotes-git-main-aaron-727f.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const personSchema = {
     "@context": "https://schema.org",
     "@type": "Person",
