@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import quotesData from "../../../data/quotes.json";
 import Breadcrumbs from "../../../components/Breadcrumbs";
+import StructuredData from "../../../components/StructuredData";
 
 export const dynamicParams = false;
 
@@ -41,6 +42,15 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const { category } = await params;
   const title = category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   const quotes = quotesData.filter((quote) => slugify(quote.category) === category);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://quotes-git-main-aaron-727f.vercel.app";
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: `${title} Quotes`,
+    description: descriptions[category] ?? `Explore ${title.toLowerCase()} quotes from the archive.`,
+    url: `${siteUrl}/categories/${category}`,
+    isPartOf: { "@type": "WebSite", name: "Quote Archive", url: siteUrl },
+  };
 
   return (
     <main className="quote-detail">
@@ -59,6 +69,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           </article>
         ))}
       </div>
+      <StructuredData data={collectionSchema} />
     </main>
   );
 }
