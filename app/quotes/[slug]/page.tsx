@@ -14,10 +14,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const quote = quotesData.find((item) => item.slug === slug);
   return {
-    title: quote ? `${quote.author}: “${quote.quote.slice(0, 58)}${quote.quote.length > 58 ? "…" : ""}”` : "Quote",
+    title: quote ? `${quote.author}: “${quote.quote.slice(0, 58)}${quote.quote.length > 58 ? "…" : ""}” | Mayalines` : "Quote | Mayalines",
     description: quote?.quote,
     alternates: quote ? { canonical: `/quotes/${quote.slug}` } : undefined,
-    robots: quote?.indexable === false ? { index: false, follow: true } : undefined,
+    // Individual quote pages stay out of search until attribution and commercial publication rights are explicitly cleared.
+    robots: { index: false, follow: true },
   };
 }
 
@@ -25,13 +26,13 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
   const { slug } = await params;
   const quote = quotesData.find((item) => item.slug === slug);
   if (!quote) return null;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://quotes-git-main-aaron-727f.vercel.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const quoteSchema = {
     "@context": "https://schema.org",
     "@type": "Quotation",
     text: quote.quote,
     creator: { "@type": "Person", name: quote.author },
-    isPartOf: { "@type": "WebSite", name: "Quote Archive", url: siteUrl },
+    isPartOf: { "@type": "WebSite", name: "Mayalines", url: siteUrl },
   };
 
   return (
