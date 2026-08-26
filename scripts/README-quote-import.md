@@ -1,0 +1,1 @@
+The production quote import is `scripts/build-wikisource-quotes.mjs`. It fetches the public-domain Wikisource edition at build time and writes exactly 2,000 records to `data/quotes.json`. The source edition contains about 3,000 selected quotations and is marked public domain worldwide by Wikisource.
