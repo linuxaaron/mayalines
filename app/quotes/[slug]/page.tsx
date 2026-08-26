@@ -43,8 +43,9 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
       <blockquote>“{quote.quote}”</blockquote>
       <p className="quote-author">— {quote.author}</p>
       <CopyButton quote={quote.quote} author={quote.author} />
-      <p className="source-note">Source: {quote.sourceName}</p>
-      <p className="source-note">Attribution: {quote.attributionStatus} · Publication review: {quote.copyrightStatus}</p>
+      <p className="source-note">Source dataset: <a href={quote.source} rel="noreferrer">{quote.sourceName}</a></p>
+      <p className="source-note">Attribution status: {quote.attributionStatus} · Publication status: {quote.copyrightStatus}</p>
+      <p className="source-note">If you believe this quote is incorrectly attributed or should be removed, see <a href="/copyright">Copyright & quote corrections</a>.</p>
       <StructuredData data={quoteSchema} />
     </main>
   );
