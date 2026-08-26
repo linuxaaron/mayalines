@@ -12,11 +12,14 @@ function slugify(value: string) {
     .replace(/^-|-$/g, "");
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const categories = [...new Set(quotesData.map((quote) => quote.category))];
+function isIndexable(quote: (typeof quotesData)[number]) {
+  return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared";
+}
 
-  // Individual quote pages currently emit noindex until attribution and
-  // publication-rights review is complete, so they must not be in the sitemap.
+export default function sitemap(): MetadataRoute.Sitemap {
+  const indexableQuotes = quotesData.filter(isIndexable);
+  const categories = [...new Set(indexableQuotes.map((quote) => quote.category))];
+
   return [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
     { url: `${siteUrl}/imprint`, changeFrequency: "yearly", priority: 0.2 },
@@ -26,6 +29,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${siteUrl}/categories/${slugify(category)}`,
       changeFrequency: "weekly" as const,
       priority: 0.8,
+    })),
+    ...indexableQuotes.map((quote) => ({
+      url: `${siteUrl}/quotes/${quote.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
     })),
   ];
 }
