@@ -20,6 +20,9 @@ button, input { font: inherit; }
 button { background: none; border: 0; color: inherit; cursor: pointer; }
 button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid rgba(118,88,67,.35); outline-offset: 3px; }
 
+.skip-link { position: fixed; z-index: 100; top: 12px; left: 12px; transform: translateY(-160%); padding: 10px 14px; border-radius: 4px; background: #171513; color: #fff; font-weight: 700; }
+.skip-link:focus { transform: translateY(0); }
+
 .site-shell { min-height: 100vh; }
 .header { width: min(1440px, 100%); height: 76px; margin: 0 auto; display: flex; align-items: center; gap: 32px; padding: 24px 72px; }
 .brand { font-weight: 700; letter-spacing: 0.08em; }
@@ -69,7 +72,19 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .quote-detail .copy-button { margin-top: 28px; }
 .source-note { margin-top: 56px; color: var(--muted); font-size: 12px; }
 
+.legal-page { width: min(900px, calc(100% - 40px)); min-height: 100vh; margin: 0 auto; padding: 44px 0 90px; }
+.legal-nav { margin-bottom: 72px; color: var(--muted); font-size: 13px; font-weight: 650; }
+.legal-page article { max-width: 760px; }
+.legal-page h1 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(48px, 7vw, 82px); line-height: 1; font-weight: 500; letter-spacing: -.045em; color: var(--quote-black); }
+.legal-page h2 { margin: 48px 0 12px; font-size: 20px; }
+.legal-page p, .legal-page li, .legal-page address { color: #3f3b36; font-size: 16px; line-height: 1.75; }
+.legal-page ul { padding-left: 22px; }
+.legal-page a { color: var(--brown); text-decoration: underline; text-underline-offset: 3px; }
+.legal-warning { margin-top: 28px; padding: 18px 20px; border-left: 3px solid var(--brown); background: var(--brown-wash); }
+
 .footer { margin-top: 24px; padding: 30px 72px; background: #26211d; color: #d4cec6; font-size: 12px; }
+.footer a { text-decoration: underline; text-underline-offset: 3px; }
+.footer-links { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 12px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
 @media (prefers-reduced-motion: reduce) {
@@ -96,4 +111,9 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
   .quote-of-the-day { padding: 28px; }
   .author-row { font-size: 19px; }
   .quote-detail { width: min(100% - 32px, 1000px); padding-top: 32px; }
+  .quote-detail blockquote { margin-top: 48px; font-size: clamp(36px, 11vw, 58px); }
+  .legal-page { width: min(100% - 32px, 900px); padding-top: 28px; }
+  .legal-nav { margin-bottom: 48px; }
+  .legal-page p, .legal-page li, .legal-page address { font-size: 15px; }
+  .footer { padding: 28px 24px; }
 }
