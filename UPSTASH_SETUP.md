@@ -1,18 +1,18 @@
-# Persistent quote likes
+# Dauerhafte Zitatbewertungen
 
-Mayalines uses Upstash Redis for shared like counters.
+Mayalines verwendet Upstash Redis für gemeinsam gespeicherte Bewertungszähler.
 
-Add these environment variables in Vercel Project Settings → Environment Variables:
+Füge diese Umgebungsvariablen in den Vercel-Projekteinstellungen unter **Umgebungsvariablen** hinzu:
 
 - `UPSTASH_REDIS_REST_URL`
 - `UPSTASH_REDIS_REST_TOKEN`
 
-Use the Production environment (and Preview if you want likes during previews).
+Verwende die Umgebung **Production** und bei Bedarf zusätzlich **Preview**, wenn Bewertungen auch in Vorschauversionen funktionieren sollen.
 
-Without these variables, the API deliberately returns a non-persistent response instead of failing the site build.
+Ohne diese Variablen liefert die API bewusst eine nicht dauerhaft gespeicherte Antwort, anstatt den Website-Build fehlschlagen zu lassen.
 
-Security:
+## Sicherheit
 
-- Never commit the Redis token.
-- Store credentials only as Vercel environment variables.
-- The API validates quote IDs and only accepts the `like` / `unlike` actions.
+- Redis-Tokens niemals in Git committen.
+- Zugangsdaten ausschließlich als Vercel-Umgebungsvariablen speichern.
+- Die API validiert Zitat-IDs und akzeptiert ausschließlich die Aktionen `like` und `unlike`.
