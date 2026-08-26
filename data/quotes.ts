@@ -4,6 +4,9 @@ export type Quote = (typeof quotesJson)[number] & {
   indexable: boolean;
 };
 
-export const quotes = quotesJson as Quote[];
+export const quotes: Quote[] = quotesJson.map((quote) => ({
+  ...quote,
+  indexable: quote.indexable === true || (quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared"),
+}));
 
 export default quotes;
