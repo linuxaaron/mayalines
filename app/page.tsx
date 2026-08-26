@@ -1,24 +1,23 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import quotesData from "../data/quotes.json";
 
-const quotes = [
-  { quote: "Life is like riding a bicycle. To keep your balance you must keep moving.", author: "Albert Einstein", category: "Life" },
-  { quote: "In the middle of difficulty lies opportunity.", author: "Albert Einstein", category: "Wisdom" },
-  { quote: "Well done is better than well said.", author: "Benjamin Franklin", category: "Success" },
-  { quote: "The secret of getting ahead is getting started.", author: "Mark Twain", category: "Motivation" },
-  { quote: "It is never too late to be what you might have been.", author: "George Eliot", category: "Life" },
-  { quote: "We are what we repeatedly do. Excellence, then, is not an act, but a habit.", author: "Aristotle", category: "Success" },
-  { quote: "Happiness depends upon ourselves.", author: "Aristotle", category: "Happiness" },
-  { quote: "The only limit to our realization of tomorrow is our doubts of today.", author: "Franklin D. Roosevelt", category: "Courage" },
-  { quote: "That which does not kill us makes us stronger.", author: "Friedrich Nietzsche", category: "Courage" },
-  { quote: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt", category: "Motivation" },
-  { quote: "Do what you feel in your heart to be right—for you'll be criticized anyway.", author: "Eleanor Roosevelt", category: "Courage" },
-  { quote: "The journey of a thousand miles begins with one step.", author: "Lao Tzu", category: "Wisdom" },
-];
+type Quote = {
+  id: string;
+  quote: string;
+  author: string;
+  category: string;
+  source: string;
+  sourceName: string;
+  attributionStatus: string;
+  copyrightStatus: string;
+  slug: string;
+};
 
-const categories = ["All", "Life", "Love", "Wisdom", "Motivation", "Success", "Philosophy", "Courage", "Happiness"];
-const authors = ["Albert Einstein", "Maya Angelou", "Oscar Wilde", "Mark Twain", "William Shakespeare"];
+const quotes = quotesData as Quote[];
+const categories = ["All", ...Array.from(new Set(quotes.map((item) => item.category))).sort()];
+const authors = Array.from(new Set(quotes.map((item) => item.author))).sort();
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -63,69 +62,51 @@ export default function Home() {
         <p className="hero-copy">A considered collection of memorable words, ideas, and voices.</p>
         <label className="search-box">
           <span className="sr-only">Search quotes, authors, and topics</span>
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search quotes, authors, topics…"
-          />
+          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search quotes, authors, topics…" />
         </label>
       </section>
 
       <section className="library" id="categories">
-        <div className="section-heading">Today&apos;s selection</div>
+        <div className="section-heading">Quote library</div>
+        <p className="library-meta">{filteredQuotes.length.toLocaleString()} quotes · {authors.length.toLocaleString()} authors</p>
+
         <div className="quote-grid">
-          {filteredQuotes.slice(0, 6).map((item) => (
-            <article className="quote-card" key={`${item.author}-${item.quote}`}>
+          {filteredQuotes.slice(0, 12).map((item) => (
+            <article className="quote-card" key={item.id}>
               <div className="quote-mark" aria-hidden="true">“</div>
               <p className="quote-text">{item.quote}</p>
               <p className="quote-author">— {item.author}</p>
-              <button
-                className="copy-button"
-                type="button"
-                onClick={() => copyQuote(item.quote, item.author)}
-                aria-label={`Copy quote by ${item.author}`}
-              >
+              <p className="quote-category">{item.category}</p>
+              <button className="copy-button" type="button" onClick={() => copyQuote(item.quote, item.author)} aria-label={`Copy quote by ${item.author}`}>
                 {copied === item.quote ? "COPIED" : "COPY"}
               </button>
             </article>
           ))}
         </div>
 
-        {filteredQuotes.length === 0 && (
-          <p className="hero-copy">No quotes match your search. Try another author, topic, or category.</p>
-        )}
+        {filteredQuotes.length === 0 && <p className="hero-copy">No quotes match your search. Try another author, topic, or category.</p>}
 
         <div className="category-rail" aria-label="Quote categories">
           {categories.map((item) => (
-            <button
-              key={item}
-              type="button"
-              onClick={() => setCategory(item)}
-              aria-pressed={category === item}
-            >
-              {item}
-            </button>
+            <button key={item} type="button" onClick={() => setCategory(item)} aria-pressed={category === item}>{item}</button>
           ))}
         </div>
 
         <section className="quote-of-the-day">
           <p className="eyebrow">QUOTE OF THE DAY</p>
-          <blockquote>“The future belongs to those who believe in the beauty of their dreams.”</blockquote>
-          <p className="quote-author">— Eleanor Roosevelt</p>
+          <blockquote>{quotes[0]?.quote}</blockquote>
+          <p className="quote-author">— {quotes[0]?.author}</p>
         </section>
 
         <section className="author-index" id="authors">
           <div className="section-heading">Explore by author</div>
           <div className="author-row">
-            {authors.map((author) => <a href="#authors" key={author}>{author}</a>)}
+            {authors.slice(0, 24).map((author) => <a href="#authors" key={author}>{author}</a>)}
           </div>
         </section>
       </section>
 
-      <footer className="footer" id="about">
-        <span>© 2026 Quote Archive</span>
-      </footer>
+      <footer className="footer" id="about"><span>© 2026 Quote Archive</span></footer>
     </main>
   );
 }
