@@ -1,13 +1,14 @@
 {
   "name": "quotes",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "dev": "node scripts/build-quotes.mjs && next dev",
     "prebuild": "node scripts/build-quotes.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "audit:quotes": "node scripts/audit-quotes.mjs"
   },
   "dependencies": {
     "next": "latest",
