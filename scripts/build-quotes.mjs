@@ -9,6 +9,7 @@ const LETTERS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P"
 const decode = (value) => value.replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/&amp;/g, "&").replace(/&#x27;/g, "'");
 const strip = (value) => decode(value.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim());
 const slugify = (value) => value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const titleCase = (value) => value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
 const quotes = [];
 const seen = new Set();
@@ -18,15 +19,16 @@ for (const letter of LETTERS) {
   const response = await fetch(url, { headers: { "User-Agent": "mayalines/1.0" } });
   if (!response.ok) throw new Error(`Wikisource ${letter} request failed: ${response.status}`);
   const html = await response.text();
-  const paragraphs = [...html.matchAll(/<p(?:\\s[^>]*)?>([\\s\\S]*?)<\\/p>/gi)].map((m) => strip(m[1]));
+  const paragraphs = [...html.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/gi)].map((m) => strip(m[1]));
   let pending = null;
+  let category = "Wisdom";
 
   for (const paragraph of paragraphs) {
     if (!paragraph) continue;
     if (/^[—–-]/.test(paragraph)) {
       if (pending) {
-        const author = paragraph.replace(/^[—–-]\\s*/, "").replace(/[.\\s]+$/, "").trim();
-        const quote = pending.replace(/^[\\u200b\\ufeff\\s]+|[\\u200b\\ufeff\\s]+$/g, "").trim();
+        const author = paragraph.replace(/^[—–-]\s*/, "").replace(/[.\s]+$/, "").trim();
+        const quote = pending.replace(/^[\u200b\ufeff\s]+|[\u200b\ufeff\s]+$/g, "").trim();
         const key = `${author.toLowerCase()}|${quote.toLowerCase()}`;
         if (author && quote.length >= 15 && quote.length <= 1500 && !seen.has(key)) {
           seen.add(key);
@@ -35,7 +37,7 @@ for (const letter of LETTERS) {
             id,
             quote,
             author,
-            category: "Wisdom",
+            category,
             source: url,
             sourceName: SOURCE_NAME,
             sourceCommit: SOURCE_COMMIT,
@@ -50,7 +52,8 @@ for (const letter of LETTERS) {
       if (quotes.length >= TARGET_COUNT) break;
       continue;
     }
-    if (/^[A-Z][A-Z0-9 &'’(),.;:!-]{2,79}$/.test(paragraph)) {
+    if (/^[A-Z][A-Z0-9 &'’(),.;:!-]{2,79}$/.test(paragraph) && !/^BURNING WORDS/i.test(paragraph)) {
+      category = titleCase(paragraph.replace(/[.:]+$/, ""));
       pending = null;
       continue;
     }
