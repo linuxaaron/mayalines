@@ -50,9 +50,10 @@ export default function Home() {
 
   return (
     <main className="site-shell">
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <header className="header">
         <a className="brand" href="#top" aria-label="Quote Archive home">QUOTES</a>
-        <div className="header-rule" />
+        <div className="header-rule" aria-hidden="true" />
         <nav className="nav" aria-label="Primary navigation">
           <a href="#top">Home</a>
           <a href="#categories">Categories</a>
@@ -61,19 +62,19 @@ export default function Home() {
         </nav>
       </header>
 
-      <section className="hero" id="top">
+      <section className="hero" id="top" aria-labelledby="page-title">
         <p className="eyebrow">THE QUOTE ARCHIVE</p>
-        <h1>Words worth keeping.</h1>
+        <h1 id="page-title">Words worth keeping.</h1>
         <p className="hero-copy">A considered collection of memorable words, ideas, and voices.</p>
         <label className="search-box">
           <span className="sr-only">Search quotes, authors, and topics</span>
-          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search quotes, authors, topics…" />
+          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search quotes, authors, topics…" autoComplete="off" />
         </label>
       </section>
 
-      <section className="library" id="categories">
-        <div className="section-heading">Quote library</div>
-        <p className="library-meta">{filteredQuotes.length.toLocaleString()} quotes · {authors.length.toLocaleString()} authors</p>
+      <section className="library" id="main-content" aria-labelledby="library-title">
+        <div className="section-heading" id="library-title">Quote library</div>
+        <p className="library-meta" aria-live="polite">{filteredQuotes.length.toLocaleString()} quotes · {authors.length.toLocaleString()} authors</p>
 
         <div className="quote-grid">
           {filteredQuotes.slice(0, 12).map((item) => (
@@ -89,9 +90,9 @@ export default function Home() {
           ))}
         </div>
 
-        {filteredQuotes.length === 0 && <p className="hero-copy">No quotes match your search. Try another author, topic, or category.</p>}
+        {filteredQuotes.length === 0 && <p className="hero-copy" role="status">No quotes match your search. Try another author, topic, or category.</p>}
 
-        <div className="category-rail" aria-label="Quote categories">
+        <div className="category-rail" id="categories" aria-label="Quote categories">
           {categories.map((item) => item === "All" ? (
             <button key={item} type="button" onClick={() => setCategory(item)} aria-pressed={category === item}>{item}</button>
           ) : (
@@ -99,21 +100,28 @@ export default function Home() {
           ))}
         </div>
 
-        <section className="quote-of-the-day">
-          <p className="eyebrow">QUOTE OF THE DAY</p>
+        <section className="quote-of-the-day" aria-labelledby="daily-title">
+          <p className="eyebrow" id="daily-title">QUOTE OF THE DAY</p>
           <blockquote>{quotes[0]?.quote}</blockquote>
           <p className="quote-author">— {quotes[0]?.author}</p>
         </section>
 
-        <section className="author-index" id="authors">
-          <div className="section-heading">Explore by author</div>
+        <section className="author-index" id="authors" aria-labelledby="author-title">
+          <div className="section-heading" id="author-title">Explore by author</div>
           <div className="author-row">
             {authors.slice(0, 24).map((author) => <a href={`/authors/${slugify(author)}`} key={author}>{author}</a>)}
           </div>
         </section>
       </section>
 
-      <footer className="footer" id="about"><span>© 2026 Quote Archive</span></footer>
+      <footer className="footer" id="about">
+        <span>© 2026 Quote Archive</span>
+        <nav className="footer-links" aria-label="Legal and accessibility navigation">
+          <a href="/imprint">Imprint</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/accessibility">Accessibility</a>
+        </nav>
+      </footer>
     </main>
   );
 }
