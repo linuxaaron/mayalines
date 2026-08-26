@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CopyButton from "../../../components/CopyButton";
 import quotesData from "../../../data/quotes.json";
 
 export const dynamicParams = false;
@@ -27,7 +28,7 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
       <p className="eyebrow">{quote.category.toUpperCase()}</p>
       <blockquote>“{quote.quote}”</blockquote>
       <p className="quote-author">— {quote.author}</p>
-      <button className="copy-button" type="button" onClick={() => navigator.clipboard.writeText(`“${quote.quote}” — ${quote.author}`)}>COPY QUOTE</button>
+      <CopyButton quote={quote.quote} author={quote.author} />
       <p className="source-note">Source: {quote.sourceName}</p>
     </main>
   );
