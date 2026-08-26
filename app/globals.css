@@ -24,8 +24,12 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 .skip-link:focus { transform: translateY(0); }
 
 .site-shell { min-height: 100vh; }
-.header { width: min(1440px, 100%); height: 76px; margin: 0 auto; display: flex; align-items: center; gap: 32px; padding: 24px 72px; }
-.brand { font-weight: 700; letter-spacing: 0.08em; }
+.header { width: min(1440px, 100%); min-height: 96px; margin: 0 auto; display: flex; align-items: center; gap: 30px; padding: 18px 72px; }
+.brand { display: inline-flex; align-items: center; gap: 16px; flex: 0 0 auto; }
+.brand-mark { width: 58px; height: 58px; display: block; flex: 0 0 58px; }
+.brand-copy { display: flex; flex-direction: column; justify-content: center; }
+.brand-name { font-family: Georgia, "Times New Roman", serif; font-size: 31px; line-height: 1; letter-spacing: .14em; font-weight: 500; color: var(--quote-black); }
+.brand-tagline { margin-top: 8px; color: var(--foreground); font-size: 8px; line-height: 1; letter-spacing: .34em; white-space: nowrap; }
 .header-rule { height: 1px; flex: 1; background: var(--border); }
 .nav { display: flex; gap: 28px; color: var(--muted); font-size: 14px; }
 .nav a, .author-row a, .back-link { transition: color .15s ease; }
@@ -93,7 +97,9 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 }
 
 @media (max-width: 900px) {
-  .header { padding: 20px 24px; }
+  .header { padding: 18px 24px; gap: 20px; }
+  .brand-mark { width: 52px; height: 52px; flex-basis: 52px; }
+  .brand-name { font-size: 27px; }
   .nav { gap: 16px; font-size: 13px; }
   .hero { padding: 64px 24px; }
   .library { padding: 40px 24px 64px; }
@@ -101,9 +107,13 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid 
 }
 
 @media (max-width: 560px) {
+  .header { align-items: flex-start; flex-wrap: wrap; padding: 16px 18px; }
+  .brand { gap: 11px; }
+  .brand-mark { width: 44px; height: 44px; flex-basis: 44px; }
+  .brand-name { font-size: 23px; letter-spacing: .11em; }
+  .brand-tagline { margin-top: 6px; font-size: 6px; letter-spacing: .27em; }
   .header-rule { display: none; }
-  .header { flex-wrap: wrap; height: auto; }
-  .nav { width: 100%; justify-content: space-between; }
+  .nav { width: 100%; justify-content: space-between; padding-top: 4px; font-size: 12px; }
   .hero h1 { font-size: 46px; }
   .hero-copy { font-size: 18px; }
   .quote-card { min-height: 380px; padding: 28px 24px 24px; }
