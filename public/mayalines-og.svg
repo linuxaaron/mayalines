@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#d8d5cf"/>
+  <rect x="48" y="48" width="1104" height="534" rx="10" fill="#e7e4de" stroke="#bdb8af"/>
+  <path d="M82 492 C250 438 344 548 516 478 S812 420 1118 476" fill="none" stroke="#9a7a61" stroke-width="3" opacity=".65"/>
+  <path d="M82 526 C260 474 350 576 540 512 S840 454 1118 508" fill="none" stroke="#765843" stroke-width="1.5" opacity=".35"/>
+  <g fill="#765843" opacity=".7"><circle cx="104" cy="112" r="4"/><circle cx="132" cy="112" r="4"/><circle cx="160" cy="112" r="4"/></g>
+  <text x="88" y="188" fill="#765843" font-family="Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="5">MAYALINES</text>
+  <text x="88" y="280" fill="#171513" font-family="Georgia, serif" font-size="72" letter-spacing="-3">Famous Quotes</text>
+  <text x="92" y="330" fill="#5f5a53" font-family="Arial, sans-serif" font-size="22">Inspirational words · timeless wisdom · notable authors</text>
+  <g transform="translate(890 132) rotate(-12)">
+    <path d="M0 250 L160 20 Q174 1 191 15 L212 33 Q224 46 211 63 L44 270 Z" fill="#26211d"/>
+    <path d="M160 20 L190 -8 Q202 -19 216 -6 L233 10 Q245 22 233 36 L211 63 Z" fill="#765843"/>
+    <path d="M42 270 L14 302 L45 289 L67 263 Z" fill="#171513"/>
+  </g>
+</svg>
