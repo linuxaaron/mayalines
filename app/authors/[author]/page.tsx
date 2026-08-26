@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Breadcrumbs from "../../../components/Breadcrumbs";
+import StructuredData from "../../../components/StructuredData";
 import quotesData from "../../../data/quotes.json";
 
 export const dynamicParams = false;
@@ -26,10 +28,17 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
   const authorName = Array.from(new Set(quotesData.map((quote) => quote.author))).find((name) => slugify(name) === slug);
   if (!authorName) return null;
   const quotes = quotesData.filter((quote) => quote.author === authorName);
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://quotes-git-main-aaron-727f.vercel.app";
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: authorName,
+    subjectOf: { "@type": "WebPage", url: `${siteUrl}/authors/${slug}` },
+  };
 
   return (
     <main className="quote-detail">
-      <a className="back-link" href="/">← Quote Archive</a>
+      <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Authors", url: "/#authors" }, { name: authorName, url: `/authors/${slug}` }]} />
       <p className="eyebrow">AUTHOR</p>
       <h1>{authorName}</h1>
       <p className="hero-copy">A collection of {quotes.length} attributed quotes by {authorName}.</p>
@@ -43,6 +52,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
           </article>
         ))}
       </div>
+      <StructuredData data={personSchema} />
     </main>
   );
 }
