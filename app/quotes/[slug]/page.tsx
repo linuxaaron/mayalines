@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import CopyButton from "../../../components/CopyButton";
+import LikeButton from "../../../components/LikeButton";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import quotesData from "../../../data/quotes.json";
@@ -42,7 +43,10 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
       <p className="eyebrow">{quote.category.toUpperCase()}</p>
       <blockquote>“{quote.quote}”</blockquote>
       <p className="quote-author">— {quote.author}</p>
-      <CopyButton quote={quote.quote} author={quote.author} />
+      <div className="quote-detail-actions">
+        <LikeButton quoteId={quote.id} author={quote.author} />
+        <CopyButton quote={quote.quote} author={quote.author} />
+      </div>
       <p className="source-note">Source dataset: <a href={quote.source} rel="noreferrer">{quote.sourceName}</a></p>
       <p className="source-note">Attribution status: {quote.attributionStatus} · Publication status: {quote.copyrightStatus}</p>
       <p className="source-note">If you believe this quote is incorrectly attributed or should be removed, see <a href="/copyright">Copyright & quote corrections</a>.</p>
