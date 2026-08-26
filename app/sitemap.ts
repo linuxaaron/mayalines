@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import quotesData from "../data/quotes";
+import { quoteTopics } from "../lib/quote-topics";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 
@@ -11,26 +12,19 @@ function isIndexable(quote: (typeof quotesData)[number]) {
   return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared";
 }
 
-const collectionSlugs = [
-  "quotes-about-life",
-  "quotes-about-love",
-  "quotes-about-success",
-  "quotes-about-motivation",
-  "quotes-about-wisdom",
-  "short-inspirational-quotes",
-  "quotes-about-friendship",
-  "quotes-about-courage",
-  "quotes-about-happiness",
-  "quotes-about-hope",
-];
+const collectionSlugs = ["quotes-about-life","quotes-about-love","quotes-about-success","quotes-about-motivation","quotes-about-wisdom","short-inspirational-quotes","quotes-about-friendship","quotes-about-courage","quotes-about-happiness","quotes-about-hope"];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const indexableQuotes = quotesData.filter(isIndexable);
   const categories = [...new Set(indexableQuotes.map((quote) => quote.category))];
   const authors = [...new Set(indexableQuotes.map((quote) => quote.author))];
-
   return [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
+    { url: `${siteUrl}/popular`, changeFrequency: "daily", priority: 0.95 },
+    { url: `${siteUrl}/trending`, changeFrequency: "hourly", priority: 0.9 },
+    { url: `${siteUrl}/random`, changeFrequency: "daily", priority: 0.7 },
+    { url: `${siteUrl}/topics`, changeFrequency: "weekly", priority: 0.95 },
+    ...quoteTopics.map((topic) => ({ url: `${siteUrl}/topics/${topic.slug}`, changeFrequency: "weekly" as const, priority: 0.85 })),
     { url: `${siteUrl}/poems`, changeFrequency: "weekly", priority: 0.95 },
     { url: `${siteUrl}/collections`, changeFrequency: "weekly", priority: 0.95 },
     ...collectionSlugs.map((slug) => ({ url: `${siteUrl}/collections/${slug}`, changeFrequency: "weekly" as const, priority: 0.9 })),
