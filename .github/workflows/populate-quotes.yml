@@ -1,0 +1,45 @@
+name: Populate quote dataset
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/build-quotes.mjs'
+      - 'package.json'
+      - '.github/workflows/populate-quotes.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || !startsWith(github.event.head_commit.message, 'chore(data): refresh generated quotes')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Generate 2,000 quote records
+        run: node scripts/build-quotes.mjs
+
+      - name: Validate dataset
+        run: EXPECTED_QUOTES=2000 node scripts/audit-quotes.mjs
+
+      - name: Commit generated dataset
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/quotes.json
+          if git diff --cached --quiet; then
+            echo 'No dataset changes.'
+            exit 0
+          fi
+          git commit -m 'chore(data): refresh generated quotes'
+          git push
