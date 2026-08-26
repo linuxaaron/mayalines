@@ -2,29 +2,29 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import StructuredData from "../components/StructuredData";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://quotes-git-main-aaron-727f.vercel.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Quotes — Words Worth Keeping",
-    template: "%s | Quote Archive",
+    default: "Mayalines — Words Worth Keeping",
+    template: "%s | Mayalines",
   },
-  description: "A fast, readable and searchable collection of memorable quotes, authors and ideas.",
-  applicationName: "Quote Archive",
+  description: "Mayalines is a carefully curated collection of memorable quotes, authors and ideas — made to read, remember and share.",
+  applicationName: "Mayalines",
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     url: "/",
-    siteName: "Quote Archive",
-    title: "Quotes — Words Worth Keeping",
-    description: "A fast, readable and searchable collection of memorable quotes, authors and ideas.",
+    siteName: "Mayalines",
+    title: "Mayalines — Words Worth Keeping",
+    description: "A carefully curated collection of memorable quotes, authors and ideas.",
   },
   twitter: {
     card: "summary",
-    title: "Quotes — Words Worth Keeping",
-    description: "A fast, readable and searchable collection of memorable quotes, authors and ideas.",
+    title: "Mayalines — Words Worth Keeping",
+    description: "A carefully curated collection of memorable quotes, authors and ideas.",
   },
 };
 
@@ -39,9 +39,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Quote Archive",
+    name: "Mayalines",
     url: siteUrl,
-    description: "A fast, readable and searchable collection of memorable quotes, authors and ideas.",
+    description: "A carefully curated collection of memorable quotes, authors and ideas.",
   };
 
   return (
