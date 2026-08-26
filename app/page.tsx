@@ -84,9 +84,9 @@ export default function Home() {
       </header>
 
       <section className="hero" id="top" aria-labelledby="page-title">
-        <p className="eyebrow">MAYALINES</p>
-        <h1 id="page-title">Words worth keeping.</h1>
-        <p className="hero-copy">A considered collection of memorable words, ideas, and voices.</p>
+        <p className="eyebrow">MAYALINES · QUOTES &amp; IDEAS</p>
+        <h1 id="page-title">Quotes worth keeping.</h1>
+        <p className="hero-copy">Explore famous quotes, Nietzsche quotes, inspirational words, life quotes and ideas from notable voices. Read them, find your favorites, and copy them instantly.</p>
         <label className="search-box">
           <span className="sr-only">Search quotes, authors, and topics</span>
           <input type="search" value={query} onChange={(event) => handleSearch(event.target.value)} placeholder="Search quotes, authors, topics…" autoComplete="off" />
