@@ -6,6 +6,7 @@ export const runtime = "nodejs";
 
 const VOTER_COOKIE = "mayalines_voter";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 2;
+const TRENDING_KEY = "quotes:trending";
 
 function getRedis() {
   const url = process.env.UPSTASH_REDIS_REST_URL;
@@ -43,7 +44,6 @@ async function getLikeState(redis: Redis, id: string, voterId: string) {
     redis.sismember(voterKey, voterId),
   ]);
 
-  // Keep historical counters while the new voter set is populated.
   const likes = Math.max(0, Number(counter) || 0, Number(voterCount) || 0);
   return { likes, liked: Boolean(liked), voterKey, counterKey };
 }
@@ -57,9 +57,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
   const voterId = getOrCreateVoter(request);
   const { likes, liked } = await getLikeState(redis, id, voterId);
-  const response = NextResponse.json({ likes, liked, persistent: true }, {
-    headers: { "Cache-Control": "no-store" },
-  });
+  const response = NextResponse.json({ likes, liked, persistent: true }, { headers: { "Cache-Control": "no-store" } });
   setVoterCookie(response, voterId);
   return response;
 }
@@ -86,9 +84,12 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   const state = await getLikeState(redis, id, voterId);
 
   if (body.action === "like") {
-    // SADD is idempotent: repeated clicks from the same browser cannot inflate the count.
     const added = await redis.sadd(state.voterKey, voterId);
-    if (added === 1) await redis.incr(state.counterKey);
+    if (added === 1) {
+      const likes = await redis.incr(state.counterKey);
+      await redis.zadd(TRENDING_KEY, { score: Date.now(), member: id });
+      void likes;
+    }
   } else {
     const removed = await redis.srem(state.voterKey, voterId);
     if (removed === 1) {
@@ -98,11 +99,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   }
 
   const updated = await getLikeState(redis, id, voterId);
-  const response = NextResponse.json({
-    likes: updated.likes,
-    liked: updated.liked,
-    persistent: true,
-  }, { headers: { "Cache-Control": "no-store" } });
+  const response = NextResponse.json({ likes: updated.likes, liked: updated.liked, persistent: true }, { headers: { "Cache-Control": "no-store" } });
   setVoterCookie(response, voterId);
   return response;
 }
