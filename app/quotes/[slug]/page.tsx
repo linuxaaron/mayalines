@@ -74,7 +74,7 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
     <blockquote>“{quote.quote}”</blockquote>
     <p className="quote-author">— {quote.author}</p>
     <div className="quote-detail-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><CopyButton quote={quote.quote} author={quote.author} /></div>
-    <p className="source-note">Source: <a href={quote.source} rel="noreferrer">{quote.sourceName}</a></p>
+    <p className="source-note">Source: {quote.sourceName}</p>
     <p className="source-note">Attribution status: {quote.attributionStatus} · Publication status: {quote.copyrightStatus}</p>
     <p className="source-note">Explore more <a href={`/authors/${authorSlug}`}>quotes by {quote.author}</a> or browse <a href={`/categories/${categorySlug}`}>{quote.category.toLowerCase()} quotes</a>.</p>
     <p className="source-note">If you believe this quote is incorrectly attributed or should be removed, see <a href="/copyright">Copyright and quote corrections</a>.</p>
