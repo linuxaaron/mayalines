@@ -1,0 +1,34 @@
+import type { Metadata } from "next";
+import quotesData from "../../../data/quotes.json";
+
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return quotesData.map((quote) => ({ slug: quote.slug }));
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const quote = quotesData.find((item) => item.slug === slug);
+  return {
+    title: quote ? `${quote.author} — Quote` : "Quote",
+    description: quote?.quote,
+  };
+}
+
+export default async function QuotePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const quote = quotesData.find((item) => item.slug === slug);
+  if (!quote) return null;
+
+  return (
+    <main className="quote-detail">
+      <a className="back-link" href="/">← Quote Archive</a>
+      <p className="eyebrow">{quote.category.toUpperCase()}</p>
+      <blockquote>“{quote.quote}”</blockquote>
+      <p className="quote-author">— {quote.author}</p>
+      <button className="copy-button" type="button" onClick={() => navigator.clipboard.writeText(`“${quote.quote}” — ${quote.author}`)}>COPY QUOTE</button>
+      <p className="source-note">Source: {quote.sourceName}</p>
+    </main>
+  );
+}
