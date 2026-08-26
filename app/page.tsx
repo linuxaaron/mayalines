@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import quotesData from "../data/quotes";
 import PersistentLikeButton from "../components/PersistentLikeButton";
 import CommunitySections from "../components/CommunitySections";
+import MegaMenu from "../components/MegaMenu";
 import { quoteTopics } from "../lib/quote-topics";
 
 type Quote = (typeof quotesData)[number];
@@ -24,7 +25,7 @@ export default function Home() {
 
   return <main className="site-shell">
     <a className="skip-link" href="#main-content">Skip to content</a>
-    <header className="header"><a className="brand" href="#top" aria-label="Mayalines home"><img className="brand-mark" src="/mayalines-mark.svg" alt="" aria-hidden="true" /><span className="brand-copy"><span className="brand-name">MAYALINES</span><span className="brand-tagline">WORDS THAT LAST.</span></span></a><div className="header-rule" aria-hidden="true" /><nav className="nav" aria-label="Main navigation"><a href="#top">Home</a><a href="/popular">Popular</a><a href="/trending">Trending</a><a href="/topics">Topics</a><a href="/authors">Authors</a><a href="/collections">Collections</a><a href="/poems">Poems</a></nav></header>
+    <header className="header"><a className="brand" href="#top" aria-label="Mayalines home"><img className="brand-mark" src="/mayalines-mark.svg" alt="" aria-hidden="true" /><span className="brand-copy"><span className="brand-name">MAYALINES</span><span className="brand-tagline">WORDS THAT LAST.</span></span></a><div className="header-rule" aria-hidden="true" /><nav className="nav" aria-label="Main navigation"><a href="#top">Home</a><MegaMenu /></nav></header>
     <section className="hero" id="top" aria-labelledby="page-title"><p className="eyebrow">MAYALINES · FAMOUS &amp; INSPIRATIONAL QUOTES</p><h1 id="page-title">Famous Quotes, Inspirational Words &amp; Timeless Wisdom</h1><p className="hero-copy">Explore famous quotes, inspirational quotes, motivational quotes, life quotes and timeless wisdom from notable authors. Search by author, topic or category, then read and copy the quote instantly.</p><label className="search-box"><span className="sr-only">Search quotes, authors and topics</span><input type="search" value={query} onChange={(event) => handleSearch(event.target.value)} placeholder="Search quotes, authors or topics …" autoComplete="off" /></label></section>
     <CommunitySections />
     <section className="topic-strip" aria-labelledby="topic-strip-title"><div className="community-heading"><div><p className="eyebrow">EXPLORE BY TOPIC</p><h2 id="topic-strip-title">Find the right words.</h2></div><a href="/topics">All topics →</a></div><div className="topic-pills">{quoteTopics.map((topic) => <a href={`/topics/${topic.slug}`} key={topic.slug}>{topic.label}</a>)}</div></section>
