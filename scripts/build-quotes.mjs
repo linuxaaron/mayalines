@@ -1,5 +1,8 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
+// The source edition contains 3,000 quotations. Keep this importer strict: it
+// must never invent or pad records. A future multi-source importer can raise
+// this target after adding additional verified public-domain sources.
 const TARGET_COUNT = 3000;
 const SOURCE_URL = "https://en.wikisource.org/wiki/Three_Thousand_Selected_Quotations_from_Brilliant_Writers";
 const SOURCE_NAME = "Three Thousand Selected Quotations from Brilliant Writers — Wikisource";
@@ -25,7 +28,6 @@ const strip = (value) => cleanQuoteText(value.replace(/<[^>]+>/g, " "));
 const slugify = (value) => value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const titleCase = (value) => value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 
-// Keep the public taxonomy compact so near-duplicate category pages do not proliferate.
 const CATEGORY_ALIASES = new Map([
   ["Christian Life", "Faith"], ["Christianity", "Faith"], ["Christians", "Faith"], ["Christian Service", "Faith"],
   ["Christian Conflict", "Faith"], ["Church", "Faith"], ["Church Sanctuary", "Faith"], ["Denominationalism", "Faith"],
@@ -45,7 +47,7 @@ const seen = new Set();
 
 for (const letter of LETTERS) {
   const url = `${SOURCE_URL}/${letter}`;
-  const response = await fetch(url, { headers: { "User-Agent": "MayalinesQuoteBuilder/1.1 (+https://mayalines.com)" } });
+  const response = await fetch(url, { headers: { "User-Agent": "MayalinesQuoteBuilder/1.2 (+https://mayalines.com)" } });
   if (!response.ok) throw new Error(`Wikisource ${letter} request failed: ${response.status}`);
 
   const html = await response.text();
