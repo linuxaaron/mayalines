@@ -105,6 +105,27 @@
   box-shadow:0 0 0 3px rgba(60,60,58,.08);
 }
 
+.nav .nav-submit{
+  color:#30302e;
+  font-weight:700;
+}
+
+.nav .nav-submit::after{
+  content:"";
+  display:block;
+  height:1px;
+  margin-top:3px;
+  background:#8a8a86;
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .18s ease;
+}
+
+.nav .nav-submit:hover::after,
+.nav .nav-submit[aria-current="page"]::after{
+  transform:scaleX(1);
+}
+
 .submit-button{
   grid-column:2;
   justify-self:start;
@@ -133,7 +154,8 @@
   opacity:.55;
 }
 
-.submit-success{
+.submit-success,
+.submit-error{
   max-width:780px;
   margin-top:26px;
   padding:14px 16px;
@@ -179,5 +201,6 @@
   .submit-form input,
   .submit-form textarea,
   .submit-form select,
-  .submit-button{transition:none}
+  .submit-button,
+  .nav .nav-submit::after{transition:none}
 }
