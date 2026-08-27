@@ -1,19 +1,19 @@
 /* Editorial quote-list redesign inspired by classic quote directories. */
 .redesign-shell .library{width:min(1120px,100%);padding-left:0;padding-right:0}
 .redesign-shell .quote-grid{display:block;margin-top:0;border-top:1px solid #d7d3cc}
-.redesign-shell .quote-card{min-height:0;margin:0;padding:30px 12px 28px 18px;border:0;border-bottom:1px solid #d7d3cc;border-radius:0;background:transparent!important;box-shadow:none!important;display:block;position:relative;overflow:visible;transition:background .18s ease}
-.redesign-shell .quote-card:before{content:"";position:absolute;left:0;top:28px;bottom:28px;width:2px;background:#b2a79a;opacity:0;transition:opacity .18s ease}
+.redesign-shell .quote-card{min-height:0;margin:0;padding:24px 12px 22px 18px;border:0;border-bottom:1px solid #d7d3cc;border-radius:0;background:transparent!important;box-shadow:none!important;display:block;position:relative;overflow:visible;transition:background .18s ease}
+.redesign-shell .quote-card:before{content:"";position:absolute;left:0;top:22px;bottom:22px;width:2px;background:#b2a79a;opacity:0;transition:opacity .18s ease}
 .redesign-shell .quote-card:hover{transform:none;box-shadow:none;border-color:#d7d3cc;background:rgba(255,255,255,.42)!important}
 .redesign-shell .quote-card:hover:before{opacity:1}
 .redesign-shell .quote-mark{display:none}
-.redesign-shell .quote-text{max-width:920px;margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(19px,2vw,25px);line-height:1.42;letter-spacing:-.012em;color:#171513}
-.redesign-shell .quote-author{margin:12px 0 0;color:#4f4a44;font-size:12px;font-weight:600}
-.redesign-shell .quote-category{margin:7px 0 0;color:#887d72;font-size:9px;letter-spacing:.1em}
-.redesign-shell .quote-actions{margin-top:14px;padding-top:0;gap:10px}
-.redesign-shell .like-control{gap:7px}
-.redesign-shell .like-button{width:31px;height:31px}
-.redesign-shell .like-count{font-size:11px;color:#68625c}
-.redesign-shell .quote-action-suite .copy-button{padding:6px 9px;font-size:8px;background:transparent}
+.redesign-shell .quote-text{max-width:920px;margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(16px,1.55vw,20px);line-height:1.48;letter-spacing:-.008em;color:#171513}
+.redesign-shell .quote-author{margin:9px 0 0;color:#4f4a44;font-size:11px;font-weight:600}
+.redesign-shell .quote-category{margin:5px 0 0;color:#887d72;font-size:8px;letter-spacing:.1em}
+.redesign-shell .quote-actions{margin-top:11px;padding-top:0;gap:9px}
+.redesign-shell .like-control{gap:6px}
+.redesign-shell .like-button{width:29px;height:29px}
+.redesign-shell .like-count{font-size:10px;color:#68625c}
+.redesign-shell .quote-action-suite .copy-button{padding:5px 8px;font-size:8px;background:transparent}
 .redesign-shell .quote-action-suite .copy-button:hover{background:#5d554d}
 .redesign-shell .library .category-rail{margin-bottom:0}
 .redesign-shell .footer{background:#ebe9e5;color:#5f5a54;border-top:1px solid #d2cec7}
@@ -44,4 +44,4 @@
 .submit-page~.footer{background:#ebe9e5;color:#5f5a54;border-top:1px solid #d2cec7;padding:34px 0;text-align:center}
 
 @media(max-width:900px){.redesign-shell .library{padding-left:20px;padding-right:20px}.redesign-shell .quote-card{padding-left:16px}.submit-page{padding-top:52px}}
-@media(max-width:560px){.redesign-shell .library{padding-left:16px;padding-right:16px}.redesign-shell .quote-card{padding:24px 8px 24px 14px}.redesign-shell .quote-text{font-size:19px}.submit-page{width:calc(100% - 32px);padding:42px 0 64px}.submit-page h1{font-size:46px}.submit-form textarea{min-height:150px}}
+@media(max-width:560px){.redesign-shell .library{padding-left:16px;padding-right:16px}.redesign-shell .quote-card{padding:21px 8px 20px 14px}.redesign-shell .quote-text{font-size:16px}.submit-page{width:calc(100% - 32px);padding:42px 0 64px}.submit-page h1{font-size:46px}.submit-form textarea{min-height:150px}}
