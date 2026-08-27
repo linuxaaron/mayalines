@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./quote-overrides.css";
 import "./submit/submit-overrides.css";
+import "./admin/admin-overrides.css";
 import StructuredData from "../components/StructuredData";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
