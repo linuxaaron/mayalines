@@ -62,11 +62,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     inLanguage: "en-US",
     description: siteDescription,
     image: socialImage,
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${siteUrl}/?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
   };
 
   const organizationSchema = {
