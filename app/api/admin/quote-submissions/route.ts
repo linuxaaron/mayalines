@@ -35,9 +35,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid submission update" }, { status: 400 });
   }
 
+  const id = BigInt(rawId);
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Submission storage is not configured" }, { status: 503 });
 
-  await db`UPDATE quote_submissions SET status = ${status} WHERE id = ${rawId}`;
+  await db`UPDATE quote_submissions SET status = ${status} WHERE id = ${id}`;
   return NextResponse.json({ updated: true });
 }
