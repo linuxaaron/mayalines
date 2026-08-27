@@ -18,21 +18,76 @@ export const metadata: Metadata = {
   publisher: "Mayalines",
   category: "quotes",
   alternates: { canonical: "/" },
-  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 } },
-  openGraph: { type: "website", url: siteUrl, siteName: "Mayalines", locale: "en_US", title: siteTitle, description: siteDescription, images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — Famous Quotes and timeless wisdom" }] },
-  twitter: { card: "summary_large_image", title: siteTitle, description: siteDescription, images: [socialImage] },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: "Mayalines",
+    locale: "en_US",
+    title: siteTitle,
+    description: siteDescription,
+    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — Famous Quotes and timeless wisdom" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+    images: [socialImage],
+  },
 };
 
-export const viewport: Viewport = { width: "device-width", initialScale: 1, colorScheme: "light", themeColor: "#f4f3f0" };
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  colorScheme: "light",
+  themeColor: "#f4f3f0",
+};
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const websiteSchema = { "@context": "https://schema.org", "@type": "WebSite", name: "Mayalines", url: siteUrl, inLanguage: "en-US", description: siteDescription, image: socialImage };
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Mayalines",
+    url: siteUrl,
+    inLanguage: "en-US",
+    description: siteDescription,
+    image: socialImage,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Mayalines",
+    url: siteUrl,
+    logo: `${siteUrl}/mayalines-mark.svg`,
+  };
+
   return (
-    <html lang="en">
+    <html lang="en-US">
       <head>
+        <meta name="referrer" content="strict-origin-when-cross-origin" />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2162793628214003" crossOrigin="anonymous" />
       </head>
-      <body><StructuredData data={websiteSchema} />{children}</body>
+      <body>
+        <StructuredData data={websiteSchema} />
+        <StructuredData data={organizationSchema} />
+        {children}
+      </body>
     </html>
   );
 }
