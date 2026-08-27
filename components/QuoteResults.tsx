@@ -1,24 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import PersistentLikeButton from "./PersistentLikeButton";
+import QuoteActions from "./QuoteActions";
 import type { Quote } from "../data/quotes";
 
 type QuoteResult = Quote & { likes?: number; rank?: number };
 
 export default function QuoteResults({ quotes }: { quotes: QuoteResult[] }) {
-  const [copied, setCopied] = useState<string | null>(null);
-
-  async function copyQuote(quote: string, author: string) {
-    try {
-      await navigator.clipboard.writeText(`“${quote}” — ${author}`);
-      setCopied(quote);
-      window.setTimeout(() => setCopied(null), 1600);
-    } catch {
-      setCopied(null);
-    }
-  }
-
   return (
     <div className="quote-grid">
       {quotes.map((item) => (
@@ -31,9 +19,7 @@ export default function QuoteResults({ quotes }: { quotes: QuoteResult[] }) {
           <div className="quote-actions">
             <PersistentLikeButton quoteId={item.id} author={item.author} />
             {typeof item.likes === "number" && item.likes > 0 && <span className="rank-like-count">{item.likes.toLocaleString("en-US")} likes</span>}
-            <button className="copy-button" type="button" onClick={() => copyQuote(item.quote, item.author)} aria-label={`Copy quote by ${item.author}`}>
-              {copied === item.quote ? "COPIED" : "COPY"}
-            </button>
+            <QuoteActions quote={item.quote} author={item.author} quoteId={item.id} />
           </div>
         </article>
       ))}
