@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { randomUUID } from "node:crypto";
 
 export function getDb() {
   const url = process.env.DATABASE_URL;
@@ -9,8 +10,14 @@ export function isValidQuoteId(id: string) {
   return /^[a-zA-Z0-9_-]{1,128}$/.test(id);
 }
 
-export function getVisitorId(request: Request) {
+export function getOrCreateVisitorId(request: Request) {
   const cookieHeader = request.headers.get("cookie") ?? "";
   const match = cookieHeader.match(/(?:^|;\s*)mayalines_visitor=([^;]+)/);
-  return match?.[1] ?? null;
+  return match?.[1] ?? randomUUID();
+}
+
+export function setVisitorCookie(response: Response, visitorId: string) {
+  const headers = new Headers(response.headers);
+  headers.set("set-cookie", `mayalines_visitor=${encodeURIComponent(visitorId)}; Path=/; Max-Age=63072000; HttpOnly; Secure; SameSite=Lax`);
+  return headers;
 }
