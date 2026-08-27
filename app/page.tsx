@@ -30,9 +30,43 @@ export default function Home() {
   const featured = quotes.slice(0, 3);
   const daily = quotes[0];
 
-  return <main className="site-shell">
+  return <main className="site-shell redesign-shell">
+    <style>{`
+      .redesign-shell{--background:#f4f3f0;--surface:#fbfaf8;--surface-strong:#fff;--foreground:#191817;--quote-black:#151413;--muted:#6d6963;--border:#d9d6d0;--brown:#5d554d;--brown-soft:#81786f;--brown-wash:#e9e5df}
+      .redesign-shell .header{min-height:82px;padding:14px 48px;border-bottom:1px solid var(--border);background:rgba(244,243,240,.88);backdrop-filter:blur(16px)}
+      .redesign-shell .header-rule{background:#d2cec7}
+      .redesign-shell .brand:hover .brand-name{color:#5d554d}
+      .redesign-shell .hero{padding-top:72px;padding-bottom:52px}
+      .redesign-shell .hero h1{max-width:900px}
+      .redesign-shell .feature-card,.redesign-shell .quote-card,.redesign-shell .discovery-card{background:rgba(255,255,255,.72);border-color:#d7d3cc}
+      .redesign-shell .feature-card{transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+      .redesign-shell .feature-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(30,27,24,.06);border-color:#c8c2ba}
+      .redesign-shell .quote-card{position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+      .redesign-shell .quote-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#a69b90;opacity:.7}
+      .redesign-shell .quote-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(30,27,24,.07);border-color:#c8c2ba}
+      .redesign-shell .quote-mark{color:#85786c}
+      .redesign-shell .quote-category{color:#85786c}
+      .redesign-shell .topic-strip{background-color:#eeece8;background-image:radial-gradient(circle at 1px 1px,rgba(93,85,77,.08) 1px,transparent 1.5px)}
+      .redesign-shell .topic-strip>*{background:transparent}
+      .redesign-shell .discovery-grid{padding-top:34px;padding-bottom:76px}
+      .redesign-shell .discovery-card-feature{background:#e7e2dc}
+      .redesign-shell .quote-of-the-day{margin:0 auto 54px;width:min(1296px,84%);padding:52px 58px;background:#e6e2dc;border:1px solid #d2cdc5;border-radius:10px}
+      .redesign-shell .quote-of-the-day blockquote{max-width:980px}
+      .redesign-shell .seo-intro{width:min(1296px,84%);margin:0 auto;padding:20px 0 68px}
+      .redesign-shell .seo-intro .section-heading{font-family:Georgia,"Times New Roman",serif;font-size:31px;font-weight:500}
+      .redesign-shell .footer{margin-top:0;padding:0;background:#1e1d1b;color:#d9d5cf;border-top:1px solid #34312e}
+      .redesign-shell .footer-inner{width:min(1296px,84%);margin:0 auto;padding:42px 0 26px;display:grid;grid-template-columns:1.4fr 2fr;gap:50px;align-items:start}
+      .redesign-shell .footer-brand{font-family:Georgia,"Times New Roman",serif;font-size:22px;letter-spacing:.08em;color:#f2efea}
+      .redesign-shell .footer-note{max-width:360px;margin:10px 0 0;color:#a9a39b;font-size:11px;line-height:1.55}
+      .redesign-shell .footer-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 22px;margin:0}
+      .redesign-shell .footer-links a{color:#c5c0b9;text-decoration:none;font-size:10px;letter-spacing:.05em}
+      .redesign-shell .footer-links a:hover{color:#fff}
+      .redesign-shell .footer-bottom{width:min(1296px,84%);margin:0 auto;padding:16px 0 20px;border-top:1px solid #34312e;color:#858078;font-size:9px;letter-spacing:.05em}
+      @media(max-width:900px){.redesign-shell .header{padding:12px 20px}.redesign-shell .quote-of-the-day,.redesign-shell .seo-intro{width:auto;margin-left:20px;margin-right:20px}.redesign-shell .quote-of-the-day{padding:36px 28px}.redesign-shell .footer-inner{width:auto;margin:0 20px;grid-template-columns:1fr;gap:28px}.redesign-shell .footer-links{grid-template-columns:repeat(2,minmax(0,1fr))}.redesign-shell .footer-bottom{width:auto;margin:0 20px}}
+      @media(max-width:560px){.redesign-shell .hero{padding-top:46px}.redesign-shell .quote-of-the-day{margin-left:16px;margin-right:16px;padding:30px 22px}.redesign-shell .seo-intro{margin-left:16px;margin-right:16px}.redesign-shell .footer-inner{margin:0 16px}.redesign-shell .footer-bottom{margin:0 16px}}
+    `}</style>
     <a className="skip-link" href="#main-content">Skip to content</a>
-    <header className="header"><a className="brand" href="#top" aria-label="Mayalines home"><img className="brand-mark" src="/mayalines-mark.svg" alt="" aria-hidden="true" /><span className="brand-copy"><span className="brand-name">MAYALINES</span><span className="brand-tagline">WORDS THAT LAST.</span></span></a><div className="header-rule" aria-hidden="true" /><nav className="nav" aria-label="Main navigation"><a href="#top">Home</a><MegaMenu /></nav></header>
+    <header className="header"><a className="brand" href="#top" aria-label="Mayalines home"><img className="brand-mark" src="/mayalines-mark.svg" alt="" aria-hidden="true" /><span className="brand-copy"><span className="brand-name">MAYALINES</span><span className="brand-tagline">WORDS THAT LAST.</span></span></a><div className="header-rule" aria-hidden="true" /><nav className="nav" aria-label="Main navigation"><MegaMenu /></nav></header>
 
     <section className="hero" id="top" aria-labelledby="page-title"><p className="eyebrow">MAYALINES · FAMOUS &amp; INSPIRATIONAL QUOTES</p><h1 id="page-title">Famous Quotes, Inspirational Words &amp; Timeless Wisdom</h1><p className="hero-copy">Discover memorable words by author, topic and occasion. Copy a quote for your status, share it with someone, or stay awhile and find something unexpected.</p><label className="search-box"><span className="sr-only">Search quotes, authors and topics</span><input type="search" value={query} onChange={(event) => handleSearch(event.target.value)} placeholder="Search quotes, authors or topics …" autoComplete="off" /></label><div className="hero-links"><a href="/random">✦ Surprise me</a><a href="/popular">Most liked</a><a href="/trending">Trending now</a><a href="/collections/short-inspirational-quotes">Short quotes</a></div></section>
 
@@ -53,6 +87,6 @@ export default function Home() {
 
     <section className="seo-intro" aria-labelledby="explore-title"><div className="section-heading" id="explore-title">Explore Famous Quotes by Topic</div><p className="hero-copy">Find quotes about love, life, success, motivation, wisdom, courage, happiness, friendship, freedom, philosophy, science, education and more. Browse by topic, author or collection to keep discovering new words.</p><div className="author-row">{authors.slice(0, 24).map((author) => <a href={`/authors/${slugify(author)}`} key={author}>{author}</a>)}</div></section>
 
-    <footer className="footer" id="about"><span>© 2026 Mayalines</span><nav className="footer-links" aria-label="Legal and accessibility navigation"><a href="/submit">Submit a quote</a><a href="/poems">Poems</a><a href="/imprint">Imprint</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/copyright">Copyright</a><a href="/accessibility">Accessibility</a></nav></footer>
+    <footer className="footer" id="about"><div className="footer-inner"><div><div className="footer-brand">MAYALINES</div><p className="footer-note">Timeless words, carefully collected. Discover quotes, authors, poems and ideas worth keeping.</p></div><nav className="footer-links" aria-label="Legal and accessibility navigation"><a href="/submit">Submit a quote</a><a href="/poems">Poems</a><a href="/imprint">Imprint</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/copyright">Copyright</a><a href="/accessibility">Accessibility</a></nav></div><div className="footer-bottom">© 2026 Mayalines · Words that last.</div></footer>
   </main>;
 }
