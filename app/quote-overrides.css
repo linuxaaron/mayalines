@@ -1,0 +1,47 @@
+/* Editorial quote-list redesign inspired by classic quote directories. */
+.redesign-shell .library{width:min(1120px,100%);padding-left:0;padding-right:0}
+.redesign-shell .quote-grid{display:block;margin-top:0;border-top:1px solid #d7d3cc}
+.redesign-shell .quote-card{min-height:0;margin:0;padding:30px 12px 28px 18px;border:0;border-bottom:1px solid #d7d3cc;border-radius:0;background:transparent!important;box-shadow:none!important;display:block;position:relative;overflow:visible;transition:background .18s ease}
+.redesign-shell .quote-card:before{content:"";position:absolute;left:0;top:28px;bottom:28px;width:2px;background:#b2a79a;opacity:0;transition:opacity .18s ease}
+.redesign-shell .quote-card:hover{transform:none;box-shadow:none;border-color:#d7d3cc;background:rgba(255,255,255,.42)!important}
+.redesign-shell .quote-card:hover:before{opacity:1}
+.redesign-shell .quote-mark{display:none}
+.redesign-shell .quote-text{max-width:920px;margin:0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(19px,2vw,25px);line-height:1.42;letter-spacing:-.012em;color:#171513}
+.redesign-shell .quote-author{margin:12px 0 0;color:#4f4a44;font-size:12px;font-weight:600}
+.redesign-shell .quote-category{margin:7px 0 0;color:#887d72;font-size:9px;letter-spacing:.1em}
+.redesign-shell .quote-actions{margin-top:14px;padding-top:0;gap:10px}
+.redesign-shell .like-control{gap:7px}
+.redesign-shell .like-button{width:31px;height:31px}
+.redesign-shell .like-count{font-size:11px;color:#68625c}
+.redesign-shell .quote-action-suite .copy-button{padding:6px 9px;font-size:8px;background:transparent}
+.redesign-shell .quote-action-suite .copy-button:hover{background:#5d554d}
+.redesign-shell .library .category-rail{margin-bottom:0}
+.redesign-shell .footer{background:#ebe9e5;color:#5f5a54;border-top:1px solid #d2cec7}
+.redesign-shell .footer-inner{padding:46px 0 30px}
+.redesign-shell .footer-brand{color:#292724}
+.redesign-shell .footer-note{color:#77716a}
+.redesign-shell .footer-links a{color:#625d57}
+.redesign-shell .footer-links a:hover{color:#292724}
+.redesign-shell .footer-bottom{border-top-color:#d2cec7;color:#8b857e}
+
+/* Submit page: calm editorial form rather than a generic stacked form. */
+.submit-page{width:min(900px,calc(100% - 40px));margin:0 auto;padding:76px 0 90px}
+.submit-page .eyebrow{display:inline-flex;align-items:center;gap:9px;color:#81786f;font-size:9px;font-weight:800;letter-spacing:.14em}
+.submit-page h1{max-width:760px;margin:12px 0 0;font-family:Georgia,"Times New Roman",serif;font-size:clamp(44px,6vw,72px);line-height:.98;letter-spacing:-.045em;font-weight:500;color:#191817}
+.submit-page .hero-copy{max-width:650px;margin:20px 0 42px;color:#625d57;font-size:15px;line-height:1.65}
+.submit-form{max-width:720px;padding-top:8px;border-top:1px solid #d7d3cc}
+.submit-form label{display:block;padding:24px 0;border-bottom:1px solid #d7d3cc;color:#3f3b36;font-size:11px;font-weight:750;letter-spacing:.06em;text-transform:uppercase}
+.submit-form label span{color:#948d85;font-weight:500;text-transform:none;letter-spacing:0}
+.submit-form input,.submit-form textarea,.submit-form select{display:block;width:100%;margin-top:10px;border:1px solid #d2cec7;border-radius:5px;background:#fff;color:#1d1b19;padding:13px 14px;font-size:15px;line-height:1.45;outline:none;text-transform:none;letter-spacing:0}
+.submit-form textarea{min-height:180px;resize:vertical;font-family:Georgia,"Times New Roman",serif;font-size:19px}
+.submit-form input:focus,.submit-form textarea:focus,.submit-form select:focus{border-color:#8e8174;box-shadow:0 0 0 3px rgba(118,88,67,.1)}
+.submit-form input::placeholder,.submit-form textarea::placeholder{color:#a39d96}
+.submit-button{margin-top:28px;padding:13px 19px;border:1px solid #5d554d;border-radius:5px;background:#5d554d;color:#fff;font-size:10px;font-weight:800;letter-spacing:.1em}
+.submit-button:hover{background:#403a35;border-color:#403a35}
+.submit-button:disabled{opacity:.55;cursor:wait}
+.submit-success{margin:0 0 24px;padding:16px 18px;border-left:3px solid #81786f;background:#ebe7e1;color:#4e4943;font-size:13px;line-height:1.5}
+.submit-page+.footer{margin-top:0}
+.submit-page~.footer{background:#ebe9e5;color:#5f5a54;border-top:1px solid #d2cec7;padding:34px 0;text-align:center}
+
+@media(max-width:900px){.redesign-shell .library{padding-left:20px;padding-right:20px}.redesign-shell .quote-card{padding-left:16px}.submit-page{padding-top:52px}}
+@media(max-width:560px){.redesign-shell .library{padding-left:16px;padding-right:16px}.redesign-shell .quote-card{padding:24px 8px 24px 14px}.redesign-shell .quote-text{font-size:19px}.submit-page{width:calc(100% - 32px);padding:42px 0 64px}.submit-page h1{font-size:46px}.submit-form textarea{min-height:150px}}
