@@ -6,7 +6,12 @@ import type { Quote } from "../data/quotes";
 
 type QuoteResult = Quote & { likes?: number; rank?: number };
 
-export default function QuoteResults({ quotes }: { quotes: QuoteResult[] }) {
+type Props = {
+  quotes: QuoteResult[];
+  metricLabel?: string;
+};
+
+export default function QuoteResults({ quotes, metricLabel = "likes" }: Props) {
   return (
     <div className="quote-grid">
       {quotes.map((item) => (
@@ -18,7 +23,7 @@ export default function QuoteResults({ quotes }: { quotes: QuoteResult[] }) {
           <p className="quote-category">{item.category}</p>
           <div className="quote-actions">
             <PersistentLikeButton quoteId={item.id} author={item.author} />
-            {typeof item.likes === "number" && item.likes > 0 && <span className="rank-like-count">{item.likes.toLocaleString("en-US")} likes</span>}
+            {typeof item.likes === "number" && item.likes > 0 && <span className="rank-like-count">{item.likes.toLocaleString("en-US")} {metricLabel}</span>}
             <QuoteActions quote={item.quote} author={item.author} quoteId={item.id} />
           </div>
         </article>
