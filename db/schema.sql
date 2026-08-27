@@ -37,6 +37,7 @@ CREATE TABLE IF NOT EXISTS quote_submissions (
   quote TEXT NOT NULL CHECK (char_length(quote) BETWEEN 3 AND 2000),
   author TEXT NOT NULL CHECK (char_length(author) BETWEEN 1 AND 300),
   source TEXT CHECK (source IS NULL OR char_length(source) <= 500),
+  category TEXT NOT NULL CHECK (char_length(category) BETWEEN 1 AND 80),
   submitter_name TEXT CHECK (submitter_name IS NULL OR char_length(submitter_name) <= 200),
   status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','approved','rejected')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
