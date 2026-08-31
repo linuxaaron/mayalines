@@ -1,6 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+type EngagementStats = {
+  likes?: number;
+  copies?: number;
+  shares?: number;
+  persistent?: boolean;
+};
 
 export default function QuoteActions({ quote, author, quoteId }: { quote: string; author: string; quoteId?: string }) {
   const [copied, setCopied] = useState(false);
@@ -10,6 +17,28 @@ export default function QuoteActions({ quote, author, quoteId }: { quote: string
 
   const text = `“${quote}” — ${author}`;
   const pageUrl = typeof window === "undefined" ? "https://mayalines.com" : window.location.href;
+
+  useEffect(() => {
+    if (!quoteId) return;
+    let cancelled = false;
+
+    fetch(`/api/quotes/${encodeURIComponent(quoteId)}/stats`, {
+      cache: "no-store",
+      credentials: "same-origin",
+    })
+      .then((response) => (response.ok ? response.json() as Promise<EngagementStats> : null))
+      .then((data) => {
+        if (cancelled || !data || data.persistent === false) return;
+        setCopies(Math.max(0, Number(data.copies) || 0));
+        setShares(Math.max(0, Number(data.shares) || 0));
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [quoteId]);
+
   const record = async (kind: "copy" | "share", channel = "native") => {
     if (!quoteId) return;
     try {
@@ -64,7 +93,9 @@ export default function QuoteActions({ quote, author, quoteId }: { quote: string
       <button className="copy-button" type="button" onClick={() => copy(`${text}\n\n${pageUrl}`)}>COPY WITH LINK</button>
       <button className="copy-button" type="button" onClick={whatsapp}>WHATSAPP</button>
       <button className="copy-button" type="button" onClick={share}>{shared ? "SHARED" : "SHARE"}</button>
-      {quoteId && (copies > 0 || shares > 0) && <span className="engagement-counts" aria-label="Quote engagement">{copies > 0 ? `${copies.toLocaleString("en-US")} copies` : ""}{copies > 0 && shares > 0 ? " · " : ""}{shares > 0 ? `${shares.toLocaleString("en-US")} shares` : ""}</span>}
+      {quoteId && <span className="engagement-counts" aria-label="Quote engagement">
+        {copies.toLocaleString("de-DE")} Kopien · {shares.toLocaleString("de-DE")} Shares
+      </span>}
     </div>
   );
 }
