@@ -13,6 +13,23 @@ function clean(value: unknown, max: number) {
   return typeof value === "string" ? value.trim().slice(0, max) : "";
 }
 
+export async function GET() {
+  const db = getDb();
+  if (!db) return NextResponse.json({ submissions: [] });
+
+  const submissions = await db`
+    SELECT id, quote, author, source, category, created_at
+    FROM quote_submissions
+    WHERE status = 'approved'
+    ORDER BY created_at DESC
+    LIMIT 120
+  `;
+
+  return NextResponse.json({ submissions }, {
+    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+  });
+}
+
 export async function POST(request: Request) {
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
