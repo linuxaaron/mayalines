@@ -1,10 +1,12 @@
 import quotesJson from "./quotes.json";
 import nietzscheQuotes from "./quotes.pending.json";
+import importedQuotes from "./quotes.imported.json";
 
 type BaseQuote = (typeof quotesJson)[number];
 type NietzscheQuote = (typeof nietzscheQuotes)[number];
+type ImportedQuote = (typeof importedQuotes)[number];
 
-export type Quote = (BaseQuote | NietzscheQuote) & {
+export type Quote = (BaseQuote | NietzscheQuote | ImportedQuote) & {
   indexable: boolean;
 };
 
@@ -21,7 +23,7 @@ export function cleanQuoteText(value: string): string {
     .trim();
 }
 
-const allQuotes = [...quotesJson, ...nietzscheQuotes];
+const allQuotes = [...quotesJson, ...nietzscheQuotes, ...importedQuotes];
 
 export const quotes: Quote[] = allQuotes.map((quote) => ({
   ...quote,
