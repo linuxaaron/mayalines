@@ -18,10 +18,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const indexableQuotes = quotesData.filter(isIndexable);
   const categories = [...new Set(indexableQuotes.map((quote) => quote.category))];
   const authors = [...new Set(indexableQuotes.map((quote) => quote.author))];
+
   return [
     { url: siteUrl, changeFrequency: "weekly", priority: 1 },
     { url: `${siteUrl}/popular`, changeFrequency: "daily", priority: 0.95 },
     { url: `${siteUrl}/trending`, changeFrequency: "hourly", priority: 0.9 },
+    { url: `${siteUrl}/most-copied`, changeFrequency: "daily", priority: 0.85 },
     { url: `${siteUrl}/random`, changeFrequency: "daily", priority: 0.7 },
     { url: `${siteUrl}/topics`, changeFrequency: "weekly", priority: 0.95 },
     ...quoteTopics.map((topic) => ({ url: `${siteUrl}/topics/${topic.slug}`, changeFrequency: "weekly" as const, priority: 0.85 })),
@@ -30,6 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...collectionSlugs.map((slug) => ({ url: `${siteUrl}/collections/${slug}`, changeFrequency: "weekly" as const, priority: 0.9 })),
     { url: `${siteUrl}/categories`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/authors`, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${siteUrl}/submit`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${siteUrl}/imprint`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/privacy`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${siteUrl}/terms`, changeFrequency: "yearly", priority: 0.2 },
