@@ -16,28 +16,37 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
   const [persistent, setPersistent] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
     let cancelled = false;
+
     fetch(`/api/quotes/${encodeURIComponent(quoteId)}/like`, {
       cache: "no-store",
       credentials: "same-origin",
+      signal: controller.signal,
     })
-      .then((response) => (response.ok ? response.json() as Promise<LikeResponse> : null))
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Like status request failed");
+        return response.json() as Promise<LikeResponse>;
+      })
       .then((data) => {
-        if (cancelled || !data) return;
+        if (cancelled) return;
         setLikes(Math.max(0, Number(data.likes) || 0));
         setLiked(Boolean(data.liked));
         setPersistent(data.persistent !== false);
         setReady(true);
       })
-      .catch(() => {
-        if (!cancelled) {
-          setPersistent(false);
-          setReady(true);
-        }
+      .catch((error: unknown) => {
+        if (cancelled || (error instanceof DOMException && error.name === "AbortError")) return;
+
+        // A failed read must not permanently disable the heart. The POST endpoint
+        // is still authoritative and can recover from transient GET failures.
+        setReady(true);
+        setPersistent(true);
       });
 
     return () => {
       cancelled = true;
+      controller.abort();
     };
   }, [quoteId]);
 
