@@ -50,6 +50,7 @@ body{background:#f5f5f3;color:#181818}
 .redesign-shell .like-count{font-size:10px;color:#666664}
 .redesign-shell .quote-action-suite .copy-button{padding:5px 8px;font-size:8px;background:transparent;color:#4d4d4b;border-color:#d0d0cd}
 .redesign-shell .quote-action-suite .copy-button:hover{background:#444442;color:#fff;border-color:#444442}
+.redesign-shell .engagement-counts{display:inline-flex;align-items:center;white-space:nowrap;color:#777773;font-size:9px;line-height:1;border-left:1px solid #d8d8d5;padding-left:9px}
 .redesign-shell .library .category-rail{margin-bottom:0}
 .category-rail{border-bottom-color:#dcdcd9}
 .category-rail button,.category-rail a{color:#70706d}
@@ -149,6 +150,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   .redesign-shell .quote-actions{margin-top:9px}
   .redesign-shell .like-button{width:28px;height:28px}
   .redesign-shell .quote-action-suite .copy-button{min-height:28px}
+  .redesign-shell .engagement-counts{font-size:8px;padding-left:7px}
 
   .quote-of-the-day{padding:22px 18px}
   .quote-of-the-day blockquote{font-size:26px;line-height:1.12}
