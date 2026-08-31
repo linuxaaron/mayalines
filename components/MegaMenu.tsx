@@ -13,38 +13,16 @@ export default function MegaMenu() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function cancelClose() {
-    if (closeTimer.current) {
-      clearTimeout(closeTimer.current);
-      closeTimer.current = null;
-    }
-  }
-
-  function keepMenuOpen(name?: string) {
-    cancelClose();
-    if (name) setOpen(name);
-  }
-
-  function scheduleClose() {
-    cancelClose();
-    closeTimer.current = setTimeout(() => {
-      setOpen(null);
-      closeTimer.current = null;
-    }, MENU_CLOSE_DELAY);
-  }
-
-  function closeMenu() {
-    cancelClose();
-    setOpen(null);
-    setMobileOpen(false);
-  }
-
+  function cancelClose() { if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null; } }
+  function keepMenuOpen(name?: string) { cancelClose(); if (name) setOpen(name); }
+  function scheduleClose() { cancelClose(); closeTimer.current = setTimeout(() => { setOpen(null); closeTimer.current = null; }, MENU_CLOSE_DELAY); }
+  function closeMenu() { cancelClose(); setOpen(null); setMobileOpen(false); }
   useEffect(() => () => cancelClose(), []);
 
   const trigger = (name: string, label: string) => <button className="mega-trigger" type="button" aria-expanded={open === name} onMouseEnter={() => keepMenuOpen(name)} onFocus={() => keepMenuOpen(name)} onMouseLeave={scheduleClose} onBlur={scheduleClose} onClick={() => { cancelClose(); setOpen(open === name ? null : name); }}>{label} <span className="mega-chevron" aria-hidden="true">⌄</span></button>;
 
   return <>
-    <style>{`.mega-desktop{display:flex;align-items:center;gap:19px;position:relative}.mega-trigger{display:inline-flex;align-items:center;gap:5px;color:var(--muted);font-size:12px;font-weight:600;padding:8px 0}.mega-trigger:hover,.mega-trigger[aria-expanded="true"]{color:var(--brown)}.mega-submit{position:relative;color:var(--foreground);font-weight:700;padding:8px 0}.mega-submit:after{content:"";position:absolute;left:0;right:0;bottom:4px;height:1px;background:var(--brown);transform:scaleX(0);transform-origin:left;transition:transform .18s ease}.mega-submit:hover:after,.mega-submit[aria-current="page"]:after{transform:scaleX(1)}.mega-chevron{font-size:9px;transition:transform .22s cubic-bezier(.2,.8,.2,1)}.mega-trigger[aria-expanded="true"] .mega-chevron{transform:rotate(180deg)}.mega-panel{position:absolute;z-index:80;top:76px;left:50%;right:auto;width:min(1180px,calc(100% - 56px));transform:translateX(-50%);padding:0 26px 26px;background:rgba(251,250,248,.97);border:1px solid #d7d3cc;border-top:0;border-radius:0 0 12px 12px;box-shadow:0 22px 55px rgba(23,21,19,.12);backdrop-filter:blur(18px);animation:mega-in .24s cubic-bezier(.2,.8,.2,1)}.mega-inner{padding:26px 0 0;display:grid;grid-template-columns:1.15fr 1.15fr 1fr 1fr;gap:30px}.mega-column{min-width:0}.mega-label{margin:0 0 13px;color:var(--brown);font-size:9px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.mega-links{display:grid;gap:7px}.mega-links a{font-family:Georgia,"Times New Roman",serif;font-size:16px;line-height:1.2;color:var(--foreground);transition:color .18s ease,transform .18s ease}.mega-links a:hover{color:var(--brown);transform:translateX(4px)}.mega-feature{padding:17px 18px;background:#e9e5df;border:1px solid #d5d0c8;border-radius:8px;align-self:start}.mega-feature p{margin:0 0 10px;color:var(--muted);font-size:10px;line-height:1.55}.mega-feature a{color:var(--brown);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.mega-mobile-button{display:none;color:var(--muted);font-size:11px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;padding:8px 0}.mega-mobile{display:none}@keyframes mega-in{from{opacity:0;transform:translate(-50%,-10px) scale(.985)}to{opacity:1;transform:translate(-50%,0) scale(1)}}@media(max-width:900px){.mega-desktop{display:none}.mega-mobile-button{display:inline-flex}.mega-panel{position:fixed;top:0;left:0;right:0;bottom:0;width:auto;transform:none;overflow:auto;padding:88px 22px 28px;background:rgba(251,250,248,.98);border:0;border-radius:0;animation:mega-mobile-in .22s ease-out}.mega-inner{grid-template-columns:1fr 1fr;gap:28px 20px;padding:0}.mega-mobile{display:block}.mega-close{position:absolute;top:24px;right:22px;padding:10px 0;color:var(--brown);font-size:11px;font-weight:800;letter-spacing:.08em}.mega-panel .mega-label{margin-bottom:10px}.mega-links a{font-size:17px}}@media(max-width:560px){.mega-inner{grid-template-columns:1fr;gap:24px}.mega-panel{padding-left:18px;padding-right:18px}.mega-links{grid-template-columns:1fr 1fr;column-gap:18px}.mega-links a{font-size:16px}}@keyframes mega-mobile-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}`}</style>
+    <style>{`.mega-desktop{display:flex;align-items:center;gap:19px;position:relative}.mega-trigger{display:inline-flex;align-items:center;gap:5px;color:var(--muted);font-size:12px;font-weight:600;padding:8px 0}.mega-trigger:hover,.mega-trigger[aria-expanded="true"]{color:#1f4d3a}.mega-submit{position:relative;color:var(--foreground);font-weight:700;padding:8px 0}.mega-submit:after{content:"";position:absolute;left:0;right:0;bottom:4px;height:1px;background:#1f4d3a;transform:scaleX(0);transform-origin:left;transition:transform .18s ease}.mega-submit:hover:after,.mega-submit[aria-current="page"]:after{transform:scaleX(1)}.mega-chevron{font-size:9px;transition:transform .22s cubic-bezier(.2,.8,.2,1)}.mega-trigger[aria-expanded="true"] .mega-chevron{transform:rotate(180deg)}.mega-panel{position:absolute;z-index:80;top:76px;left:50%;right:auto;width:min(1180px,calc(100% - 56px));transform:translateX(-50%);padding:0 26px 22px;background:rgba(251,250,248,.98);border:1px solid #d7d3cc;border-top:0;border-radius:0 0 12px 12px;box-shadow:0 22px 55px rgba(23,21,19,.12);backdrop-filter:blur(18px);animation:mega-in .24s cubic-bezier(.2,.8,.2,1)}.mega-inner{padding:22px 0 0;display:grid;grid-template-columns:1.15fr 1.15fr 1fr 1fr;gap:26px}.mega-column{min-width:0}.mega-label{margin:0 0 10px;color:#1f4d3a;font-size:8px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}.mega-links{display:grid;gap:5px}.mega-links a{font-family:Georgia,"Times New Roman",serif;font-size:14px;line-height:1.15;color:#1f4d3a;transition:color .18s ease,transform .18s ease}.mega-links a:hover{color:#163a2c;transform:translateX(3px)}.mega-feature{padding:14px 16px;background:#e9e5df;border:1px solid #d5d0c8;border-radius:8px;align-self:start}.mega-feature p{margin:0 0 8px;color:var(--muted);font-size:9px;line-height:1.45}.mega-feature a{color:#1f4d3a;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.mega-mobile-button{display:none;color:var(--muted);font-size:11px;font-weight:750;letter-spacing:.06em;text-transform:uppercase;padding:8px 0}.mega-mobile{display:none}@keyframes mega-in{from{opacity:0;transform:translate(-50%,-10px) scale(.985)}to{opacity:1;transform:translate(-50%,0) scale(1)}}@media(max-width:900px){.mega-desktop{display:none}.mega-mobile-button{display:inline-flex}.mega-panel{position:fixed;top:0;left:0;right:0;bottom:0;width:auto;transform:none;overflow:auto;padding:88px 22px 28px;background:rgba(251,250,248,.98);border:0;border-radius:0;animation:mega-mobile-in .22s ease-out}.mega-inner{grid-template-columns:1fr 1fr;gap:28px 20px;padding:0}.mega-mobile{display:block}.mega-close{position:absolute;top:24px;right:22px;padding:10px 0;color:#1f4d3a;font-size:11px;font-weight:800;letter-spacing:.08em}.mega-panel .mega-label{margin-bottom:10px}.mega-links a{font-size:17px}}@media(max-width:560px){.mega-inner{grid-template-columns:1fr;gap:24px}.mega-panel{padding-left:18px;padding-right:18px}.mega-links{grid-template-columns:1fr 1fr;column-gap:18px}.mega-links a{font-size:16px}}@keyframes mega-mobile-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}`}</style>
     <div className="mega-desktop" onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
       {trigger("quotes","Quotes")}{trigger("topics","Topics")}{trigger("authors","Authors")}{trigger("collections","Collections")}<a className="mega-trigger" href="/poems" onMouseEnter={cancelClose} onFocus={cancelClose}>Poems</a><a className="mega-submit" href="/submit" onMouseEnter={cancelClose} onFocus={cancelClose}>Submit a quote</a>
       {open && <div className="mega-panel" onMouseEnter={cancelClose} onMouseLeave={scheduleClose}><div className="mega-inner">
