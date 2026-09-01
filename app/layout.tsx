@@ -8,8 +8,8 @@ import SiteFooter from "../components/SiteFooter";
 import GoogleTranslateLink from "../components/GoogleTranslateLink";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
-const siteTitle = "Famous Quotes, Inspirational Quotes & Poems | Mayalines";
-const siteDescription = "Discover sourced famous quotes, inspirational quotes, suffering quotes, aphorisms and public-domain poetry. Browse a large multilingual quote library by topic and author on Mayalines.";
+const siteTitle = "Famous Quotes, Love Quotes, Hope Quotes & Poems | Mayalines";
+const siteDescription = "Discover famous quotes, love quotes, hope quotes, life quotes, inspirational quotes, suffering quotes, Maya Angelou quotes, wisdom and poems. Browse thousands of quotes by topic and author on Mayalines.";
 const socialImage = `${siteUrl}/mayalines-og.svg`;
 
 export const metadata: Metadata = {
@@ -24,18 +24,49 @@ export const metadata: Metadata = {
   keywords: [
     "quotes",
     "famous quotes",
-    "inspirational quotes",
+    "best quotes",
+    "quotes about life",
     "life quotes",
     "love quotes",
-    "suffering quotes",
-    "pain quotes",
-    "wisdom quotes",
+    "quotes about love",
+    "hope quotes",
+    "quotes about hope",
+    "inspirational quotes",
     "motivational quotes",
+    "positive quotes",
     "deep quotes",
-    "aphorisms",
-    "poems",
+    "meaningful quotes",
+    "short quotes",
+    "short inspirational quotes",
+    "suffering quotes",
+    "quotes about suffering",
+    "pain quotes",
+    "sad quotes",
+    "healing quotes",
+    "grief quotes",
+    "strength quotes",
+    "courage quotes",
+    "happiness quotes",
+    "friendship quotes",
+    "success quotes",
+    "wisdom quotes",
+    "philosophy quotes",
+    "Maya Angelou quotes",
+    "Maya quotes",
+    "quotes by famous people",
     "quotes by authors",
-    "multilingual quotes",
+    "daily quotes",
+    "quote of the day",
+    "beautiful quotes",
+    "timeless quotes",
+    "Liebeszitate",
+    "Zitate über Liebe",
+    "Hoffnung Zitate",
+    "Lebenszitate",
+    "inspirierende Zitate",
+    "aphorisms",
+    "famous poems",
+    "poems",
   ],
   robots: {
     index: true,
@@ -55,7 +86,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: siteTitle,
     description: siteDescription,
-    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — famous quotes, inspirational quotes and poetry" }],
+    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — famous quotes, love quotes, hope quotes and poetry" }],
   },
   twitter: {
     card: "summary_large_image",
