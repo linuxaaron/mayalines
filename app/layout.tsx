@@ -4,10 +4,12 @@ import "./quote-overrides.css";
 import "./submit/submit-overrides.css";
 import "./admin/admin-overrides.css";
 import StructuredData from "../components/StructuredData";
+import SiteFooter from "../components/SiteFooter";
+import GoogleTranslateLink from "../components/GoogleTranslateLink";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
-const siteTitle = "Famous Quotes, Aphorisms & Poems | Mayalines";
-const siteDescription = "Discover sourced famous quotes, aphorisms, inspirational words and public-domain poetry from notable writers. Browse a large multilingual quote library on Mayalines.";
+const siteTitle = "Famous Quotes, Inspirational Quotes & Poems | Mayalines";
+const siteDescription = "Discover sourced famous quotes, inspirational quotes, suffering quotes, aphorisms and public-domain poetry. Browse a large multilingual quote library by topic and author on Mayalines.";
 const socialImage = `${siteUrl}/mayalines-og.svg`;
 
 export const metadata: Metadata = {
@@ -19,7 +21,22 @@ export const metadata: Metadata = {
   creator: "Mayalines",
   publisher: "Mayalines",
   category: "quotes, aphorisms and poetry",
-  keywords: ["famous quotes", "inspirational quotes", "aphorisms", "poems", "poetry", "quotes by authors", "multilingual quotes"],
+  keywords: [
+    "quotes",
+    "famous quotes",
+    "inspirational quotes",
+    "life quotes",
+    "love quotes",
+    "suffering quotes",
+    "pain quotes",
+    "wisdom quotes",
+    "motivational quotes",
+    "deep quotes",
+    "aphorisms",
+    "poems",
+    "quotes by authors",
+    "multilingual quotes",
+  ],
   robots: {
     index: true,
     follow: true,
@@ -38,7 +55,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: siteTitle,
     description: siteDescription,
-    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — quotes, aphorisms and poetry" }],
+    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — famous quotes, inspirational quotes and poetry" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -80,10 +97,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="referrer" content="strict-origin-when-cross-origin" />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2162793628214003" crossOrigin="anonymous" />
       </head>
-      <body>
+      <body translate="yes">
         <StructuredData data={websiteSchema} />
         <StructuredData data={organizationSchema} />
         {children}
+        <SiteFooter />
+        <GoogleTranslateLink />
       </body>
     </html>
   );
