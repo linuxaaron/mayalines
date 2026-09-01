@@ -1,40 +1,39 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import CopyButton from "../../../components/CopyButton";
 import PersistentLikeButton from "../../../components/PersistentLikeButton";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import quotesData from "../../../data/quotes";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
+export const revalidate = 86400;
 
-export function generateStaticParams() {
-  return quotesData.map((quote) => ({ slug: quote.slug }));
-}
+const localeByLanguage: Record<string, string> = {
+  en: "en_US", de: "de_DE", fr: "fr_FR", es: "es_ES", it: "it_IT", pt: "pt_PT", ilo: "fil_PH",
+};
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const quote = quotesData.find((item) => item.slug === slug);
   const isIndexable = quote?.indexable === true && quote?.attributionStatus === "verified" && quote?.copyrightStatus === "cleared";
   const quotePreview = quote?.quote.replace(/\s+/g, " ").trim() ?? "";
+  const language = (quote as { language?: string } | undefined)?.language ?? "en";
   const description = quote
-    ? `Read this famous quote by ${quote.author}: “${quotePreview.slice(0, 145)}${quotePreview.length > 145 ? "…" : ""}” on Mayalines.`
+    ? `Read this ${language.toUpperCase()} quote by ${quote.author}: “${quotePreview.slice(0, 145)}${quotePreview.length > 145 ? "…" : ""}” on Mayalines.`
     : "Read famous, inspirational and timeless quotes from notable authors on Mayalines.";
 
   return {
     title: quote ? `${quote.author} Quote – “${quotePreview.slice(0, 62)}${quotePreview.length > 62 ? "…" : ""}”` : "Famous Quote",
     description,
     alternates: quote ? { canonical: `/quotes/${quote.slug}` } : undefined,
-    robots: {
-      index: isIndexable,
-      follow: true,
-      googleBot: { index: isIndexable, follow: true, "max-snippet": -1 },
-    },
+    robots: { index: isIndexable, follow: true, googleBot: { index: isIndexable, follow: true, "max-snippet": -1, "max-image-preview": "large" } },
     openGraph: quote ? {
       type: "article",
       title: `${quote.author} Quote | Mayalines`,
       description,
       url: `/quotes/${quote.slug}`,
-      locale: "en_US",
+      locale: localeByLanguage[language] ?? "en_US",
     } : undefined,
   };
 }
@@ -42,14 +41,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function QuotePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const quote = quotesData.find((item) => item.slug === slug);
-  if (!quote) return null;
+  if (!quote) notFound();
 
+  const language = (quote as typeof quote & { language?: string }).language ?? "en";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const authorSlug = quote.author.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const categorySlug = quote.category.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
+    "@context": "https://schema.org", "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
       { "@type": "ListItem", position: 2, name: "Quotes", item: `${siteUrl}/#main-content` },
@@ -58,18 +57,15 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
     ],
   };
   const quoteSchema = {
-    "@context": "https://schema.org",
-    "@type": "Quotation",
-    text: quote.quote,
-    creator: { "@type": "Person", name: quote.author },
-    inLanguage: "en",
+    "@context": "https://schema.org", "@type": "Quotation", text: quote.quote,
+    creator: { "@type": "Person", name: quote.author }, inLanguage: language,
     url: `${siteUrl}/quotes/${quote.slug}`,
     isPartOf: { "@type": "WebSite", name: "Mayalines", url: siteUrl },
   };
 
-  return <main className="quote-detail">
+  return <main className="quote-detail" lang={language}>
     <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Quotes", url: "/#main-content" }, { name: `${quote.category} Quotes`, url: `/categories/${categorySlug}` }, { name: quote.author, url: `/authors/${authorSlug}` }]} />
-    <p className="eyebrow">{quote.category.toUpperCase()} · VERIFIED QUOTE</p>
+    <p className="eyebrow">{quote.category.toUpperCase()} · VERIFIED · {language.toUpperCase()}</p>
     <h1>{quote.author} Quote</h1>
     <blockquote>“{quote.quote}”</blockquote>
     <p className="quote-author">— {quote.author}</p>
@@ -78,7 +74,6 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
     <p className="source-note">Attribution status: {quote.attributionStatus} · Publication status: {quote.copyrightStatus}</p>
     <p className="source-note">Explore more <a href={`/authors/${authorSlug}`}>quotes by {quote.author}</a> or browse <a href={`/categories/${categorySlug}`}>{quote.category.toLowerCase()} quotes</a>.</p>
     <p className="source-note">If you believe this quote is incorrectly attributed or should be removed, see <a href="/copyright">Copyright and quote corrections</a>.</p>
-    <StructuredData data={breadcrumbSchema} />
-    <StructuredData data={quoteSchema} />
+    <StructuredData data={breadcrumbSchema} /><StructuredData data={quoteSchema} />
   </main>;
 }
