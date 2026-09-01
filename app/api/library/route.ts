@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import quotesData from "../../../data/quotes";
 import { getDb, getOrCreateVisitorId, isValidQuoteId } from "../../../lib/db";
+import { rejectIfRateLimited } from "../../../lib/rate-limit";
 
 const MAX_PAGE_SIZE = 48;
 
@@ -61,6 +62,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const rateLimitResponse = await rejectIfRateLimited(request, "library", { max: 30, windowSeconds: 60 });
+  if (rateLimitResponse) return rateLimitResponse;
+
   const visitorId = getOrCreateVisitorId(request);
   let body: Record<string, unknown>;
   try { body = await request.json() as Record<string, unknown>; } catch { return response({ error: "Invalid JSON" }, visitorId, 400); }

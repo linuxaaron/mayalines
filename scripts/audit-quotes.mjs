@@ -5,6 +5,7 @@ const quotes = JSON.parse(await readFile(file, "utf8"));
 
 const errors = [];
 const warnings = [];
+const editorial = { attribution: 0, copyright: 0, noindex: 0 };
 const seenExact = new Map();
 const seenNormalized = new Map();
 const categories = new Map();
@@ -30,14 +31,14 @@ for (const [index, quote] of (quotes ?? []).entries()) {
   if (!quote?.sourceName) errors.push(`${label}: missing source name`);
   if (!quote?.sourceCommit) errors.push(`${label}: missing source commit`);
 
-  if (quote?.attributionStatus !== "verified") warnings.push(`${label}: attribution requires editorial verification`);
-  if (quote?.copyrightStatus !== "cleared") warnings.push(`${label}: copyright requires editorial review`);
+  if (quote?.attributionStatus !== "verified") editorial.attribution += 1;
+  if (quote?.copyrightStatus !== "cleared") editorial.copyright += 1;
   if (quote?.indexable !== false && quote?.indexable !== true) errors.push(`${label}: indexable must be explicitly true or false`);
   // `indexable` controls whether a record may appear in the public browsing library.
   // Search-engine indexing has a stricter gate in metadata/sitemap code and requires
   // verified attribution plus copyrightStatus=cleared.
   if (quote?.indexable === true && (quote?.attributionStatus !== "verified" || quote?.copyrightStatus !== "cleared")) {
-    warnings.push(`${label}: public library record remains search-engine noindex until editorial clearance`);
+    editorial.noindex += 1;
   }
 
   const exactKey = `${normalize(quote?.author)}|${normalize(quote?.quote)}`;
@@ -69,6 +70,7 @@ console.log(`SEO-cleared: ${seoClearedCount}`);
 console.log(`Categories: ${categories.size}`);
 console.log(`Languages: ${[...languages.entries()].map(([language, amount]) => `${language}:${amount}`).join(", ")}`);
 console.log(`Warnings: ${warnings.length}`);
+console.log(`Editorial review pending: attribution=${editorial.attribution}, copyright=${editorial.copyright}, search-engine noindex=${editorial.noindex}`);
 for (const warning of warnings.slice(0, 20)) console.warn(`WARN: ${warning}`);
 if (warnings.length > 20) console.warn(`WARN: ... ${warnings.length - 20} more warnings`);
 console.log(`Errors: ${errors.length}`);

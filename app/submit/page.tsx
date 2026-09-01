@@ -56,6 +56,7 @@ export default function SubmitQuotePage() {
         {error && <div className="submit-error" role="alert"><strong>Something went wrong.</strong> {error}</div>}
 
         <form className="submit-form" onSubmit={submit}>
+          <input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ display: "none" }} />
           <label>
             Quote
             <textarea name="quote" required maxLength={2000} placeholder="Enter the exact quotation…" />

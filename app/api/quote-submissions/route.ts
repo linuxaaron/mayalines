@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDb } from "../../../lib/db";
+import { rejectIfRateLimited } from "../../../lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -17,25 +18,37 @@ export async function GET() {
   const db = getDb();
   if (!db) return NextResponse.json({ submissions: [] });
 
-  const submissions = await db`
-    SELECT id, quote, author, source, category, created_at
-    FROM quote_submissions
-    WHERE status = 'approved'
-    ORDER BY created_at DESC
-    LIMIT 120
-  `;
+  try {
+    const submissions = await db`
+      SELECT id, quote, author, source, category, created_at
+      FROM quote_submissions
+      WHERE status = 'approved'
+      ORDER BY created_at DESC
+      LIMIT 120
+    `;
 
-  return NextResponse.json({ submissions }, {
-    headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
-  });
+    return NextResponse.json({ submissions }, {
+      headers: { "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300" },
+    });
+  } catch {
+    return NextResponse.json({ error: "Submission storage is temporarily unavailable" }, { status: 503 });
+  }
 }
 
 export async function POST(request: Request) {
+  const rateLimitResponse = await rejectIfRateLimited(request, "submission", { max: 5, windowSeconds: 600 });
+  if (rateLimitResponse) return rateLimitResponse;
+
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
   if (!body || typeof body !== "object") return NextResponse.json({ error: "Invalid request" }, { status: 400 });
 
   const input = body as Record<string, unknown>;
+  // Silently accept bot-filled honeypots without persisting a submission.
+  if (typeof input.website === "string" && input.website.trim()) {
+    return NextResponse.json({ received: true, persisted: false });
+  }
+
   const quote = clean(input.quote, MAX_QUOTE);
   const author = clean(input.author, MAX_AUTHOR);
   const source = clean(input.source, MAX_SOURCE);
@@ -47,6 +60,10 @@ export async function POST(request: Request) {
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Submission storage is not configured" }, { status: 503 });
 
-  await db`INSERT INTO quote_submissions (quote, author, source, category, submitter_name) VALUES (${quote}, ${author}, ${source || null}, ${category}, ${submitter || null})`;
-  return NextResponse.json({ received: true, persisted: true });
+  try {
+    await db`INSERT INTO quote_submissions (quote, author, source, category, submitter_name) VALUES (${quote}, ${author}, ${source || null}, ${category}, ${submitter || null})`;
+    return NextResponse.json({ received: true, persisted: true });
+  } catch {
+    return NextResponse.json({ error: "Submission storage is temporarily unavailable" }, { status: 503 });
+  }
 }

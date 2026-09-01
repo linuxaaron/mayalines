@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
 import { getDb, getOrCreateVisitorId, isValidQuoteId } from "../../../../../lib/db";
+import { rejectIfRateLimited } from "../../../../../lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -42,6 +43,9 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const rateLimitResponse = await rejectIfRateLimited(request, "like", { max: 30, windowSeconds: 60 });
+  if (rateLimitResponse) return rateLimitResponse;
+
   const { id } = await params;
   if (!isValidQuoteId(id)) return NextResponse.json({ error: "Invalid quote id" }, { status: 400 });
 

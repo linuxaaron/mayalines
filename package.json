@@ -13,18 +13,18 @@
     "build:data": "node scripts/build-quotes.mjs && node scripts/build-poems.mjs"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.2",
-    "@upstash/redis": "^1.35.3",
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest"
+    "@neondatabase/serverless": "1.1.0",
+    "@upstash/redis": "1.38.3",
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "typescript": "latest",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "^16.3.4",
-    "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest"
+    "typescript": "6.0.3",
+    "eslint": "9.39.2",
+    "eslint-config-next": "16.3.4",
+    "@types/node": "26.4.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.5"
   }
 }

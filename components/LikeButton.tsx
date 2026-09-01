@@ -1,22 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const LIKES_STORAGE_KEY = "mayalines-liked-quotes";
 
 type LikeMap = Record<string, boolean>;
 
 export default function LikeButton({ quoteId, author }: { quoteId: string; author: string }) {
-  const [liked, setLiked] = useState(false);
-
-  useEffect(() => {
+  const [liked, setLiked] = useState(() => {
+    if (typeof window === "undefined") return false;
     try {
       const stored = window.localStorage.getItem(LIKES_STORAGE_KEY);
-      if (stored) setLiked(Boolean((JSON.parse(stored) as LikeMap)[quoteId]));
+      return stored ? Boolean((JSON.parse(stored) as LikeMap)[quoteId]) : false;
     } catch {
-      setLiked(false);
+      return false;
     }
-  }, [quoteId]);
+  });
 
   function toggleLike() {
     setLiked((current) => {

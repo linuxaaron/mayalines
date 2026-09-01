@@ -13,7 +13,11 @@ export function isValidQuoteId(id: string) {
 export function getOrCreateVisitorId(request: Request) {
   const cookieHeader = request.headers.get("cookie") ?? "";
   const match = cookieHeader.match(/(?:^|;\s*)mayalines_visitor=([^;]+)/);
-  return match?.[1] ?? randomUUID();
+  let candidate = "";
+  try { candidate = match?.[1] ? decodeURIComponent(match[1]) : ""; } catch { /* Invalid cookie encoding receives a new visitor id. */ }
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(candidate)
+    ? candidate
+    : randomUUID();
 }
 
 export function setVisitorCookie(response: Response, visitorId: string) {

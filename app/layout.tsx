@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from "next";
+import { headers } from "next/headers";
+import Script from "next/script";
 import "./globals.css";
 import "./quote-overrides.css";
 import "./submit/submit-overrides.css";
@@ -103,7 +105,8 @@ export const viewport: Viewport = {
   themeColor: "#f4f3f0",
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
@@ -126,14 +129,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en-US">
       <head>
         <meta name="referrer" content="strict-origin-when-cross-origin" />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2162793628214003" crossOrigin="anonymous" />
       </head>
       <body translate="yes">
-        <StructuredData data={websiteSchema} />
-        <StructuredData data={organizationSchema} />
+        <StructuredData data={websiteSchema} nonce={nonce} />
+        <StructuredData data={organizationSchema} nonce={nonce} />
         {children}
         <SiteFooter />
         <GoogleTranslateLink />
+        <Script nonce={nonce} async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2162793628214003" crossOrigin="anonymous" strategy="afterInteractive" />
       </body>
     </html>
   );

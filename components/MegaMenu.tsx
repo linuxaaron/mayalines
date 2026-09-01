@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const topics = [["Life","/topics/life"],["Love","/topics/love"],["Wisdom","/topics/wisdom"],["Success","/topics/success"],["Motivation","/topics/motivation"],["Happiness","/topics/happiness"],["Courage","/topics/courage"],["Friendship","/topics/friendship"],["Hope","/topics/hope"],["Philosophy","/topics/philosophy"],["Truth","/topics/truth"],["Inspiration","/topics/inspiration"]] as const;
 const popularAuthors = [["William Shakespeare","/authors/william-shakespeare"],["Oscar Wilde","/authors/oscar-wilde"],["Friedrich Nietzsche","/authors/friedrich-nietzsche"],["Maya Angelou","/authors/maya-angelou"],["Albert Einstein","/authors/albert-einstein"],["Mark Twain","/authors/mark-twain"]] as const;
@@ -40,13 +40,14 @@ export default function MegaMenu() {
   const [mobileSection, setMobileSection] = useState<MobileSection>("quotes");
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButton = useRef<HTMLButtonElement | null>(null);
+  const menuButton = useRef<HTMLButtonElement | null>(null);
 
-  function cancelClose() {
+  const cancelClose = useCallback(() => {
     if (closeTimer.current) {
       clearTimeout(closeTimer.current);
       closeTimer.current = null;
     }
-  }
+  }, []);
 
   function keepMenuOpen(name?: string) {
     cancelClose();
@@ -61,13 +62,20 @@ export default function MegaMenu() {
     }, MENU_CLOSE_DELAY);
   }
 
-  function closeMenu() {
+  const closeMenu = useCallback(() => {
     cancelClose();
     setOpen(null);
     setMobileOpen(false);
+    window.setTimeout(() => menuButton.current?.focus(), 0);
+  }, [cancelClose]);
+
+  function switchMobileSection(direction: -1 | 1) {
+    const options: MobileSection[] = ["quotes", "topics", "authors", "collections"];
+    const index = options.indexOf(mobileSection);
+    setMobileSection(options[(index + direction + options.length) % options.length]);
   }
 
-  useEffect(() => () => cancelClose(), []);
+  useEffect(() => () => cancelClose(), [cancelClose]);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -87,7 +95,7 @@ export default function MegaMenu() {
       document.body.style.overflowX = previousOverflowX;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [mobileOpen]);
+  }, [mobileOpen, closeMenu]);
 
   const trigger = (name: string, label: string) => (
     <button
@@ -160,6 +168,8 @@ export default function MegaMenu() {
         .mobile-menu-body>*{max-width:100%;min-width:0}
         .mobile-menu-intro{display:block;box-sizing:border-box;width:100%;max-width:none;margin:0 0 14px;padding:0 4px 0 0;color:#77716a;font-size:10px;line-height:1.55;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important;overflow:visible!important;text-overflow:clip!important}
 
+        .mobile-menu-switcher{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px;margin:0 0 14px}.mobile-menu-switcher button{display:grid;place-items:center;width:44px;height:44px;border:1px solid #d8d4cd;border-radius:50%;background:#fff;color:#1f4d3a;font-size:20px}.mobile-menu-switcher p{margin:0;color:#315642;font:800 10px/1.2 Inter,system-ui,sans-serif;letter-spacing:.12em;text-align:center;text-transform:uppercase}.mobile-menu-switcher small{display:block;margin-top:4px;color:#77716a;font-size:8px;font-weight:700;letter-spacing:.08em}
+
         .mobile-menu-sections{display:grid;width:100%;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px;overflow:hidden}
         .mobile-menu-tab{min-width:0;max-width:100%;display:flex;align-items:center;justify-content:space-between;min-height:62px;padding:12px 13px;border:1px solid #d8d4cd;border-radius:11px;background:#fbfaf8;color:#292a27;text-align:left;font-family:Georgia,"Times New Roman",serif;font-size:15px;box-shadow:0 1px 0 rgba(20,20,20,.02);overflow:hidden}
         .mobile-menu-tab span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis}
@@ -167,7 +177,7 @@ export default function MegaMenu() {
         .mobile-menu-tab[aria-selected="true"]{border-color:#28513e;background:#28513e;color:#fff;box-shadow:0 6px 18px rgba(31,77,58,.13)}
         .mobile-menu-tab[aria-selected="true"] span:last-child{background:rgba(255,255,255,.16);color:#fff}
 
-        .mobile-menu-panel{width:100%;max-width:100%;min-width:0;border:1px solid #d7d3cc;border-radius:13px;background:#fff;overflow:hidden}
+        .mobile-menu-panel{width:100%;max-width:100%;min-width:0;border:1px solid #d7d3cc;border-radius:13px;background:#fff;overflow:hidden;animation:mobile-menu-panel-in .18s ease-out}
         .mobile-menu-panel-head{max-width:100%;padding:14px 15px 11px;border-bottom:1px solid #e2ded7;background:#f0eee9;overflow:hidden}
         .mobile-menu-panel-head span{display:block;margin-bottom:3px;color:#315642;font-size:8px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
         .mobile-menu-panel-head strong{font-family:Georgia,"Times New Roman",serif;font-size:18px;font-weight:500}
@@ -192,6 +202,7 @@ export default function MegaMenu() {
       }
 
       @keyframes mobile-menu-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+      @keyframes mobile-menu-panel-in{from{opacity:.35;transform:translateX(14px)}to{opacity:1;transform:translateX(0)}}
       @media(prefers-reduced-motion:reduce){.mega-panel,.mobile-menu{animation:none}.mega-chevron{transition:none}.sunflower-grow,.sunflower-bloom{animation:none;opacity:1;transform:none}}
     `}</style>
 
@@ -212,7 +223,7 @@ export default function MegaMenu() {
       </div></div>}
     </div>
 
-    <button className="mega-mobile-button" type="button" aria-expanded={mobileOpen} aria-controls="mobile-navigation" onClick={() => setMobileOpen(true)}>
+    <button ref={menuButton} className="mega-mobile-button" type="button" aria-expanded={mobileOpen} aria-controls="mobile-navigation" onClick={() => setMobileOpen(true)}>
       Menu <SunflowerMark />
     </button>
 
@@ -223,13 +234,11 @@ export default function MegaMenu() {
       </div>
 
       <div className="mobile-menu-body">
-        <p className="mobile-menu-intro">Choose a section. Only one section opens at a time.</p>
-
-        <div className="mobile-menu-sections" role="tablist" aria-label="Menu sections">
-          <button className="mobile-menu-tab" type="button" role="tab" aria-selected={mobileSection === "quotes"} onClick={() => setMobileSection("quotes")}><span>Quotes</span><span>01</span></button>
-          <button className="mobile-menu-tab" type="button" role="tab" aria-selected={mobileSection === "topics"} onClick={() => setMobileSection("topics")}><span>Topics</span><span>02</span></button>
-          <button className="mobile-menu-tab" type="button" role="tab" aria-selected={mobileSection === "authors"} onClick={() => setMobileSection("authors")}><span>Authors</span><span>03</span></button>
-          <button className="mobile-menu-tab" type="button" role="tab" aria-selected={mobileSection === "collections"} onClick={() => setMobileSection("collections")}><span>Collections</span><span>04</span></button>
+        <p className="mobile-menu-intro">Use the arrows to switch between the link groups.</p>
+        <div className="mobile-menu-switcher" aria-label="Menu section switcher">
+          <button type="button" onClick={() => switchMobileSection(-1)} aria-label="Previous link group">←</button>
+          <p aria-live="polite">{mobileSection}<small>Swipe through the menu</small></p>
+          <button type="button" onClick={() => switchMobileSection(1)} aria-label="Next link group">→</button>
         </div>
 
         {mobileSection === "quotes" && <section className="mobile-menu-panel" role="tabpanel">

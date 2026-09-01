@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getDb, getOrCreateVisitorId } from "../../../lib/db";
+import { rejectIfRateLimited } from "../../../lib/rate-limit";
 
 export const runtime = "nodejs";
 const validTypes = new Set(["author", "topic"]);
@@ -12,6 +13,9 @@ export async function GET(request: Request) {
   try { return reply({ follows: await db`SELECT target_type, target FROM quote_follows WHERE visitor_id = ${visitorId}::uuid`, persistent: true }, visitorId); } catch { return reply({ follows: [], persistent: false }, visitorId); }
 }
 export async function POST(request: Request) {
+  const rateLimitResponse = await rejectIfRateLimited(request, "follow", { max: 30, windowSeconds: 60 });
+  if (rateLimitResponse) return rateLimitResponse;
+
   const visitorId = getOrCreateVisitorId(request); let body: Record<string, unknown>;
   try { body = await request.json() as Record<string, unknown>; } catch { return reply({ error: "Invalid JSON" }, visitorId, 400); }
   const targetType = text(body.targetType); const target = text(body.target); const action = body.action;

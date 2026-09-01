@@ -81,6 +81,9 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
     }
     const timer = window.setTimeout(() => { void load(true); }, 260);
     return () => window.clearTimeout(timer);
+  // `load` changes whenever pagination state changes. Search should only reload
+  // when its input changes, otherwise loading a page would trigger another fetch.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, category]);
 
   return <>

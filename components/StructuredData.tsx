@@ -1,6 +1,6 @@
-type JsonLdProps = { data: Record<string, unknown> };
+type JsonLdProps = { data: Record<string, unknown>; nonce?: string };
 
-export default function StructuredData({ data }: JsonLdProps) {
+export default function StructuredData({ data, nonce }: JsonLdProps) {
   const json = JSON.stringify(data).replace(/</g, "\\u003c");
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
+  return <script nonce={nonce} type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />;
 }
