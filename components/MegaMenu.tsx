@@ -9,6 +9,31 @@ const collections = [["Quotes About Life","/collections/quotes-about-life"],["Qu
 const MENU_CLOSE_DELAY = 4500;
 type MobileSection = "quotes" | "topics" | "authors" | "collections";
 
+function SunflowerMark() {
+  return (
+    <span className="menu-sunflower" aria-hidden="true">
+      <svg viewBox="0 0 28 36" focusable="false">
+        <g className="sunflower-grow">
+          <path className="sunflower-stem" d="M14 33V17" />
+          <path className="sunflower-leaf sunflower-leaf-left" d="M13.7 27c-5.8.4-8-2.4-8.5-5.7 4.3-.4 7.3 1.5 8.5 5.7Z" />
+          <path className="sunflower-leaf sunflower-leaf-right" d="M14.3 23c5.7-.1 7.9-2.8 8.2-6-4.2-.1-7.1 2-8.2 6Z" />
+          <g className="sunflower-bloom">
+            <ellipse className="sunflower-petal" cx="14" cy="3.8" rx="2.2" ry="4.7" />
+            <ellipse className="sunflower-petal" cx="14" cy="12.2" rx="2.2" ry="4.7" />
+            <ellipse className="sunflower-petal" cx="9.8" cy="8" rx="4.7" ry="2.2" />
+            <ellipse className="sunflower-petal" cx="18.2" cy="8" rx="4.7" ry="2.2" />
+            <ellipse className="sunflower-petal" cx="11" cy="5" rx="2.1" ry="4.5" transform="rotate(-45 11 5)" />
+            <ellipse className="sunflower-petal" cx="17" cy="5" rx="2.1" ry="4.5" transform="rotate(45 17 5)" />
+            <ellipse className="sunflower-petal" cx="11" cy="11" rx="2.1" ry="4.5" transform="rotate(45 11 11)" />
+            <ellipse className="sunflower-petal" cx="17" cy="11" rx="2.1" ry="4.5" transform="rotate(-45 17 11)" />
+            <circle className="sunflower-center" cx="14" cy="8" r="4.1" />
+          </g>
+        </g>
+      </svg>
+    </span>
+  );
+}
+
 export default function MegaMenu() {
   const [open, setOpen] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -85,6 +110,7 @@ export default function MegaMenu() {
   return <>
     <style>{`
       .mega-desktop{display:flex;align-items:center;gap:19px;position:relative}
+      .mega-desktop-menu-mark{display:inline-flex;align-items:center;gap:5px;color:#1f4d3a;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
       .mega-trigger{display:inline-flex;align-items:center;gap:5px;color:var(--muted);font-size:12px;font-weight:600;padding:8px 0}
       .mega-trigger:hover,.mega-trigger[aria-expanded="true"]{color:#1f4d3a}
       .mega-submit{position:relative;color:var(--foreground);font-weight:700;padding:8px 0}
@@ -103,17 +129,24 @@ export default function MegaMenu() {
       .mega-feature p{margin:0 0 8px;color:var(--muted);font-size:9px;line-height:1.45}
       .mega-feature a{color:#1f4d3a;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
       .mega-mobile-button,.mobile-menu{display:none}
+
+      .menu-sunflower{display:inline-block;width:20px;height:26px;flex:0 0 20px;overflow:visible;pointer-events:none;vertical-align:middle}
+      .menu-sunflower svg{display:block;width:100%;height:100%;overflow:visible}
+      .sunflower-grow{transform-box:fill-box;transform-origin:center bottom;animation:sunflower-grow 3.4s cubic-bezier(.45,0,.2,1) infinite}
+      .sunflower-bloom{transform-box:fill-box;transform-origin:center;animation:sunflower-bloom 3.4s ease-in-out infinite}
+      .sunflower-stem{fill:none;stroke:#111;stroke-width:1.7;stroke-linecap:round}
+      .sunflower-leaf{fill:#111;stroke:#111;stroke-width:.6}
+      .sunflower-petal{fill:#f4c430;stroke:#d9a900;stroke-width:.35}
+      .sunflower-center{fill:#111}
+
       @keyframes mega-in{from{opacity:0;transform:translate(-50%,-10px) scale(.985)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+      @keyframes sunflower-grow{0%,10%{opacity:0;transform:scaleY(0)}28%,68%{opacity:1;transform:scaleY(1)}90%,100%{opacity:0;transform:scaleY(0)}}
+      @keyframes sunflower-bloom{0%,22%{opacity:0;transform:scale(.3) rotate(-6deg)}36%,68%{opacity:1;transform:scale(1) rotate(0)}86%,100%{opacity:0;transform:scale(.25) rotate(5deg)}}
 
       @media(max-width:900px){
         .mega-desktop{display:none}
-        .mega-mobile-button{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:8px 2px;color:#1f4d3a;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-        .mega-mobile-flower{position:relative;display:inline-block;width:18px;height:24px;overflow:visible;pointer-events:none}
-        .mega-mobile-flower-stem{position:absolute;left:8px;bottom:2px;width:1.5px;height:14px;background:#111;transform-origin:bottom center;animation:flower-stem 3.2s ease-in-out infinite}
-        .mega-mobile-flower-head{position:absolute;left:5px;top:1px;width:8px;height:8px;opacity:0;transform:scale(.2) translateY(5px);animation:flower-bloom 3.2s ease-in-out infinite}
-        .mega-mobile-flower-head:before,.mega-mobile-flower-head:after{content:"";position:absolute;inset:0;border:1.4px solid #111;border-radius:50% 50% 45% 55%;transform:rotate(45deg)}
-        .mega-mobile-flower-head:after{transform:rotate(-45deg)}
-        .mega-mobile-flower-center{position:absolute;left:7px;top:3px;width:4px;height:4px;border-radius:50%;background:#111;opacity:0;animation:flower-center 3.2s ease-in-out infinite}
+        .mega-mobile-button{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 2px;color:#1f4d3a;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+        .mega-mobile-button .menu-sunflower{width:20px;height:24px;flex-basis:20px}
 
         .mobile-menu,.mobile-menu *{box-sizing:border-box}
         .mobile-menu{display:flex;position:fixed;z-index:200;inset:0;width:100%;max-width:100vw;height:100dvh;flex-direction:column;overflow:hidden;overscroll-behavior:none;touch-action:pan-y;background:#f5f4f1;color:#1c1d1b;animation:mobile-menu-in .2s ease-out}
@@ -125,7 +158,7 @@ export default function MegaMenu() {
 
         .mobile-menu-body{flex:1;min-width:0;min-height:0;width:100%;max-width:100%;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;overscroll-behavior-y:contain;touch-action:pan-y;padding:16px 16px 22px;-webkit-overflow-scrolling:touch}
         .mobile-menu-body>*{max-width:100%;min-width:0}
-        .mobile-menu-intro{margin:0 0 13px;color:#77716a;font-size:10px;line-height:1.45;overflow-wrap:anywhere}
+        .mobile-menu-intro{display:block;width:100%;max-width:100%;margin:0 0 14px;padding:0 1px;color:#77716a;font-size:10px;line-height:1.55;white-space:normal;word-break:normal;overflow-wrap:break-word}
 
         .mobile-menu-sections{display:grid;width:100%;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px;overflow:hidden}
         .mobile-menu-tab{min-width:0;max-width:100%;display:flex;align-items:center;justify-content:space-between;min-height:62px;padding:12px 13px;border:1px solid #d8d4cd;border-radius:11px;background:#fbfaf8;color:#292a27;text-align:left;font-family:Georgia,"Times New Roman",serif;font-size:15px;box-shadow:0 1px 0 rgba(20,20,20,.02);overflow:hidden}
@@ -153,18 +186,17 @@ export default function MegaMenu() {
       @media(max-width:390px){
         .mobile-menu-head{padding-left:14px;padding-right:14px}
         .mobile-menu-body{padding-left:12px;padding-right:12px}
+        .mobile-menu-intro{font-size:9.5px;line-height:1.55}
         .mobile-menu-tab{min-height:58px;padding:10px;font-size:14px}
         .mobile-menu-links a{min-height:45px;padding:9px;font-size:10px}
       }
 
-      @keyframes flower-stem{0%,12%{transform:scaleY(0);opacity:0}22%{transform:scaleY(1);opacity:1}68%{transform:scaleY(1);opacity:1}82%,100%{transform:scaleY(0);opacity:0}}
-      @keyframes flower-bloom{0%,24%{opacity:0;transform:scale(.2) translateY(5px)}36%,66%{opacity:1;transform:scale(1) translateY(0)}82%,100%{opacity:0;transform:scale(.25) translateY(-2px)}}
-      @keyframes flower-center{0%,28%{opacity:0}38%,66%{opacity:1}82%,100%{opacity:0}}
       @keyframes mobile-menu-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-      @media(prefers-reduced-motion:reduce){.mega-panel,.mobile-menu{animation:none}.mega-chevron{transition:none}.mega-mobile-flower-stem,.mega-mobile-flower-head,.mega-mobile-flower-center{animation:none;opacity:1;transform:none}}
+      @media(prefers-reduced-motion:reduce){.mega-panel,.mobile-menu{animation:none}.mega-chevron{transition:none}.sunflower-grow,.sunflower-bloom{animation:none;opacity:1;transform:none}}
     `}</style>
 
     <div className="mega-desktop" onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
+      <span className="mega-desktop-menu-mark">Menu <SunflowerMark /></span>
       {trigger("quotes","Quotes")}
       {trigger("topics","Topics")}
       {trigger("authors","Authors")}
@@ -181,12 +213,7 @@ export default function MegaMenu() {
     </div>
 
     <button className="mega-mobile-button" type="button" aria-expanded={mobileOpen} aria-controls="mobile-navigation" onClick={() => setMobileOpen(true)}>
-      Menu
-      <span className="mega-mobile-flower" aria-hidden="true">
-        <span className="mega-mobile-flower-stem" />
-        <span className="mega-mobile-flower-head" />
-        <span className="mega-mobile-flower-center" />
-      </span>
+      Menu <SunflowerMark />
     </button>
 
     {mobileOpen && <div className="mobile-menu" id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Main menu">
