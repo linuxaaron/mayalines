@@ -1,18 +1,40 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
-// Combined corpus: the existing 3,000 Wikisource quotations plus additional
-// verified public-domain quotations from Project Gutenberg. Never pad records.
-const TARGET_COUNT = 5000;
+// Build a large, deduplicated corpus exclusively from public-domain quotation
+// anthologies. Every record keeps its source for later attribution audits.
+const TARGET_COUNT = 10000;
 const WIKISOURCE = {
   url: "https://en.wikisource.org/wiki/Three_Thousand_Selected_Quotations_from_Brilliant_Writers",
   name: "Three Thousand Selected Quotations from Brilliant Writers — Wikisource",
   commit: "public-domain-wikisource-1909",
 };
-const GUTENBERG = {
-  url: "https://www.gutenberg.org/cache/epub/17112/pg17112.txt",
-  name: "Many Thoughts of Many Minds — Project Gutenberg #17112",
-  commit: "project-gutenberg-17112-public-domain",
-};
+const GUTENBERG_SOURCES = [
+  {
+    url: "https://www.gutenberg.org/cache/epub/17112/pg17112.txt",
+    name: "Many Thoughts of Many Minds — Project Gutenberg #17112",
+    commit: "project-gutenberg-17112-public-domain",
+  },
+  {
+    url: "https://www.gutenberg.org/cache/epub/48105/pg48105.txt",
+    name: "Dictionary of Quotations — Project Gutenberg #48105",
+    commit: "project-gutenberg-48105-public-domain",
+  },
+  {
+    url: "https://www.gutenberg.org/cache/epub/21130/pg21130.txt",
+    name: "Book of Wise Sayings — Project Gutenberg #21130",
+    commit: "project-gutenberg-21130-public-domain",
+  },
+  {
+    url: "https://www.gutenberg.org/cache/epub/33670/pg33670.txt",
+    name: "The Maxims and Reflections of Goethe — Project Gutenberg #33670",
+    commit: "project-gutenberg-33670-public-domain",
+  },
+  {
+    url: "https://www.gutenberg.org/cache/epub/35584/pg35584.txt",
+    name: "Aphorisms and Reflections from T. H. Huxley — Project Gutenberg #35584",
+    commit: "project-gutenberg-35584-public-domain",
+  },
+];
 const LETTERS = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","W","Y","Z"];
 
 const decode = (value) => value
@@ -32,17 +54,17 @@ const CATEGORY_ALIASES = new Map([
   ["Baptism", "Faith"], ["Character", "Character"], ["Education", "Education"], ["Freedom", "Freedom"],
   ["Friendship", "Friendship"], ["Happiness", "Happiness"], ["Inspiration", "Inspiration"], ["Life", "Life"],
   ["Love", "Love"], ["Motivation", "Motivation"], ["Philosophy", "Philosophy"], ["Science", "Science"],
-  ["Success", "Success"], ["Wisdom", "Wisdom"],
+  ["Success", "Success"], ["Wisdom", "Wisdom"], ["Nature", "Nature"], ["Art", "Art"], ["Truth", "Truth"],
 ]);
 function normalizeCategory(value) {
   const clean = titleCase(value.replace(/[.:]+$/, "").trim());
-  return CATEGORY_ALIASES.get(clean) ?? clean;
+  return CATEGORY_ALIASES.get(clean) ?? clean || "Wisdom";
 }
 const quotes = [];
 const seen = new Set();
 function addQuote({ quote, author, category, source, sourceName, sourceCommit }) {
   quote = cleanQuoteText(quote); author = cleanQuoteText(author);
-  if (!author || !quote || quote.length < 15 || quote.length > 1500) return;
+  if (!author || !quote || quote.length < 15 || quote.length > 1200) return;
   const key = `${author.toLowerCase()}|${quote.toLowerCase()}`;
   if (seen.has(key)) return;
   seen.add(key);
@@ -50,11 +72,11 @@ function addQuote({ quote, author, category, source, sourceName, sourceCommit })
   quotes.push({ id, quote, author, category: normalizeCategory(category || "Wisdom"), source, sourceName, sourceCommit, attributionStatus: "verified", copyrightStatus: "cleared", indexable: true, slug: `${slugify(quote).slice(0, 90)}-${id}` });
 }
 
-// Wikisource source: explicitly marked public domain.
+// Wikisource: structured quote/author pairs.
 for (const letter of LETTERS) {
   if (quotes.length >= TARGET_COUNT) break;
   const url = `${WIKISOURCE.url}/${letter}`;
-  const response = await fetch(url, { headers: { "User-Agent": "MayalinesQuoteBuilder/1.3 (+https://mayalines.com)" } });
+  const response = await fetch(url, { headers: { "User-Agent": "MayalinesQuoteBuilder/2.0 (+https://mayalines.com)" } });
   if (!response.ok) throw new Error(`Wikisource ${letter} request failed: ${response.status}`);
   const html = await response.text();
   const paragraphs = [...html.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/gi)].map((m) => strip(m[1]));
@@ -72,24 +94,46 @@ for (const letter of LETTERS) {
   }
 }
 
-// Project Gutenberg #17112: a quotation anthology containing 2,500+ extracts.
-if (quotes.length < TARGET_COUNT) {
-  const response = await fetch(GUTENBERG.url, { headers: { "User-Agent": "MayalinesQuoteBuilder/1.3 (+https://mayalines.com)" } });
-  if (!response.ok) throw new Error(`Project Gutenberg 17112 request failed: ${response.status}`);
+// Gutenberg quotation books use several layouts. Parse conservative patterns only:
+// quote — author, numbered aphorisms, and short standalone maxims in single-author books.
+for (const source of GUTENBERG_SOURCES) {
+  if (quotes.length >= TARGET_COUNT) break;
+  const response = await fetch(source.url, { headers: { "User-Agent": "MayalinesQuoteBuilder/2.0 (+https://mayalines.com)" } });
+  if (!response.ok) throw new Error(`${source.name} request failed: ${response.status}`);
   const text = (await response.text()).replace(/\r/g, "");
-  const body = text.split("*** START OF THE PROJECT GUTENBERG EBOOK")[1]?.split("*** END OF THE PROJECT GUTENBERG EBOOK")[0] ?? text;
+  const body = text.split(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*/i)[1]?.split(/\*\*\* END OF THE PROJECT GUTENBERG EBOOK/i)[0] ?? text;
   let category = "Wisdom";
+  let singleAuthor = "";
+  if (source.url.includes("33670")) singleAuthor = "Johann Wolfgang von Goethe";
+  if (source.url.includes("35584")) singleAuthor = "Thomas Henry Huxley";
+
   for (const rawLine of body.split("\n")) {
     const line = cleanQuoteText(rawLine);
-    if (!line || /^\[Pg \d+\]$/.test(line) || /^\*+$/.test(line)) continue;
-    if (/^[A-Z][A-Za-z &'’,-]{2,60}\.—/.test(line)) { category = line.split(".—")[0]; continue; }
-    const match = line.match(/^(.{15,1500}?)\s*[—–]\s*([A-Z][A-Za-z .,'’&-]{1,80})\.?$/);
-    if (match) addQuote({ quote: match[1], author: match[2], category, source: GUTENBERG.url, sourceName: GUTENBERG.name, sourceCommit: GUTENBERG.commit });
+    if (!line || /^\[Pg \d+\]$/.test(line) || /^\*+$/.test(line) || /^CHAPTER\b/i.test(line)) continue;
+    if (/^[A-Z][A-Z &'’,-]{2,60}[.:]?$/.test(line)) { category = line; continue; }
+
+    const attributed = line.match(/^(.{15,1200}?)\s*[—–]\s*([A-Z][A-Za-z .,'’&-]{1,100})\.?$/);
+    if (attributed) {
+      addQuote({ quote: attributed[1], author: attributed[2], category, source: source.url, sourceName: source.name, sourceCommit: source.commit });
+      continue;
+    }
+
+    if (singleAuthor) {
+      const numbered = line.match(/^\d+[.)]?\s+(.{15,1200})$/);
+      const candidate = numbered?.[1] ?? (/^[“\"]?.{25,500}[.!?][”\"]?$/.test(line) ? line : "");
+      if (candidate && !/project gutenberg|copyright|transcriber|contents|preface/i.test(candidate)) {
+        addQuote({ quote: candidate.replace(/^[“\"]|[”\"]$/g, ""), author: singleAuthor, category, source: source.url, sourceName: source.name, sourceCommit: source.commit });
+      }
+    }
     if (quotes.length >= TARGET_COUNT) break;
   }
 }
 
-if (quotes.length < TARGET_COUNT) throw new Error(`Expected at least ${TARGET_COUNT} verified public-domain quotes; extracted ${quotes.length}. Publication aborted.`);
+// Do not publish synthetic filler. If a source layout changes, fail the build rather
+// than silently lowering quality. 5,000 is the existing verified floor; new sources
+// can increase the corpus up to 10,000 without making deployment brittle.
+if (quotes.length < 5000) throw new Error(`Expected at least 5000 verified public-domain quotes; extracted ${quotes.length}. Publication aborted.`);
+const published = quotes.slice(0, TARGET_COUNT);
 await mkdir("data", { recursive: true });
-await writeFile("data/quotes.json", JSON.stringify(quotes.slice(0, TARGET_COUNT), null, 2) + "\n", "utf8");
-console.log(`Generated ${TARGET_COUNT} verified public-domain quote records from Wikisource and Project Gutenberg.`);
+await writeFile("data/quotes.json", JSON.stringify(published, null, 2) + "\n", "utf8");
+console.log(`Generated ${published.length} verified public-domain quotations and aphorisms.`);
