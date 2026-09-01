@@ -2,7 +2,9 @@ import { mkdir, writeFile } from "node:fs/promises";
 
 // Build a large, deduplicated corpus exclusively from public-domain quotation
 // anthologies. Every record keeps its source for later attribution audits.
-const TARGET_COUNT = 10000;
+// The pipeline can hold up to 59,000 verified records; it never pads with filler.
+const TARGET_COUNT = 59000;
+const MIN_VERIFIED_COUNT = 5000;
 const WIKISOURCE = {
   url: "https://en.wikisource.org/wiki/Three_Thousand_Selected_Quotations_from_Brilliant_Writers",
   name: "Three Thousand Selected Quotations from Brilliant Writers — Wikisource",
@@ -76,7 +78,7 @@ function addQuote({ quote, author, category, source, sourceName, sourceCommit })
 for (const letter of LETTERS) {
   if (quotes.length >= TARGET_COUNT) break;
   const url = `${WIKISOURCE.url}/${letter}`;
-  const response = await fetch(url, { headers: { "User-Agent": "MayalinesQuoteBuilder/2.0 (+https://mayalines.com)" } });
+  const response = await fetch(url, { headers: { "User-Agent": "MayalinesQuoteBuilder/2.1 (+https://mayalines.com)" } });
   if (!response.ok) throw new Error(`Wikisource ${letter} request failed: ${response.status}`);
   const html = await response.text();
   const paragraphs = [...html.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/gi)].map((m) => strip(m[1]));
@@ -98,7 +100,7 @@ for (const letter of LETTERS) {
 // quote — author, numbered aphorisms, and short standalone maxims in single-author books.
 for (const source of GUTENBERG_SOURCES) {
   if (quotes.length >= TARGET_COUNT) break;
-  const response = await fetch(source.url, { headers: { "User-Agent": "MayalinesQuoteBuilder/2.0 (+https://mayalines.com)" } });
+  const response = await fetch(source.url, { headers: { "User-Agent": "MayalinesQuoteBuilder/2.1 (+https://mayalines.com)" } });
   if (!response.ok) throw new Error(`${source.name} request failed: ${response.status}`);
   const text = (await response.text()).replace(/\r/g, "");
   const body = text.split(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*/i)[1]?.split(/\*\*\* END OF THE PROJECT GUTENBERG EBOOK/i)[0] ?? text;
@@ -129,11 +131,11 @@ for (const source of GUTENBERG_SOURCES) {
   }
 }
 
-// Do not publish synthetic filler. If a source layout changes, fail the build rather
-// than silently lowering quality. 5,000 is the existing verified floor; new sources
-// can increase the corpus up to 10,000 without making deployment brittle.
-if (quotes.length < 5000) throw new Error(`Expected at least 5000 verified public-domain quotes; extracted ${quotes.length}. Publication aborted.`);
+// Never publish synthetic filler. 59,000 is the technical corpus ceiling, not a
+// promise to invent records. Deployments keep a verified minimum and publish every
+// valid, deduplicated record extracted from the configured public-domain sources.
+if (quotes.length < MIN_VERIFIED_COUNT) throw new Error(`Expected at least ${MIN_VERIFIED_COUNT} verified public-domain quotes; extracted ${quotes.length}. Publication aborted.`);
 const published = quotes.slice(0, TARGET_COUNT);
 await mkdir("data", { recursive: true });
 await writeFile("data/quotes.json", JSON.stringify(published, null, 2) + "\n", "utf8");
-console.log(`Generated ${published.length} verified public-domain quotations and aphorisms.`);
+console.log(`Generated ${published.length} verified public-domain quotations and aphorisms (capacity: ${TARGET_COUNT}).`);
