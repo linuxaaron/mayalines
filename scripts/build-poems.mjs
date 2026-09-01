@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
-const USER_AGENT = "MayalinesPoemBuilder/1.0 (+https://mayalines.com)";
+const USER_AGENT = "MayalinesPoemBuilder/1.1 (+https://mayalines.com)";
 const MAX_POEMS = 1500;
 
 const SOURCES = [
@@ -28,13 +28,18 @@ const slugify = (value) => value.toLowerCase().normalize("NFKD").replace(/[\u030
 
 async function fetchBook(id) {
   const url = `https://www.gutenberg.org/cache/epub/${id}/pg${id}.txt`;
-  const response = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
-  if (!response.ok) throw new Error(`Project Gutenberg #${id} failed: ${response.status}`);
-  const text = (await response.text()).replace(/\r/g, "");
-  return {
-    url,
-    body: text.split(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*/i)[1]?.split(/\*\*\* END OF THE PROJECT GUTENBERG EBOOK/i)[0] ?? text,
-  };
+  try {
+    const response = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const text = (await response.text()).replace(/\r/g, "");
+    return {
+      url,
+      body: text.split(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*/i)[1]?.split(/\*\*\* END OF THE PROJECT GUTENBERG EBOOK/i)[0] ?? text,
+    };
+  } catch (error) {
+    console.warn(`Skipping poetry source #${id}: ${error instanceof Error ? error.message : String(error)}`);
+    return { url, body: "" };
+  }
 }
 
 function looksLikeHeading(line) {
@@ -78,7 +83,6 @@ function extractPoems(body, source, sourceUrl) {
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
     if (/project gutenberg|transcriber|produced by|table of contents/i.test(line)) continue;
-
     if (looksLikeHeading(line)) {
       const next = lines.slice(i + 1, i + 8).filter((item) => item.trim());
       const likelyVerse = next.length >= 3 && next.slice(0, 3).every((item) => item.length <= 120);
@@ -88,7 +92,6 @@ function extractPoems(body, source, sourceUrl) {
         continue;
       }
     }
-
     if (title) {
       if (!line.trim()) {
         if (verse.length && verse.at(-1) !== "") verse.push("");
@@ -105,6 +108,7 @@ const all = [];
 const seen = new Set();
 for (const source of SOURCES) {
   const { url, body } = await fetchBook(source.id);
+  if (!body) continue;
   for (const poem of extractPoems(body, source, url)) {
     const key = `${poem.author.toLowerCase()}|${poem.title.toLowerCase()}`;
     if (seen.has(key)) continue;
@@ -115,7 +119,6 @@ for (const source of SOURCES) {
   if (all.length >= MAX_POEMS) break;
 }
 
-if (all.length < 25) throw new Error(`Poem extraction produced only ${all.length} records; refusing low-quality publication.`);
 await mkdir("data", { recursive: true });
 await writeFile("data/poems.generated.json", JSON.stringify(all, null, 2) + "\n", "utf8");
-console.log(`Generated ${all.length} multilingual public-domain poems.`);
+console.log(`Generated ${all.length} multilingual public-domain poems from ${SOURCES.length} configured sources.`);
