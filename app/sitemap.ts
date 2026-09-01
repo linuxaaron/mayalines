@@ -13,7 +13,37 @@ function isIndexable(quote: (typeof quotesData)[number]) {
   return quote.indexable === true;
 }
 
-const collectionSlugs = ["quotes-about-life","quotes-about-love","quotes-about-suffering","quotes-about-success","quotes-about-motivation","quotes-about-wisdom","short-inspirational-quotes","quotes-about-friendship","quotes-about-courage","quotes-about-happiness","quotes-about-hope"];
+const highIntentCollections = new Set([
+  "quotes-about-love",
+  "quotes-about-hope",
+  "quotes-about-suffering",
+  "pain-quotes",
+  "healing-quotes",
+  "sad-quotes",
+  "strength-quotes",
+  "positive-quotes",
+  "maya-angelou-quotes",
+]);
+
+const collectionSlugs = [
+  "quotes-about-life",
+  "quotes-about-love",
+  "quotes-about-hope",
+  "quotes-about-suffering",
+  "pain-quotes",
+  "healing-quotes",
+  "sad-quotes",
+  "strength-quotes",
+  "positive-quotes",
+  "maya-angelou-quotes",
+  "quotes-about-success",
+  "quotes-about-motivation",
+  "quotes-about-wisdom",
+  "short-inspirational-quotes",
+  "quotes-about-friendship",
+  "quotes-about-courage",
+  "quotes-about-happiness",
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const indexableQuotes = quotesData.filter(isIndexable);
@@ -31,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/collections`, changeFrequency: "weekly", priority: 0.95 },
     { url: `${siteUrl}/community`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/most-copied`, changeFrequency: "daily", priority: 0.8 },
-    ...collectionSlugs.map((slug) => ({ url: `${siteUrl}/collections/${slug}`, changeFrequency: "weekly" as const, priority: slug === "quotes-about-suffering" ? 0.95 : 0.9 })),
+    ...collectionSlugs.map((slug) => ({ url: `${siteUrl}/collections/${slug}`, changeFrequency: "weekly" as const, priority: highIntentCollections.has(slug) ? 0.95 : 0.9 })),
     { url: `${siteUrl}/categories`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/authors`, changeFrequency: "weekly", priority: 0.9 },
     { url: `${siteUrl}/imprint`, changeFrequency: "yearly", priority: 0.2 },
