@@ -22,6 +22,7 @@ type Props = {
 
 const PAGE_SIZE = 48;
 const TOAST_DURATION = 1450;
+const QUICK_CATEGORY_NAMES = ["Life", "Love", "Wisdom", "Success", "Motivation", "Happiness", "Courage", "Friendship", "Freedom"];
 
 export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categories }: Props) {
   const [query, setQuery] = useState("");
@@ -33,7 +34,8 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
   const [resultToast, setResultToast] = useState<number | null>(null);
   const requestId = useRef(0);
   const firstRun = useRef(true);
-  const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const toastTimer = useRef<number | null>(null);
+  const quickCategories = ["All", ...QUICK_CATEGORY_NAMES.filter((item) => categories.includes(item))];
 
   function showResultToast(count: number) {
     setResultToast(count);
@@ -84,8 +86,13 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
   return <>
     <style>{`
       .quote-count-toast{position:fixed;z-index:500;left:50%;top:50%;transform:translate(-50%,-50%);min-width:150px;padding:15px 22px;border-radius:10px;background:#090909;color:#fff;text-align:center;font-size:18px;font-weight:800;letter-spacing:.01em;box-shadow:0 18px 52px rgba(0,0,0,.28);pointer-events:none;animation:quote-count-toast ${TOAST_DURATION}ms ease both}
+      .quote-library-filters{align-items:center;gap:8px;padding:16px 0}
+      .quote-library-filters button{min-height:40px;padding:9px 12px;border:1px solid transparent;border-radius:999px;background:transparent;font-size:10px}
+      .quote-library-filters button:hover,.quote-library-filters button[aria-pressed="true"]{border-color:#c8c2ba;background:#fff;color:#5d554d}
+      .all-categories-link{display:inline-flex;align-items:center;min-height:40px;padding:9px 4px;color:#5d554d;font-size:10px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
+      .all-categories-link:hover{text-decoration:underline;text-underline-offset:4px}
       @keyframes quote-count-toast{0%{opacity:0;transform:translate(-50%,-44%) scale(.96)}12%,76%{opacity:.96;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-56%) scale(.98)}}
-      @media(max-width:560px){.quote-count-toast{min-width:128px;padding:13px 18px;font-size:16px}}
+      @media(max-width:560px){.quote-count-toast{min-width:128px;padding:13px 18px;font-size:16px}.quote-library-filters{gap:6px;padding:12px 0}.quote-library-filters button,.all-categories-link{min-height:44px;font-size:10px}.quote-library-filters button{padding:10px 12px}}
       @media(prefers-reduced-motion:reduce){.quote-count-toast{animation:none}}
     `}</style>
 
@@ -102,8 +109,9 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
     <section className="library" id="main-content" aria-labelledby="library-title">
       <div className="section-heading" id="library-title">Quote library</div>
       <p className="sr-only" aria-live="polite">{total.toLocaleString("en-US")} quotes</p>
-      <div className="category-rail" id="categories" aria-label="Quote categories">
-        {categories.map((item) => <button key={item} type="button" onClick={() => setCategory(item)} aria-pressed={category === item}>{item}</button>)}
+      <div className="category-rail quote-library-filters" id="categories" role="group" aria-label="Quick quote categories">
+        {quickCategories.map((item) => <button key={item} type="button" onClick={() => setCategory(item)} aria-pressed={category === item}>{item}</button>)}
+        <a className="all-categories-link" href="/categories">All categories →</a>
       </div>
       <div className="quote-grid">
         {quotes.map((item) => <article className="quote-card" key={item.id} lang={item.language ?? "en"} dir="auto"><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{item.quote}</p><p className="quote-author">— {item.author}</p><p className="quote-category">{item.category}</p><div className="quote-actions"><PersistentLikeButton quoteId={item.id} author={item.author} /><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}
