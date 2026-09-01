@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 const PUBLISH_TARGET = 12000;
 const MAX_CAPACITY = 59000;
 const MIN_REQUIRED_COUNT = 10000;
-const USER_AGENT = "MayalinesQuoteBuilder/4.2 (+https://mayalines.com)";
+const USER_AGENT = "MayalinesQuoteBuilder/4.3 (+https://mayalines.com)";
 
 const QUOTABLES = {
   commit: "7936d4c2ee93df843854777850ebf926998f8392",
@@ -37,6 +37,7 @@ const clean = (value) => decode(value).replace(/\u00a0/g, " ").replace(/[\u200B-
 const strip = (value) => clean(value.replace(/<[^>]+>/g, " "));
 const slugify = (value) => value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 const titleCase = (value) => value.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+const normalizeForDedup = (value) => clean(value).toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, " ").trim();
 
 function categoryFor(text) {
   const value = text.toLowerCase();
@@ -73,7 +74,7 @@ function addQuote({ quote, author, category = "Wisdom", source, sourceName, sour
   quote = clean(quote); author = clean(author);
   if (!author || !quote || quote.length < 15 || quote.length > 1200) return false;
   if (/https?:\/\/|www\.|project gutenberg|transcriber|table of contents|copyright|all rights reserved|ebook|proofread/i.test(quote)) return false;
-  const key = `${author.toLowerCase()}|${quote.toLowerCase()}`;
+  const key = `${normalizeForDedup(author)}|${normalizeForDedup(quote)}`;
   if (seen.has(key)) return false;
   seen.add(key);
   const generatedId = id && !usedIds.has(id) ? id : nextId();
