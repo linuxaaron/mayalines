@@ -1,0 +1,50 @@
+name: Materialize Quote Corpus
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/build-quotes.mjs"
+      - ".github/workflows/materialize-quotes.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mayalines-quote-materialization
+  cancel-in-progress: true
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Build sourced quote corpus
+        run: node scripts/build-quotes.mjs
+
+      - name: Verify minimum corpus size
+        run: MIN_QUOTES=10000 MAX_QUOTES=59000 node scripts/audit-quotes.mjs
+
+      - name: Commit materialized corpus
+        run: |
+          if git diff --quiet -- data/quotes.json; then
+            echo "Quote corpus already materialized."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/quotes.json
+          git commit -m "data: materialize 12000 sourced quotes"
+          git push
