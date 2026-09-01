@@ -3,6 +3,7 @@ import quotesData from "../data/quotes";
 import { quoteTopics } from "../lib/quote-topics";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
+const PRIMARY_QUOTE_LIMIT = 30000;
 
 function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -18,10 +19,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const indexableQuotes = quotesData.filter(isIndexable);
   const categories = [...new Set(indexableQuotes.map((quote) => quote.category))];
   const authors = [...new Set(indexableQuotes.map((quote) => quote.author))];
+  const primaryQuotes = indexableQuotes.slice(0, PRIMARY_QUOTE_LIMIT);
+
   return [
-    { url: siteUrl, changeFrequency: "weekly", priority: 1 },
+    { url: siteUrl, changeFrequency: "daily", priority: 1 },
     { url: `${siteUrl}/popular`, changeFrequency: "daily", priority: 0.95 },
-    { url: `${siteUrl}/trending`, changeFrequency: "hourly", priority: 0.9 },
+    { url: `${siteUrl}/trending`, changeFrequency: "daily", priority: 0.9 },
     { url: `${siteUrl}/topics`, changeFrequency: "weekly", priority: 0.95 },
     ...quoteTopics.map((topic) => ({ url: `${siteUrl}/topics/${topic.slug}`, changeFrequency: "weekly" as const, priority: 0.85 })),
     { url: `${siteUrl}/poems`, changeFrequency: "weekly", priority: 0.95 },
@@ -38,6 +41,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${siteUrl}/accessibility`, changeFrequency: "yearly", priority: 0.2 },
     ...categories.map((category) => ({ url: `${siteUrl}/categories/${slugify(category)}`, changeFrequency: "weekly" as const, priority: 0.8 })),
     ...authors.map((author) => ({ url: `${siteUrl}/authors/${slugify(author)}`, changeFrequency: "monthly" as const, priority: 0.7 })),
-    ...indexableQuotes.map((quote) => ({ url: `${siteUrl}/quotes/${quote.slug}`, changeFrequency: "monthly" as const, priority: 0.6 })),
+    ...primaryQuotes.map((quote) => ({ url: `${siteUrl}/quotes/${quote.slug}`, changeFrequency: "monthly" as const, priority: 0.6 })),
   ];
 }
