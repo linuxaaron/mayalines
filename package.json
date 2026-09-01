@@ -1,15 +1,16 @@
 {
   "name": "mayalines",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
-    "dev": "node scripts/build-quotes.mjs && next dev",
-    "prebuild": "node scripts/build-quotes.mjs && node scripts/audit-quotes.mjs && node scripts/validate-licensed-import.mjs",
+    "dev": "node scripts/build-quotes.mjs && node scripts/build-poems.mjs && next dev",
+    "prebuild": "node scripts/build-quotes.mjs && node scripts/build-poems.mjs && node scripts/audit-quotes.mjs && node scripts/validate-licensed-import.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "audit:quotes": "node scripts/audit-quotes.mjs",
-    "audit:licensed": "node scripts/validate-licensed-import.mjs"
+    "audit:licensed": "node scripts/validate-licensed-import.mjs",
+    "build:data": "node scripts/build-quotes.mjs && node scripts/build-poems.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

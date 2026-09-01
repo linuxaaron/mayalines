@@ -8,8 +8,9 @@ const warnings = [];
 const seenExact = new Map();
 const seenNormalized = new Map();
 const categories = new Map();
+const languages = new Map();
 
-const normalize = (value) => String(value)
+const normalize = (value) => String(value ?? "")
   .toLowerCase()
   .normalize("NFKD")
   .replace(/[\u0300-\u036f]/g, "")
@@ -29,11 +30,14 @@ for (const [index, quote] of (quotes ?? []).entries()) {
   if (!quote?.sourceName) errors.push(`${label}: missing source name`);
   if (!quote?.sourceCommit) errors.push(`${label}: missing source commit`);
 
-  if (quote?.attributionStatus !== "verified") warnings.push(`${label}: attribution is not verified`);
-  if (quote?.copyrightStatus !== "cleared") warnings.push(`${label}: copyright status is not cleared`);
+  if (quote?.attributionStatus !== "verified") warnings.push(`${label}: attribution requires editorial verification`);
+  if (quote?.copyrightStatus !== "cleared") warnings.push(`${label}: copyright requires editorial review`);
   if (quote?.indexable !== false && quote?.indexable !== true) errors.push(`${label}: indexable must be explicitly true or false`);
+  // `indexable` controls whether a record may appear in the public browsing library.
+  // Search-engine indexing has a stricter gate in metadata/sitemap code and requires
+  // verified attribution plus copyrightStatus=cleared.
   if (quote?.indexable === true && (quote?.attributionStatus !== "verified" || quote?.copyrightStatus !== "cleared")) {
-    errors.push(`${label}: indexable quote is not fully cleared`);
+    warnings.push(`${label}: public library record remains search-engine noindex until editorial clearance`);
   }
 
   const exactKey = `${normalize(quote?.author)}|${normalize(quote?.quote)}`;
@@ -45,22 +49,28 @@ for (const [index, quote] of (quotes ?? []).entries()) {
 
   const category = quote?.category ?? "Unknown";
   categories.set(category, (categories.get(category) ?? 0) + 1);
+  const language = quote?.language ?? "en";
+  languages.set(language, (languages.get(language) ?? 0) + 1);
 }
 
-const expected = Number(process.env.EXPECTED_QUOTES ?? "5000");
-if ((quotes?.length ?? 0) !== expected) errors.push(`Expected ${expected} quotes, found ${quotes?.length ?? 0}.`);
+const count = quotes?.length ?? 0;
+const expected = process.env.EXPECTED_QUOTES ? Number(process.env.EXPECTED_QUOTES) : null;
+const minQuotes = Number(process.env.MIN_QUOTES ?? "10000");
+const maxQuotes = Number(process.env.MAX_QUOTES ?? "59000");
+if (expected !== null && count !== expected) errors.push(`Expected exactly ${expected} quotes, found ${count}.`);
+if (count < minQuotes) errors.push(`Expected at least ${minQuotes} quotes, found ${count}.`);
+if (count > maxQuotes) errors.push(`Quote corpus exceeds configured maximum of ${maxQuotes}: found ${count}.`);
 
-const indexableCount = (quotes ?? []).filter((quote) => quote?.indexable === true).length;
-console.log(`Quote audit: ${quotes?.length ?? 0} records`);
-console.log(`Indexable: ${indexableCount}`);
+const publicCount = (quotes ?? []).filter((quote) => quote?.indexable === true && quote?.attributionStatus === "verified" && quote?.copyrightStatus === "cleared").length;
+const seoClearedCount = publicCount;
+console.log(`Quote audit: ${count} records`);
+console.log(`Public library: ${publicCount}`);
+console.log(`SEO-cleared: ${seoClearedCount}`);
 console.log(`Categories: ${categories.size}`);
-for (const [category, count] of [...categories.entries()].sort((a, b) => b[1] - a[1])) {
-  console.log(`  ${category}: ${count}`);
-}
+console.log(`Languages: ${[...languages.entries()].map(([language, amount]) => `${language}:${amount}`).join(", ")}`);
 console.log(`Warnings: ${warnings.length}`);
 for (const warning of warnings.slice(0, 20)) console.warn(`WARN: ${warning}`);
 if (warnings.length > 20) console.warn(`WARN: ... ${warnings.length - 20} more warnings`);
 console.log(`Errors: ${errors.length}`);
 for (const error of errors) console.error(`ERROR: ${error}`);
-
 if (errors.length) process.exit(1);

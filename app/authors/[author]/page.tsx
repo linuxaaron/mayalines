@@ -1,28 +1,30 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import PersistentLikeButton from "../../../components/PersistentLikeButton";
 import FollowButton from "../../../components/FollowButton";
 import quotesData from "../../../data/quotes";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
+export const revalidate = 86400;
+
 function slugify(value: string) { return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
-function isIndexable(quote: (typeof quotesData)[number]) { return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared"; }
-export function generateStaticParams() { return Array.from(new Set(quotesData.map((quote) => quote.author))).map((author) => ({ author: slugify(author) })); }
+function isIndexable(quote: (typeof quotesData)[number]) { return quote.indexable === true; }
 
 export async function generateMetadata({ params }: { params: Promise<{ author: string }> }): Promise<Metadata> {
   const { author: slug } = await params;
   const authorName = Array.from(new Set(quotesData.map((quote) => quote.author))).find((name) => slugify(name) === slug);
   const indexable = authorName ? quotesData.some((quote) => quote.author === authorName && isIndexable(quote)) : false;
   const count = authorName ? quotesData.filter((quote) => quote.author === authorName && isIndexable(quote)).length : 0;
-  const description = authorName ? `Explore ${count.toLocaleString("en-US")} verified quotes by ${authorName}, including famous, inspirational and timeless words, on Mayalines.` : "Explore famous quotes by notable authors on Mayalines.";
+  const description = authorName ? `Explore ${count.toLocaleString("en-US")} sourced quotes by ${authorName}, including famous, inspirational and timeless words, on Mayalines.` : "Explore famous quotes by notable authors on Mayalines.";
   return { title: authorName ? `Quotes by ${authorName} – Famous & Inspirational Quotes` : "Quotes by Author", description, alternates: { canonical: authorName ? `/authors/${slug}` : "/authors" }, robots: { index: indexable, follow: true }, openGraph: authorName ? { type: "profile", title: `Quotes by ${authorName} | Mayalines`, description, url: `/authors/${slug}`, images: [{ url: "/mayalines-og.svg", width: 1200, height: 630, alt: `Mayalines quotes by ${authorName}` }] } : undefined };
 }
 
 export default async function AuthorPage({ params }: { params: Promise<{ author: string }> }) {
   const { author: slug } = await params;
   const authorName = Array.from(new Set(quotesData.map((quote) => quote.author))).find((name) => slugify(name) === slug);
-  if (!authorName) return null;
+  if (!authorName) notFound();
   const quotes = quotesData.filter((quote) => quote.author === authorName);
   const indexableQuotes = quotes.filter(isIndexable);
   const visibleQuotes = indexableQuotes.slice(0, 24);
@@ -37,9 +39,9 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
     <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Authors", url: "/authors" }, { name: authorName, url: `/authors/${slug}` }]} />
     <p className="eyebrow">AUTHOR QUOTES</p>
     <h1>Quotes by {authorName}</h1>
-    <p className="hero-copy">Explore {indexableQuotes.length.toLocaleString("en-US")} verified quotes by {authorName}. Discover famous, inspirational and timeless words with source information.</p>
+    <p className="hero-copy">Explore {indexableQuotes.length.toLocaleString("en-US")} sourced quotes by {authorName}. Discover famous, inspirational and timeless words with source information.</p>
     <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 22 }} aria-label="Author quote statistics">
-      <span className="copy-button" style={{ color: "var(--muted)" }}>{indexableQuotes.length.toLocaleString("en-US")} VERIFIED QUOTES</span>
+      <span className="copy-button" style={{ color: "var(--muted)" }}>{indexableQuotes.length.toLocaleString("en-US")} QUOTES</span>
       <span className="copy-button" style={{ color: "var(--muted)" }}>{topics.length.toLocaleString("en-US")} TOPICS</span>
       <FollowButton targetType="author" target={authorName} />
     </div>
@@ -49,9 +51,9 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
     </section>}
     <section aria-labelledby="author-library" style={{ marginTop: 38 }}>
       <div className="section-heading" id="author-library">Selected quotes by {authorName}</div>
-      <div className="quote-grid">{visibleQuotes.map((quote) => <article className="quote-card" key={quote.id}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><p className="quote-category">{quote.category}</p><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><a className="copy-button" href={`/quotes/${quote.slug}`}>VIEW QUOTE</a></div></article>)}</div>
+      <div className="quote-grid">{visibleQuotes.map((quote) => <article className="quote-card" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><p className="quote-category">{quote.category}</p><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><a className="copy-button" href={`/quotes/${quote.slug}`}>VIEW QUOTE</a></div></article>)}</div>
     </section>
-    {indexableQuotes.length > visibleQuotes.length && <p className="hero-copy" style={{ marginTop: 24 }}>More verified quotes by {authorName} are available in the collection above as the library expands.</p>}
+    {indexableQuotes.length > visibleQuotes.length && <p className="hero-copy" style={{ marginTop: 24 }}>More sourced quotes by {authorName} are available across the Mayalines library.</p>}
     <StructuredData data={personSchema} /><StructuredData data={breadcrumbSchema} /><StructuredData data={itemListSchema} />
   </main>;
 }

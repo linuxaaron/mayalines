@@ -3,14 +3,19 @@ import nietzscheQuotes from "./quotes.pending.json";
 import importedQuotes from "./quotes.imported.json";
 import licensedQuotes from "./quotes.licensed.json";
 
-type BaseQuote = (typeof quotesJson)[number];
-type NietzscheQuote = (typeof nietzscheQuotes)[number];
-type ImportedQuote = (typeof importedQuotes)[number];
-type LicensedQuote = (typeof licensedQuotes)[number];
-
-export type Quote = (BaseQuote | NietzscheQuote | ImportedQuote | LicensedQuote) & {
+export type Quote = {
+  id: string;
+  quote: string;
+  author: string;
+  category: string;
+  slug: string;
   indexable: boolean;
+  language?: string;
+  source?: string;
   sourceName?: string;
+  sourceCommit?: string;
+  attributionStatus?: string;
+  copyrightStatus?: string;
 };
 
 /** Normalize imported quote text so HTML entities and invisible Unicode characters
@@ -26,12 +31,19 @@ export function cleanQuoteText(value: string): string {
     .trim();
 }
 
-const allQuotes = [...quotesJson, ...nietzscheQuotes, ...importedQuotes, ...licensedQuotes];
+const allQuotes = [
+  ...(quotesJson as Quote[]),
+  ...(nietzscheQuotes as Quote[]),
+  ...(importedQuotes as Quote[]),
+  ...(licensedQuotes as Quote[]),
+];
 
 export const quotes: Quote[] = allQuotes.map((quote) => ({
   ...quote,
   quote: cleanQuoteText(quote.quote),
-  indexable: quote.indexable === true || (quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared"),
+  // Only editorially verified, copyright-cleared records may be shown publicly.
+  // Source-derived records remain available to the moderation workflow only.
+  indexable: quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared",
 }));
 
 export default quotes;

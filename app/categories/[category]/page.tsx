@@ -15,24 +15,23 @@ const descriptions: Record<string, string> = {
 };
 
 function slugify(value: string) { return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
-function isIndexable(quote: (typeof quotesData)[number]) { return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared"; }
+function isIndexable(quote: (typeof quotesData)[number]) { return quote.indexable === true; }
 export function generateStaticParams() { return [...new Set(quotesData.map((quote) => quote.category))].map((category) => ({ category: slugify(category) })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category } = await params;
   const title = labels[category] ?? category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-  const hasClearedQuotes = quotesData.some((quote) => slugify(quote.category) === category && isIndexable(quote));
+  const hasQuotes = quotesData.some((quote) => slugify(quote.category) === category && isIndexable(quote));
   const description = descriptions[category] ?? `Discover notable ${title.toLowerCase()} quotes by influential authors on Mayalines.`;
-  return { title: `${title} Quotes – Famous & Timeless Words`, description, alternates: { canonical: `/categories/${category}` }, robots: { index: hasClearedQuotes, follow: true }, openGraph: { type: "website", title: `${title} Quotes – Famous & Timeless Words | Mayalines`, description, url: `/categories/${category}` } };
+  return { title: `${title} Quotes – Famous & Timeless Words`, description, alternates: { canonical: `/categories/${category}` }, robots: { index: hasQuotes, follow: true }, openGraph: { type: "website", title: `${title} Quotes – Famous & Timeless Words | Mayalines`, description, url: `/categories/${category}` } };
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ category: string }> }) {
   const { category } = await params;
   const title = labels[category] ?? category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   const description = descriptions[category] ?? `Discover notable ${title.toLowerCase()} quotes by influential authors on Mayalines.`;
-  const quotes = quotesData.filter((quote) => slugify(quote.category) === category);
-  const indexableQuotes = quotes.filter(isIndexable);
-  const visibleQuotes = indexableQuotes.slice(0, 60);
+  const quotes = quotesData.filter((quote) => slugify(quote.category) === category && isIndexable(quote));
+  const visibleQuotes = quotes.slice(0, 60);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const categoryUrl = `${siteUrl}/categories/${category}`;
   const collectionSchema = { "@context": "https://schema.org", "@type": "CollectionPage", name: `${title} Quotes – Famous & Timeless Words | Mayalines`, description, url: categoryUrl, inLanguage: "en-US", isPartOf: { "@type": "WebSite", name: "Mayalines", url: siteUrl } };
@@ -41,8 +40,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
 
   return <main className="quote-detail">
     <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Categories", url: "/categories" }, { name: `${title} Quotes`, url: `/categories/${category}` }]} />
-    <p className="eyebrow">MAYALINES CATEGORY</p><h1>{title} Quotes</h1><p className="hero-copy">{description}</p><p className="library-meta">{indexableQuotes.length.toLocaleString("en-US")} verified quotes in this category.</p>
-    <div className="quote-grid">{visibleQuotes.map((quote) => <article className="quote-card" key={quote.id}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><a className="copy-button" href={`/quotes/${quote.slug}`}>READ QUOTE</a></div></article>)}</div>
+    <p className="eyebrow">MAYALINES CATEGORY</p><h1>{title} Quotes</h1><p className="hero-copy">{description}</p><p className="library-meta">{quotes.length.toLocaleString("en-US")} sourced quotes in this category.</p>
+    <div className="quote-grid">{visibleQuotes.map((quote) => <article className="quote-card" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><a className="copy-button" href={`/quotes/${quote.slug}`}>READ QUOTE</a></div></article>)}</div>
     <StructuredData data={collectionSchema} /><StructuredData data={breadcrumbSchema} /><StructuredData data={itemListSchema} />
   </main>;
 }

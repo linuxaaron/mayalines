@@ -4,10 +4,12 @@ import "./quote-overrides.css";
 import "./submit/submit-overrides.css";
 import "./admin/admin-overrides.css";
 import StructuredData from "../components/StructuredData";
+import SiteFooter from "../components/SiteFooter";
+import GoogleTranslateLink from "../components/GoogleTranslateLink";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
-const siteTitle = "Famous Quotes, Inspirational & Motivational Quotes | Mayalines";
-const siteDescription = "Discover famous quotes, inspirational quotes, motivational quotes, life quotes and timeless wisdom from notable authors. Search, read and copy sourced quotes on Mayalines.";
+const siteTitle = "Famous Quotes, Love Quotes, Hope Quotes & Poems | Mayalines";
+const siteDescription = "Discover famous quotes, love quotes, hope quotes, life quotes, inspirational quotes, suffering quotes, Maya Angelou quotes, wisdom and poems. Browse thousands of quotes by topic and author on Mayalines.";
 const socialImage = `${siteUrl}/mayalines-og.svg`;
 
 export const metadata: Metadata = {
@@ -18,8 +20,54 @@ export const metadata: Metadata = {
   authors: [{ name: "Mayalines" }],
   creator: "Mayalines",
   publisher: "Mayalines",
-  category: "quotes",
-  alternates: { canonical: "/" },
+  category: "quotes, aphorisms and poetry",
+  keywords: [
+    "quotes",
+    "famous quotes",
+    "best quotes",
+    "quotes about life",
+    "life quotes",
+    "love quotes",
+    "quotes about love",
+    "hope quotes",
+    "quotes about hope",
+    "inspirational quotes",
+    "motivational quotes",
+    "positive quotes",
+    "deep quotes",
+    "meaningful quotes",
+    "short quotes",
+    "short inspirational quotes",
+    "suffering quotes",
+    "quotes about suffering",
+    "pain quotes",
+    "sad quotes",
+    "healing quotes",
+    "grief quotes",
+    "strength quotes",
+    "courage quotes",
+    "happiness quotes",
+    "friendship quotes",
+    "success quotes",
+    "wisdom quotes",
+    "philosophy quotes",
+    "Maya Angelou quotes",
+    "Maya quotes",
+    "quotes by famous people",
+    "quotes by authors",
+    "daily quotes",
+    "quote of the day",
+    "beautiful quotes",
+    "timeless quotes",
+    "Liebeszitate",
+    "Zitate über Liebe",
+    "Hoffnung Zitate",
+    "Lebenszitate",
+    "inspirierende Zitate",
+    "aphorisms",
+    "famous poems",
+    "poems",
+  ],
   robots: {
     index: true,
     follow: true,
@@ -38,7 +86,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: siteTitle,
     description: siteDescription,
-    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — Famous Quotes and timeless wisdom" }],
+    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — famous quotes, love quotes, hope quotes and poetry" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -61,7 +109,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "WebSite",
     name: "Mayalines",
     url: siteUrl,
-    inLanguage: "en-US",
+    inLanguage: ["en", "de", "fr", "es", "it", "nl"],
     description: siteDescription,
     image: socialImage,
   };
@@ -80,10 +128,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <meta name="referrer" content="strict-origin-when-cross-origin" />
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2162793628214003" crossOrigin="anonymous" />
       </head>
-      <body>
+      <body translate="yes">
         <StructuredData data={websiteSchema} />
         <StructuredData data={organizationSchema} />
         {children}
+        <SiteFooter />
+        <GoogleTranslateLink />
       </body>
     </html>
   );
