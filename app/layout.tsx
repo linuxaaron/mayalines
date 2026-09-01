@@ -7,7 +7,7 @@ import StructuredData from "../components/StructuredData";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 const siteTitle = "Famous Quotes, Aphorisms & Poems | Mayalines";
-const siteDescription = "Discover sourced famous quotes, aphorisms, inspirational words and public-domain poetry from notable writers. Browse a growing multilingual collection on Mayalines.";
+const siteDescription = "Discover sourced famous quotes, aphorisms, inspirational words and public-domain poetry from notable writers. Browse a large multilingual quote library on Mayalines.";
 const socialImage = `${siteUrl}/mayalines-og.svg`;
 
 export const metadata: Metadata = {
@@ -20,7 +20,6 @@ export const metadata: Metadata = {
   publisher: "Mayalines",
   category: "quotes, aphorisms and poetry",
   keywords: ["famous quotes", "inspirational quotes", "aphorisms", "poems", "poetry", "quotes by authors", "multilingual quotes"],
-  alternates: { canonical: "/" },
   robots: {
     index: true,
     follow: true,
@@ -62,7 +61,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "WebSite",
     name: "Mayalines",
     url: siteUrl,
-    inLanguage: ["en", "de", "fr", "es", "it"],
+    inLanguage: ["en", "de", "fr", "es", "it", "nl"],
     description: siteDescription,
     image: socialImage,
   };
