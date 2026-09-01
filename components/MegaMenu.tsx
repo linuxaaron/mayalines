@@ -6,7 +6,7 @@ const topics = [["Life","/topics/life"],["Love","/topics/love"],["Wisdom","/topi
 const popularAuthors = [["William Shakespeare","/authors/william-shakespeare"],["Oscar Wilde","/authors/oscar-wilde"],["Friedrich Nietzsche","/authors/friedrich-nietzsche"],["Maya Angelou","/authors/maya-angelou"],["Albert Einstein","/authors/albert-einstein"],["Mark Twain","/authors/mark-twain"]] as const;
 const collections = [["Quotes About Life","/collections/quotes-about-life"],["Quotes About Love","/collections/quotes-about-love"],["Quotes About Success","/collections/quotes-about-success"],["Motivational Quotes","/collections/quotes-about-motivation"],["Wisdom Quotes","/collections/quotes-about-wisdom"],["Short Inspirational Quotes","/collections/short-inspirational-quotes"]] as const;
 
-const MENU_CLOSE_DELAY = 4500;
+const MENU_CLOSE_DELAY = 650;
 type MobileSection = "quotes" | "topics" | "authors" | "collections";
 
 function SunflowerMark() {
