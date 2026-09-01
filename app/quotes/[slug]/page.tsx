@@ -10,7 +10,7 @@ export const dynamicParams = true;
 export const revalidate = 86400;
 
 const localeByLanguage: Record<string, string> = {
-  en: "en_US", de: "de_DE", fr: "fr_FR", es: "es_ES", it: "it_IT", pt: "pt_PT", ilo: "fil_PH",
+  en: "en_US", de: "de_DE", fr: "fr_FR", es: "es_ES", it: "it_IT", pt: "pt_PT", nl: "nl_NL", ilo: "fil_PH",
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -43,7 +43,9 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
   const quote = quotesData.find((item) => item.slug === slug);
   if (!quote) notFound();
 
-  const language = (quote as typeof quote & { language?: string }).language ?? "en";
+  const language = (quote as { language?: string }).language ?? "en";
+  const isVerified = quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared";
+  const statusLabel = isVerified ? "VERIFIED" : "SOURCE-DERIVED";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const authorSlug = quote.author.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const categorySlug = quote.category.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -65,7 +67,7 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
 
   return <main className="quote-detail" lang={language}>
     <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Quotes", url: "/#main-content" }, { name: `${quote.category} Quotes`, url: `/categories/${categorySlug}` }, { name: quote.author, url: `/authors/${authorSlug}` }]} />
-    <p className="eyebrow">{quote.category.toUpperCase()} · VERIFIED · {language.toUpperCase()}</p>
+    <p className="eyebrow">{quote.category.toUpperCase()} · {statusLabel} · {language.toUpperCase()}</p>
     <h1>{quote.author} Quote</h1>
     <blockquote>“{quote.quote}”</blockquote>
     <p className="quote-author">— {quote.author}</p>
