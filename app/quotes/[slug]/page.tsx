@@ -16,7 +16,7 @@ const localeByLanguage: Record<string, string> = {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const quote = quotesData.find((item) => item.slug === slug);
-  const isIndexable = quote?.indexable === true && quote?.attributionStatus === "verified" && quote?.copyrightStatus === "cleared";
+  const isIndexable = quote?.indexable === true;
   const quotePreview = quote?.quote.replace(/\s+/g, " ").trim() ?? "";
   const language = (quote as { language?: string } | undefined)?.language ?? "en";
   const description = quote
