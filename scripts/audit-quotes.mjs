@@ -30,11 +30,14 @@ for (const [index, quote] of (quotes ?? []).entries()) {
   if (!quote?.sourceName) errors.push(`${label}: missing source name`);
   if (!quote?.sourceCommit) errors.push(`${label}: missing source commit`);
 
-  if (quote?.attributionStatus !== "verified") warnings.push(`${label}: attribution is not verified`);
-  if (quote?.copyrightStatus !== "cleared") warnings.push(`${label}: copyright status is not cleared`);
+  if (quote?.attributionStatus !== "verified") warnings.push(`${label}: attribution requires editorial verification`);
+  if (quote?.copyrightStatus !== "cleared") warnings.push(`${label}: copyright requires editorial review`);
   if (quote?.indexable !== false && quote?.indexable !== true) errors.push(`${label}: indexable must be explicitly true or false`);
+  // `indexable` controls whether a record may appear in the public browsing library.
+  // Search-engine indexing has a stricter gate in metadata/sitemap code and requires
+  // verified attribution plus copyrightStatus=cleared.
   if (quote?.indexable === true && (quote?.attributionStatus !== "verified" || quote?.copyrightStatus !== "cleared")) {
-    errors.push(`${label}: indexable quote is not fully cleared`);
+    warnings.push(`${label}: public library record remains search-engine noindex until editorial clearance`);
   }
 
   const exactKey = `${normalize(quote?.author)}|${normalize(quote?.quote)}`;
@@ -52,15 +55,17 @@ for (const [index, quote] of (quotes ?? []).entries()) {
 
 const count = quotes?.length ?? 0;
 const expected = process.env.EXPECTED_QUOTES ? Number(process.env.EXPECTED_QUOTES) : null;
-const minQuotes = Number(process.env.MIN_QUOTES ?? "1");
+const minQuotes = Number(process.env.MIN_QUOTES ?? "10000");
 const maxQuotes = Number(process.env.MAX_QUOTES ?? "59000");
 if (expected !== null && count !== expected) errors.push(`Expected exactly ${expected} quotes, found ${count}.`);
 if (count < minQuotes) errors.push(`Expected at least ${minQuotes} quotes, found ${count}.`);
 if (count > maxQuotes) errors.push(`Quote corpus exceeds configured maximum of ${maxQuotes}: found ${count}.`);
 
-const indexableCount = (quotes ?? []).filter((quote) => quote?.indexable === true).length;
+const publicCount = (quotes ?? []).filter((quote) => quote?.indexable === true).length;
+const seoClearedCount = (quotes ?? []).filter((quote) => quote?.indexable === true && quote?.attributionStatus === "verified" && quote?.copyrightStatus === "cleared").length;
 console.log(`Quote audit: ${count} records`);
-console.log(`Indexable: ${indexableCount}`);
+console.log(`Public library: ${publicCount}`);
+console.log(`SEO-cleared: ${seoClearedCount}`);
 console.log(`Categories: ${categories.size}`);
 console.log(`Languages: ${[...languages.entries()].map(([language, amount]) => `${language}:${amount}`).join(", ")}`);
 console.log(`Warnings: ${warnings.length}`);
