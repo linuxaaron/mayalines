@@ -1,5 +1,11 @@
 /** @type {import("next").NextConfig} */
 const nextConfig = {
+  experimental: {
+    // TypeScript 6's CLI can close its wrapper before Next receives the
+    // complete --showConfig output. The compiler API avoids that transport
+    // issue while preserving the same type-checking rules.
+    useTypeScriptCli: false,
+  },
   async headers() {
     return [
       {

@@ -14,6 +14,8 @@ for (const [index, quote] of (Array.isArray(input) ? input : []).entries()) {
   if (!/^https:\/\//.test(String(quote?.source ?? "")) || !/^https:\/\//.test(String(quote?.licenseUrl ?? ""))) errors.push(`${label}: source and licenseUrl must use HTTPS`);
   if (!allowedLicenses.has(quote?.license)) errors.push(`${label}: unsupported license`);
   if (!Number.isInteger(quote?.authorDeathYear) || quote.authorDeathYear > new Date().getUTCFullYear() - 70) errors.push(`${label}: authorDeathYear does not meet the 70-year review rule`);
+  if (quote?.translator && (!Number.isInteger(quote?.translatorDeathYear) || quote.translatorDeathYear > new Date().getUTCFullYear() - 70)) errors.push(`${label}: translatorDeathYear does not meet the 70-year review rule`);
+  if (quote?.translatorDeathYear !== undefined && !quote?.translator) errors.push(`${label}: translatorDeathYear requires translator`);
   if (quote?.verificationStatus !== "verified") errors.push(`${label}: verificationStatus must be verified`);
   if (quote?.attributionStatus !== "verified" || quote?.copyrightStatus !== "cleared" || quote?.indexable !== true) errors.push(`${label}: indexable records require cleared, verified rights metadata`);
   const key = String(quote?.quote ?? "").trim().toLowerCase();
