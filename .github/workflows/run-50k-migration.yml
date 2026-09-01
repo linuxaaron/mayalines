@@ -1,0 +1,38 @@
+name: Run 50k Quote Migration
+
+on:
+  push:
+    paths:
+      - "scripts/prepare-50k-migration.mjs"
+      - ".github/workflows/run-50k-migration.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Apply source patches
+        run: node scripts/prepare-50k-migration.mjs
+      - name: Generate corpus
+        run: node scripts/build-quotes.mjs
+      - name: Audit corpus
+        run: MIN_QUOTES=47000 MAX_QUOTES=59000 node scripts/audit-quotes.mjs
+      - name: Install dependencies
+        run: npm ci
+      - name: Build production app
+        run: npm run build
+      - name: Commit verified migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm scripts/prepare-50k-migration.mjs .github/workflows/run-50k-migration.yml
+          git add scripts/build-quotes.mjs .github/workflows/materialize-quotes.yml data/quotes.json data/poems.generated.json
+          git commit -m "Expand sourced quote corpus toward 50k"
+          git push
