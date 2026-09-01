@@ -65,8 +65,8 @@ export default function SubmitQuotePage() {
             <input name="author" required maxLength={160} placeholder="Who said it?" />
           </label>
           <label>
-            Source or publication <span>(optional)</span>
-            <input name="source" maxLength={300} placeholder="Book, speech, interview, publication…" />
+            Source or publication
+            <input name="source" required maxLength={300} placeholder="Book, speech, interview, publication…" />
           </label>
           <label>
             Category

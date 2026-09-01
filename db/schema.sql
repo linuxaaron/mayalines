@@ -44,3 +44,30 @@ CREATE TABLE IF NOT EXISTS quote_submissions (
 );
 
 CREATE INDEX IF NOT EXISTS quote_submissions_status_idx ON quote_submissions (status, created_at DESC);
+
+-- Personal libraries use the anonymous, HTTP-only visitor identifier already
+-- used for likes. No account profile or personal data is required.
+CREATE TABLE IF NOT EXISTS quote_collections (
+  id BIGSERIAL PRIMARY KEY,
+  visitor_id UUID NOT NULL,
+  name TEXT NOT NULL CHECK (char_length(name) BETWEEN 1 AND 60),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (visitor_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS quote_collection_items (
+  collection_id BIGINT NOT NULL REFERENCES quote_collections(id) ON DELETE CASCADE,
+  quote_id TEXT NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (collection_id, quote_id)
+);
+
+CREATE INDEX IF NOT EXISTS quote_collection_items_quote_id_idx ON quote_collection_items (quote_id);
+
+CREATE TABLE IF NOT EXISTS quote_follows (
+  visitor_id UUID NOT NULL,
+  target_type TEXT NOT NULL CHECK (target_type IN ('author', 'topic')),
+  target TEXT NOT NULL CHECK (char_length(target) BETWEEN 1 AND 160),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  PRIMARY KEY (visitor_id, target_type, target)
+);

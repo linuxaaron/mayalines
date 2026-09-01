@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   const category = clean(input.category, MAX_CATEGORY);
   const submitter = clean(input.submitter, MAX_SUBMITTER);
 
-  if (quote.length < 3 || author.length < 1 || category.length < 1) return NextResponse.json({ error: "Quote, author and category are required" }, { status: 400 });
+  if (quote.length < 3 || author.length < 1 || source.length < 3 || category.length < 1) return NextResponse.json({ error: "Quote, author, verifiable source and category are required" }, { status: 400 });
 
   const db = getDb();
   if (!db) return NextResponse.json({ error: "Submission storage is not configured" }, { status: 503 });

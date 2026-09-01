@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/build-quotes.mjs && next dev",
-    "prebuild": "node scripts/build-quotes.mjs && node scripts/audit-quotes.mjs",
+    "prebuild": "node scripts/build-quotes.mjs && node scripts/audit-quotes.mjs && node scripts/validate-licensed-import.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "audit:quotes": "node scripts/audit-quotes.mjs"
+    "audit:quotes": "node scripts/audit-quotes.mjs",
+    "audit:licensed": "node scripts/validate-licensed-import.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

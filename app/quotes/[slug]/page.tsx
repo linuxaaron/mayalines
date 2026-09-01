@@ -52,7 +52,7 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: "Quotes", item: `${siteUrl}/#main-content` },
+      { "@type": "ListItem", position: 2, name: "Quotes", item: siteUrl },
       { "@type": "ListItem", position: 3, name: `${quote.category} Quotes`, item: `${siteUrl}/categories/${categorySlug}` },
       { "@type": "ListItem", position: 4, name: `${quote.author} Quote`, item: `${siteUrl}/quotes/${quote.slug}` },
     ],

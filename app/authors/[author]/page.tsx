@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import PersistentLikeButton from "../../../components/PersistentLikeButton";
+import FollowButton from "../../../components/FollowButton";
 import quotesData from "../../../data/quotes";
 
 export const dynamicParams = false;
@@ -40,6 +41,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
     <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 22 }} aria-label="Author quote statistics">
       <span className="copy-button" style={{ color: "var(--muted)" }}>{indexableQuotes.length.toLocaleString("en-US")} VERIFIED QUOTES</span>
       <span className="copy-button" style={{ color: "var(--muted)" }}>{topics.length.toLocaleString("en-US")} TOPICS</span>
+      <FollowButton targetType="author" target={authorName} />
     </div>
     {topics.length > 0 && <section aria-labelledby="author-topics" style={{ marginTop: 38, padding: "22px 0", borderTop: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }}>
       <p className="eyebrow" id="author-topics">EXPLORE BY TOPIC</p>

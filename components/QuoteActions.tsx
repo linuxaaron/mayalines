@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import SaveQuoteButton from "./SaveQuoteButton";
 
 type EngagementStats = {
   likes?: number;
@@ -93,6 +94,7 @@ export default function QuoteActions({ quote, author, quoteId }: { quote: string
       <button className="copy-button" type="button" onClick={() => copy(`${text}\n\n${pageUrl}`)}>COPY WITH LINK</button>
       <button className="copy-button" type="button" onClick={whatsapp}>WHATSAPP</button>
       <button className="copy-button" type="button" onClick={share}>{shared ? "SHARED" : "SHARE"}</button>
+      {quoteId && <SaveQuoteButton quoteId={quoteId} />}
       {quoteId && <span className="engagement-counts" aria-label="Quote engagement">
         {copies.toLocaleString("de-DE")} Kopien · {shares.toLocaleString("de-DE")} Shares
       </span>}
