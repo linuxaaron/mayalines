@@ -3,7 +3,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 const PUBLISH_TARGET = 12000;
 const MAX_CAPACITY = 59000;
 const MIN_REQUIRED_COUNT = 10000;
-const USER_AGENT = "MayalinesQuoteBuilder/4.1 (+https://mayalines.com)";
+const USER_AGENT = "MayalinesQuoteBuilder/4.2 (+https://mayalines.com)";
 
 const QUOTABLES = {
   commit: "7936d4c2ee93df843854777850ebf926998f8392",
@@ -104,15 +104,17 @@ try {
   console.warn(`Could not seed existing quote corpus: ${error instanceof Error ? error.message : String(error)}`);
 }
 
-const quotablesText = await fetchText(QUOTABLES.url, true);
 let quotablesAdded = 0;
-for (const rawLine of quotablesText.split(/\r?\n/)) {
-  if (quotes.length >= PUBLISH_TARGET) break;
-  const tab = rawLine.indexOf("\t");
-  if (tab <= 0) continue;
-  const author = clean(rawLine.slice(0, tab));
-  const quote = clean(rawLine.slice(tab + 1));
-  if (addQuote({ quote, author, category: categoryFor(quote), source: QUOTABLES.url, sourceName: QUOTABLES.name, sourceCommit: QUOTABLES.commit, language: "en", attributionStatus: "source-derived", copyrightStatus: "needs-review", indexable: true })) quotablesAdded += 1;
+if (quotes.length < PUBLISH_TARGET) {
+  const quotablesText = await fetchText(QUOTABLES.url, true);
+  for (const rawLine of quotablesText.split(/\r?\n/)) {
+    if (quotes.length >= PUBLISH_TARGET) break;
+    const tab = rawLine.indexOf("\t");
+    if (tab <= 0) continue;
+    const author = clean(rawLine.slice(0, tab));
+    const quote = clean(rawLine.slice(tab + 1));
+    if (addQuote({ quote, author, category: categoryFor(quote), source: QUOTABLES.url, sourceName: QUOTABLES.name, sourceCommit: QUOTABLES.commit, language: "en", attributionStatus: "source-derived", copyrightStatus: "needs-review", indexable: true })) quotablesAdded += 1;
+  }
 }
 
 for (const letter of LETTERS) {
