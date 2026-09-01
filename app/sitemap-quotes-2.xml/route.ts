@@ -10,7 +10,7 @@ function escapeXml(value: string) {
 
 export async function GET() {
   const quotes = quotesData
-    .filter((quote) => quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared")
+    .filter((quote) => quote.indexable === true)
     .slice(START_INDEX, END_INDEX);
 
   const urls = quotes.map((quote) => `<url><loc>${escapeXml(`${siteUrl}/quotes/${quote.slug}`)}</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>`).join("");
