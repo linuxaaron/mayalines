@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { headers } from "next/headers";
 import Script from "next/script";
 import "./globals.css";
+import "./accessibility-overrides.css";
 import "./quote-overrides.css";
 import "./submit/submit-overrides.css";
 import "./admin/admin-overrides.css";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 
 const topics = [["Life","/topics/life"],["Love","/topics/love"],["Wisdom","/topics/wisdom"],["Success","/topics/success"],["Motivation","/topics/motivation"],["Happiness","/topics/happiness"],["Courage","/topics/courage"],["Friendship","/topics/friendship"],["Hope","/topics/hope"],["Philosophy","/topics/philosophy"],["Truth","/topics/truth"],["Inspiration","/topics/inspiration"]] as const;
 const popularAuthors = [["William Shakespeare","/authors/william-shakespeare"],["Oscar Wilde","/authors/oscar-wilde"],["Friedrich Nietzsche","/authors/friedrich-nietzsche"],["Maya Angelou","/authors/maya-angelou"],["Albert Einstein","/authors/albert-einstein"],["Mark Twain","/authors/mark-twain"]] as const;
@@ -8,6 +8,12 @@ const collections = [["Quotes About Life","/collections/quotes-about-life"],["Qu
 
 const MENU_CLOSE_DELAY = 650;
 type MobileSection = "quotes" | "topics" | "authors" | "collections";
+const mobileSections: ReadonlyArray<{ id: MobileSection; label: string }> = [
+  { id: "quotes", label: "Quotes" },
+  { id: "topics", label: "Topics" },
+  { id: "authors", label: "Authors" },
+  { id: "collections", label: "Collections" },
+];
 
 function SunflowerMark() {
   return (
@@ -41,6 +47,8 @@ export default function MegaMenu() {
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const closeButton = useRef<HTMLButtonElement | null>(null);
   const menuButton = useRef<HTMLButtonElement | null>(null);
+  const mobileTabRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const restoreTriggerFocus = useRef(false);
 
   const cancelClose = useCallback(() => {
     if (closeTimer.current) {
@@ -65,17 +73,35 @@ export default function MegaMenu() {
   const closeMenu = useCallback(() => {
     cancelClose();
     setOpen(null);
+    restoreTriggerFocus.current = true;
     setMobileOpen(false);
-    window.setTimeout(() => menuButton.current?.focus(), 0);
   }, [cancelClose]);
 
   function switchMobileSection(direction: -1 | 1) {
-    const options: MobileSection[] = ["quotes", "topics", "authors", "collections"];
-    const index = options.indexOf(mobileSection);
-    setMobileSection(options[(index + direction + options.length) % options.length]);
+    const index = mobileSections.findIndex((section) => section.id === mobileSection);
+    setMobileSection(mobileSections[(index + direction + mobileSections.length) % mobileSections.length].id);
+  }
+
+  function onMobileTabKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>, index: number) {
+    let nextIndex: number | null = null;
+    if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (index + 1) % mobileSections.length;
+    if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (index - 1 + mobileSections.length) % mobileSections.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = mobileSections.length - 1;
+    if (nextIndex === null) return;
+
+    event.preventDefault();
+    setMobileSection(mobileSections[nextIndex].id);
+    mobileTabRefs.current[nextIndex]?.focus();
   }
 
   useEffect(() => () => cancelClose(), [cancelClose]);
+
+  useEffect(() => {
+    if (mobileOpen || !restoreTriggerFocus.current) return;
+    restoreTriggerFocus.current = false;
+    menuButton.current?.focus();
+  }, [mobileOpen]);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -234,29 +260,49 @@ export default function MegaMenu() {
       </div>
 
       <div className="mobile-menu-body">
-        <p className="mobile-menu-intro">Use the arrows to switch between the link groups.</p>
+        <p className="mobile-menu-intro">Choose a link group with the tabs or use the arrows to move through the menu.</p>
         <div className="mobile-menu-switcher" aria-label="Menu section switcher">
           <button type="button" onClick={() => switchMobileSection(-1)} aria-label="Previous link group">←</button>
-          <p aria-live="polite">{mobileSection}<small>Swipe through the menu</small></p>
+          <p aria-live="polite">{mobileSections.find((section) => section.id === mobileSection)?.label}<small>Use tabs, arrows or swipe</small></p>
           <button type="button" onClick={() => switchMobileSection(1)} aria-label="Next link group">→</button>
         </div>
 
-        {mobileSection === "quotes" && <section className="mobile-menu-panel" role="tabpanel">
+        <div className="mobile-menu-sections" role="tablist" aria-label="Link groups">
+          {mobileSections.map((section, index) => (
+            <button
+              key={section.id}
+              ref={(element) => { mobileTabRefs.current[index] = element; }}
+              className="mobile-menu-tab"
+              type="button"
+              id={`mobile-tab-${section.id}`}
+              role="tab"
+              aria-selected={mobileSection === section.id}
+              aria-controls={`mobile-panel-${section.id}`}
+              tabIndex={mobileSection === section.id ? 0 : -1}
+              onClick={() => setMobileSection(section.id)}
+              onKeyDown={(event) => onMobileTabKeyDown(event, index)}
+            >
+              <span>{section.label}</span><span aria-hidden="true">→</span>
+            </button>
+          ))}
+        </div>
+
+        {mobileSection === "quotes" && <section className="mobile-menu-panel" id="mobile-panel-quotes" role="tabpanel" aria-labelledby="mobile-tab-quotes" tabIndex={0}>
           <div className="mobile-menu-panel-head"><span>01 · Quotes</span><strong>Discover quotes</strong></div>
           <div className="mobile-menu-links"><a href="/popular" onClick={closeMenu}>Popular Quotes</a><a href="/trending" onClick={closeMenu}>Trending Quotes</a><a href="/most-copied" onClick={closeMenu}>Most Copied</a><a href="/random" onClick={closeMenu}>Random Quote</a><a href="/collections/short-inspirational-quotes" onClick={closeMenu}>Short Quotes</a><a href="/collections/quotes-about-love" onClick={closeMenu}>Love Quotes</a><a className="mobile-menu-all" href="/" onClick={closeMenu}>Open Quote Library <span>→</span></a></div>
         </section>}
 
-        {mobileSection === "topics" && <section className="mobile-menu-panel" role="tabpanel">
+        {mobileSection === "topics" && <section className="mobile-menu-panel" id="mobile-panel-topics" role="tabpanel" aria-labelledby="mobile-tab-topics" tabIndex={0}>
           <div className="mobile-menu-panel-head"><span>02 · Topics</span><strong>Browse by topic</strong></div>
           <div className="mobile-menu-links">{topics.map(([label,url])=><a key={url} href={url} onClick={closeMenu}>{label}</a>)}<a className="mobile-menu-all" href="/topics" onClick={closeMenu}>All Topics <span>→</span></a></div>
         </section>}
 
-        {mobileSection === "authors" && <section className="mobile-menu-panel" role="tabpanel">
+        {mobileSection === "authors" && <section className="mobile-menu-panel" id="mobile-panel-authors" role="tabpanel" aria-labelledby="mobile-tab-authors" tabIndex={0}>
           <div className="mobile-menu-panel-head"><span>03 · Authors</span><strong>Popular authors</strong></div>
           <div className="mobile-menu-links">{popularAuthors.map(([label,url])=><a key={url} href={url} onClick={closeMenu}>{label}</a>)}<a className="mobile-menu-all" href="/authors" onClick={closeMenu}>All Authors <span>→</span></a></div>
         </section>}
 
-        {mobileSection === "collections" && <section className="mobile-menu-panel" role="tabpanel">
+        {mobileSection === "collections" && <section className="mobile-menu-panel" id="mobile-panel-collections" role="tabpanel" aria-labelledby="mobile-tab-collections" tabIndex={0}>
           <div className="mobile-menu-panel-head"><span>04 · Collections</span><strong>Curated collections</strong></div>
           <div className="mobile-menu-links">{collections.map(([label,url])=><a key={url} href={url} onClick={closeMenu}>{label}</a>)}<a className="mobile-menu-all" href="/collections" onClick={closeMenu}>All Collections <span>→</span></a></div>
         </section>}

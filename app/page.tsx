@@ -23,7 +23,7 @@ export default function Home() {
   const featured = indexableQuotes.slice(0, 3);
   const daily = indexableQuotes[0];
 
-  return <main className="site-shell redesign-shell">
+  return <main className="site-shell redesign-shell" id="main-content" tabIndex={-1}>
     <style>{`
       .redesign-shell{min-width:0;overflow-x:clip;--background:#f4f3f0;--surface:#fbfaf8;--surface-strong:#fff;--foreground:#191817;--quote-black:#151413;--muted:#6d6963;--border:#d9d6d0;--brown:#5d554d;--brown-soft:#81786f;--brown-wash:#e9e5df}
       .redesign-shell .header{min-height:82px;padding:14px 48px;border-bottom:1px solid var(--border);background:rgba(244,243,240,.88);backdrop-filter:blur(16px)}

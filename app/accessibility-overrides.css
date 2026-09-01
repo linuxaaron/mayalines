@@ -1,0 +1,10 @@
+:root {
+  /* 4.56:1 on the global #d8d5cf background (WCAG AA for normal text). */
+  --brown: #745640;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline-color: rgba(116, 86, 64, 0.5);
+}

@@ -109,7 +109,7 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
       <div className="hero-links"><a href="/random">✦ Surprise me</a><a href="/popular">Most liked</a><a href="/trending">Trending now</a><a href="/collections/quotes-about-suffering">Suffering quotes</a><a href="/collections/short-inspirational-quotes">Short quotes</a><a href="/community">Community quotes</a></div>
     </section>
 
-    <section className="library" id="main-content" aria-labelledby="library-title">
+    <section className="library" id="quote-library" aria-labelledby="library-title">
       <div className="section-heading" id="library-title">Quote library</div>
       <p className="sr-only" aria-live="polite">{total.toLocaleString("en-US")} quotes</p>
       <div className="category-rail quote-library-filters" id="categories" role="group" aria-label="Quick quote categories">
