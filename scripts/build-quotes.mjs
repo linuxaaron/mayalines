@@ -1,8 +1,9 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 
-const TARGET_COUNT = 59000;
+const PUBLISH_TARGET = 12000;
+const MAX_CAPACITY = 59000;
 const MIN_REQUIRED_COUNT = 10000;
-const USER_AGENT = "MayalinesQuoteBuilder/4.0 (+https://mayalines.com)";
+const USER_AGENT = "MayalinesQuoteBuilder/4.1 (+https://mayalines.com)";
 
 const QUOTABLES = {
   commit: "7936d4c2ee93df843854777850ebf926998f8392",
@@ -95,43 +96,33 @@ async function fetchText(url, required = false) {
 
 try {
   const existing = JSON.parse(await readFile("data/quotes.json", "utf8"));
-  for (const item of existing) addQuote({ ...item, language: item.language || "en" });
+  for (const item of existing) {
+    if (quotes.length >= PUBLISH_TARGET) break;
+    addQuote({ ...item, language: item.language || "en" });
+  }
 } catch (error) {
   console.warn(`Could not seed existing quote corpus: ${error instanceof Error ? error.message : String(error)}`);
 }
 
-// Primary high-volume source: 39,269 tab-separated author/quote records.
 const quotablesText = await fetchText(QUOTABLES.url, true);
 let quotablesAdded = 0;
 for (const rawLine of quotablesText.split(/\r?\n/)) {
-  if (quotes.length >= TARGET_COUNT) break;
+  if (quotes.length >= PUBLISH_TARGET) break;
   const tab = rawLine.indexOf("\t");
   if (tab <= 0) continue;
   const author = clean(rawLine.slice(0, tab));
   const quote = clean(rawLine.slice(tab + 1));
-  if (addQuote({
-    quote,
-    author,
-    category: categoryFor(quote),
-    source: QUOTABLES.url,
-    sourceName: QUOTABLES.name,
-    sourceCommit: QUOTABLES.commit,
-    language: "en",
-    attributionStatus: "source-derived",
-    copyrightStatus: "needs-review",
-    indexable: true,
-  })) quotablesAdded += 1;
+  if (addQuote({ quote, author, category: categoryFor(quote), source: QUOTABLES.url, sourceName: QUOTABLES.name, sourceCommit: QUOTABLES.commit, language: "en", attributionStatus: "source-derived", copyrightStatus: "needs-review", indexable: true })) quotablesAdded += 1;
 }
 
-// Add strongly sourced public-domain material with full indexing clearance.
 for (const letter of LETTERS) {
-  if (quotes.length >= TARGET_COUNT) break;
+  if (quotes.length >= PUBLISH_TARGET) break;
   const url = `${WIKISOURCE.url}/${letter}`;
   const html = await fetchText(url); if (!html) continue;
   const paragraphs = [...html.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/gi)].map((match) => strip(match[1]));
   let pending = null; let category = "Wisdom";
   for (const paragraph of paragraphs) {
-    if (!paragraph) continue;
+    if (!paragraph || quotes.length >= PUBLISH_TARGET) continue;
     if (/^[—–-]/.test(paragraph)) { if (pending) addQuote({ quote: pending, author: paragraph.replace(/^[—–-]\s*/, "").replace(/[.\s]+$/, ""), category, source: url, sourceName: WIKISOURCE.name, sourceCommit: WIKISOURCE.commit, language: WIKISOURCE.language }); pending = null; continue; }
     if (/^[A-Z][A-Z0-9 &'’(),.;:!-]{2,79}$/.test(paragraph) && !/^BURNING WORDS/i.test(paragraph)) { category = paragraph; pending = null; continue; }
     pending = paragraph;
@@ -139,7 +130,7 @@ for (const letter of LETTERS) {
 }
 
 for (const source of GUTENBERG_SOURCES) {
-  if (quotes.length >= TARGET_COUNT) break;
+  if (quotes.length >= PUBLISH_TARGET) break;
   const url = `https://www.gutenberg.org/cache/epub/${source.id}/pg${source.id}.txt`;
   const sourceName = `${source.name} — Project Gutenberg #${source.id}`;
   const sourceCommit = `project-gutenberg-${source.id}-public-domain`;
@@ -148,6 +139,7 @@ for (const source of GUTENBERG_SOURCES) {
   const body = raw.split(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*/i)[1]?.split(/\*\*\* END OF THE PROJECT GUTENBERG EBOOK/i)[0] ?? raw;
   let category = "Wisdom";
   for (const rawLine of body.split("\n")) {
+    if (quotes.length >= PUBLISH_TARGET) break;
     const line = clean(rawLine);
     if (!line || /^\[Pg \d+\]$/.test(line) || /^\*+$/.test(line) || /^(chapter|chapitre|kapitel|cap[ií]tulo|hoofdstuk)\b/i.test(line)) continue;
     if (/^[A-ZÀ-ÖØ-ÝÄÖÜÉÈÊÁÍÓÚÑ][A-ZÀ-ÖØ-ÝÄÖÜÉÈÊÁÍÓÚÑ &'’,-]{2,70}[.:]?$/.test(line)) { category = line; continue; }
@@ -163,8 +155,8 @@ for (const source of GUTENBERG_SOURCES) {
   }
 }
 
-const published = quotes.slice(0, TARGET_COUNT);
-if (published.length < MIN_REQUIRED_COUNT) throw new Error(`Quote build produced ${published.length} records; at least ${MIN_REQUIRED_COUNT} concrete quotes are required.`);
+if (quotes.length < MIN_REQUIRED_COUNT) throw new Error(`Quote build produced ${quotes.length} records; at least ${MIN_REQUIRED_COUNT} concrete quotes are required.`);
+const published = quotes.slice(0, PUBLISH_TARGET);
 await mkdir("data", { recursive: true });
 await writeFile("data/quotes.json", JSON.stringify(published, null, 2) + "\n", "utf8");
-console.log(`Generated ${published.length} concrete quotes; ${quotablesAdded} added from pinned Quotables source. Minimum ${MIN_REQUIRED_COUNT} satisfied.`);
+console.log(`Generated ${published.length} concrete quotes; ${quotablesAdded} added from pinned Quotables source. Minimum ${MIN_REQUIRED_COUNT} satisfied. Architecture capacity remains ${MAX_CAPACITY}.`);
