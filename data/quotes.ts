@@ -8,6 +8,7 @@ type ImportedQuote = (typeof importedQuotes)[number];
 
 export type Quote = (BaseQuote | NietzscheQuote | ImportedQuote) & {
   indexable: boolean;
+  sourceName?: string;
 };
 
 /** Normalize imported quote text so HTML entities and invisible Unicode characters
