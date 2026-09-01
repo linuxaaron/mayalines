@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import PersistentLikeButton from "../../../components/PersistentLikeButton";
 import quotesData from "../../../data/quotes";
 
-export const dynamicParams = false;
+export const dynamicParams = true;
+export const revalidate = 86400;
+
 function slugify(value: string) { return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 function isIndexable(quote: (typeof quotesData)[number]) { return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared"; }
-export function generateStaticParams() { return Array.from(new Set(quotesData.map((quote) => quote.author))).map((author) => ({ author: slugify(author) })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ author: string }> }): Promise<Metadata> {
   const { author: slug } = await params;
@@ -21,7 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ author: s
 export default async function AuthorPage({ params }: { params: Promise<{ author: string }> }) {
   const { author: slug } = await params;
   const authorName = Array.from(new Set(quotesData.map((quote) => quote.author))).find((name) => slugify(name) === slug);
-  if (!authorName) return null;
+  if (!authorName) notFound();
   const quotes = quotesData.filter((quote) => quote.author === authorName);
   const indexableQuotes = quotes.filter(isIndexable);
   const visibleQuotes = indexableQuotes.slice(0, 24);
