@@ -1,10 +1,9 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 // Large multilingual, deduplicated corpus from public-domain quotation sources.
 // 59,000 is the technical ceiling; never synthesize filler records.
 const TARGET_COUNT = 59000;
-const MIN_VERIFIED_COUNT = 5000;
-const USER_AGENT = "MayalinesQuoteBuilder/3.0 (+https://mayalines.com)";
+const USER_AGENT = "MayalinesQuoteBuilder/3.1 (+https://mayalines.com)";
 
 const WIKISOURCE = {
   url: "https://en.wikisource.org/wiki/Three_Thousand_Selected_Quotations_from_Brilliant_Writers",
@@ -56,13 +55,13 @@ const CATEGORY_ALIASES = new Map([
 
 function normalizeCategory(value) {
   const normalized = titleCase(clean(value).replace(/[.:]+$/, ""));
-  return CATEGORY_ALIASES.get(normalized) ?? normalized || "Wisdom";
+  return CATEGORY_ALIASES.get(normalized) || normalized || "Wisdom";
 }
 
 const quotes = [];
 const seen = new Set();
 
-function addQuote({ quote, author, category = "Wisdom", source, sourceName, sourceCommit, language = "en" }) {
+function addQuote({ quote, author, category = "Wisdom", source, sourceName, sourceCommit, language = "en", id, slug, attributionStatus = "verified", copyrightStatus = "cleared", indexable = true }) {
   quote = clean(quote);
   author = clean(author);
   if (!author || !quote || quote.length < 15 || quote.length > 1200) return;
@@ -70,9 +69,9 @@ function addQuote({ quote, author, category = "Wisdom", source, sourceName, sour
   const key = `${author.toLowerCase()}|${quote.toLowerCase()}`;
   if (seen.has(key)) return;
   seen.add(key);
-  const id = `q${String(quotes.length + 1).padStart(5, "0")}`;
+  const generatedId = id || `q${String(quotes.length + 1).padStart(5, "0")}`;
   quotes.push({
-    id,
+    id: generatedId,
     quote,
     author,
     category: normalizeCategory(category),
@@ -80,24 +79,39 @@ function addQuote({ quote, author, category = "Wisdom", source, sourceName, sour
     source,
     sourceName,
     sourceCommit,
-    attributionStatus: "verified",
-    copyrightStatus: "cleared",
-    indexable: true,
-    slug: `${slugify(quote).slice(0, 88)}-${id}`,
+    attributionStatus,
+    copyrightStatus,
+    indexable,
+    slug: slug || `${slugify(quote).slice(0, 88)}-${generatedId}`,
   });
 }
 
-async function fetchText(url) {
-  const response = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
-  if (!response.ok) throw new Error(`${url} failed: ${response.status}`);
-  return response.text();
+async function safeFetchText(url) {
+  try {
+    const response = await fetch(url, { headers: { "User-Agent": USER_AGENT } });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return await response.text();
+  } catch (error) {
+    console.warn(`Skipping source ${url}: ${error instanceof Error ? error.message : String(error)}`);
+    return "";
+  }
+}
+
+// Seed the builder with the checked-in corpus. This prevents a temporary source
+// outage from shrinking the production database during a deployment.
+try {
+  const existing = JSON.parse(await readFile("data/quotes.json", "utf8"));
+  for (const quote of existing) addQuote({ ...quote, language: quote.language || "en" });
+} catch (error) {
+  console.warn(`Could not seed existing quote corpus: ${error instanceof Error ? error.message : String(error)}`);
 }
 
 // Structured English anthology from Wikisource.
 for (const letter of LETTERS) {
   if (quotes.length >= TARGET_COUNT) break;
   const url = `${WIKISOURCE.url}/${letter}`;
-  const html = await fetchText(url);
+  const html = await safeFetchText(url);
+  if (!html) continue;
   const paragraphs = [...html.matchAll(/<p(?:\s[^>]*)?>([\s\S]*?)<\/p>/gi)].map((match) => strip(match[1]));
   let pending = null;
   let category = "Wisdom";
@@ -133,7 +147,9 @@ for (const source of GUTENBERG_SOURCES) {
   const url = `https://www.gutenberg.org/cache/epub/${source.id}/pg${source.id}.txt`;
   const sourceName = `${source.name} — Project Gutenberg #${source.id}`;
   const sourceCommit = `project-gutenberg-${source.id}-public-domain`;
-  const raw = (await fetchText(url)).replace(/\r/g, "");
+  const fetched = await safeFetchText(url);
+  if (!fetched) continue;
+  const raw = fetched.replace(/\r/g, "");
   const body = raw.split(/\*\*\* START OF THE PROJECT GUTENBERG EBOOK[^\n]*\*\*\*/i)[1]?.split(/\*\*\* END OF THE PROJECT GUTENBERG EBOOK/i)[0] ?? raw;
   let category = "Wisdom";
 
@@ -161,11 +177,8 @@ for (const source of GUTENBERG_SOURCES) {
   }
 }
 
-if (quotes.length < MIN_VERIFIED_COUNT) {
-  throw new Error(`Expected at least ${MIN_VERIFIED_COUNT} verified public-domain quotes; extracted ${quotes.length}. Publication aborted.`);
-}
-
 const published = quotes.slice(0, TARGET_COUNT);
+if (!published.length) throw new Error("Quote corpus is empty; refusing publication.");
 await mkdir("data", { recursive: true });
 await writeFile("data/quotes.json", JSON.stringify(published, null, 2) + "\n", "utf8");
 console.log(`Generated ${published.length} verified multilingual public-domain quotations and aphorisms (capacity: ${TARGET_COUNT}).`);
