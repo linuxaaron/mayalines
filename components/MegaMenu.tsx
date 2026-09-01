@@ -104,9 +104,13 @@ export default function MegaMenu() {
 
       @media(max-width:900px){
         .mega-desktop{display:none}
-        .mega-mobile-button{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:8px 2px;color:#1f4d3a;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-        .mega-mobile-button-icon{position:relative;width:20px;height:14px;border-top:2px solid currentColor;border-bottom:2px solid currentColor}
-        .mega-mobile-button-icon:after{content:"";position:absolute;left:0;right:0;top:5px;border-top:2px solid currentColor}
+        .mega-mobile-button{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:8px 2px;color:#1f4d3a;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+        .mega-mobile-flower{position:relative;display:inline-block;width:18px;height:24px;overflow:visible;pointer-events:none}
+        .mega-mobile-flower-stem{position:absolute;left:8px;bottom:2px;width:1.5px;height:14px;background:#111;transform-origin:bottom center;animation:flower-stem 3.2s ease-in-out infinite}
+        .mega-mobile-flower-head{position:absolute;left:5px;top:1px;width:8px;height:8px;opacity:0;transform:scale(.2) translateY(5px);animation:flower-bloom 3.2s ease-in-out infinite}
+        .mega-mobile-flower-head:before,.mega-mobile-flower-head:after{content:"";position:absolute;inset:0;border:1.4px solid #111;border-radius:50% 50% 45% 55%;transform:rotate(45deg)}
+        .mega-mobile-flower-head:after{transform:rotate(-45deg)}
+        .mega-mobile-flower-center{position:absolute;left:7px;top:3px;width:4px;height:4px;border-radius:50%;background:#111;opacity:0;animation:flower-center 3.2s ease-in-out infinite}
 
         .mobile-menu{display:flex;position:fixed;z-index:200;inset:0;width:100vw;height:100dvh;flex-direction:column;background:#f5f4f1;color:#1c1d1b;animation:mobile-menu-in .2s ease-out}
         .mobile-menu-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;min-height:72px;padding:10px 18px;border-bottom:1px solid #d7d3cc;background:#f5f4f1}
@@ -147,8 +151,11 @@ export default function MegaMenu() {
         .mobile-menu-links a{min-height:45px;padding:9px;font-size:10px}
       }
 
+      @keyframes flower-stem{0%,12%{transform:scaleY(0);opacity:0}22%{transform:scaleY(1);opacity:1}68%{transform:scaleY(1);opacity:1}82%,100%{transform:scaleY(0);opacity:0}}
+      @keyframes flower-bloom{0%,24%{opacity:0;transform:scale(.2) translateY(5px)}36%,66%{opacity:1;transform:scale(1) translateY(0)}82%,100%{opacity:0;transform:scale(.25) translateY(-2px)}}
+      @keyframes flower-center{0%,28%{opacity:0}38%,66%{opacity:1}82%,100%{opacity:0}}
       @keyframes mobile-menu-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-      @media(prefers-reduced-motion:reduce){.mega-panel,.mobile-menu{animation:none}.mega-chevron{transition:none}}
+      @media(prefers-reduced-motion:reduce){.mega-panel,.mobile-menu{animation:none}.mega-chevron{transition:none}.mega-mobile-flower-stem,.mega-mobile-flower-head,.mega-mobile-flower-center{animation:none;opacity:1;transform:none}}
     `}</style>
 
     <div className="mega-desktop" onMouseEnter={cancelClose} onMouseLeave={scheduleClose}>
@@ -168,7 +175,12 @@ export default function MegaMenu() {
     </div>
 
     <button className="mega-mobile-button" type="button" aria-expanded={mobileOpen} aria-controls="mobile-navigation" onClick={() => setMobileOpen(true)}>
-      <span className="mega-mobile-button-icon" aria-hidden="true" /> Menu
+      Menu
+      <span className="mega-mobile-flower" aria-hidden="true">
+        <span className="mega-mobile-flower-stem" />
+        <span className="mega-mobile-flower-head" />
+        <span className="mega-mobile-flower-center" />
+      </span>
     </button>
 
     {mobileOpen && <div className="mobile-menu" id="mobile-navigation" role="dialog" aria-modal="true" aria-label="Main menu">
