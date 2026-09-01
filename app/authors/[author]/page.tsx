@@ -5,18 +5,18 @@ import StructuredData from "../../../components/StructuredData";
 import PersistentLikeButton from "../../../components/PersistentLikeButton";
 import FollowButton from "../../../components/FollowButton";
 import quotesData from "../../../data/quotes";
+import { isSeoIndexable } from "../../../lib/seo";
 
 export const dynamicParams = true;
 export const revalidate = 86400;
 
 function slugify(value: string) { return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
-function isIndexable(quote: (typeof quotesData)[number]) { return quote.indexable === true; }
 
 export async function generateMetadata({ params }: { params: Promise<{ author: string }> }): Promise<Metadata> {
   const { author: slug } = await params;
   const authorName = Array.from(new Set(quotesData.map((quote) => quote.author))).find((name) => slugify(name) === slug);
-  const indexable = authorName ? quotesData.some((quote) => quote.author === authorName && isIndexable(quote)) : false;
-  const count = authorName ? quotesData.filter((quote) => quote.author === authorName && isIndexable(quote)).length : 0;
+  const indexable = authorName ? quotesData.some((quote) => quote.author === authorName && isSeoIndexable(quote)) : false;
+  const count = authorName ? quotesData.filter((quote) => quote.author === authorName && isSeoIndexable(quote)).length : 0;
   const description = authorName ? `Explore ${count.toLocaleString("en-US")} sourced quotes by ${authorName}, including famous, inspirational and timeless words, on Mayalines.` : "Explore famous quotes by notable authors on Mayalines.";
   return { title: authorName ? `Quotes by ${authorName} – Famous & Inspirational Quotes` : "Quotes by Author", description, alternates: { canonical: authorName ? `/authors/${slug}` : "/authors" }, robots: { index: indexable, follow: true }, openGraph: authorName ? { type: "profile", title: `Quotes by ${authorName} | Mayalines`, description, url: `/authors/${slug}`, images: [{ url: "/mayalines-og.svg", width: 1200, height: 630, alt: `Mayalines quotes by ${authorName}` }] } : undefined };
 }
@@ -26,7 +26,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
   const authorName = Array.from(new Set(quotesData.map((quote) => quote.author))).find((name) => slugify(name) === slug);
   if (!authorName) notFound();
   const quotes = quotesData.filter((quote) => quote.author === authorName);
-  const indexableQuotes = quotes.filter(isIndexable);
+  const indexableQuotes = quotes.filter(isSeoIndexable);
   const visibleQuotes = indexableQuotes.slice(0, 24);
   const topics = Array.from(new Set(indexableQuotes.map((quote) => quote.category))).sort().slice(0, 8);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";

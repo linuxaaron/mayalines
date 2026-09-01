@@ -1,8 +1,12 @@
 import type { MetadataRoute } from "next";
+import quotesData from "../data/quotes";
+import { isSeoIndexable, PRIMARY_SITEMAP_QUOTE_LIMIT } from "../lib/seo";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 
 export default function robots(): MetadataRoute.Robots {
+  const hasSitemapOverflow = quotesData.filter(isSeoIndexable).length > PRIMARY_SITEMAP_QUOTE_LIMIT;
+
   return {
     rules: {
       userAgent: "*",
@@ -11,7 +15,7 @@ export default function robots(): MetadataRoute.Robots {
     },
     sitemap: [
       `${siteUrl}/sitemap.xml`,
-      `${siteUrl}/sitemap-quotes-2.xml`,
+      ...(hasSitemapOverflow ? [`${siteUrl}/sitemap-quotes-2.xml`] : []),
     ],
   };
 }

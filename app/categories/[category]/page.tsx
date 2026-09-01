@@ -3,6 +3,7 @@ import quotesData from "../../../data/quotes";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import PersistentLikeButton from "../../../components/PersistentLikeButton";
+import { isSeoIndexable } from "../../../lib/seo";
 
 export const dynamicParams = false;
 
@@ -15,13 +16,12 @@ const descriptions: Record<string, string> = {
 };
 
 function slugify(value: string) { return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
-function isIndexable(quote: (typeof quotesData)[number]) { return quote.indexable === true; }
 export function generateStaticParams() { return [...new Set(quotesData.map((quote) => quote.category))].map((category) => ({ category: slugify(category) })); }
 
 export async function generateMetadata({ params }: { params: Promise<{ category: string }> }): Promise<Metadata> {
   const { category } = await params;
   const title = labels[category] ?? category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
-  const hasQuotes = quotesData.some((quote) => slugify(quote.category) === category && isIndexable(quote));
+  const hasQuotes = quotesData.some((quote) => slugify(quote.category) === category && isSeoIndexable(quote));
   const description = descriptions[category] ?? `Discover notable ${title.toLowerCase()} quotes by influential authors on Mayalines.`;
   return { title: `${title} Quotes – Famous & Timeless Words`, description, alternates: { canonical: `/categories/${category}` }, robots: { index: hasQuotes, follow: true }, openGraph: { type: "website", title: `${title} Quotes – Famous & Timeless Words | Mayalines`, description, url: `/categories/${category}` } };
 }
@@ -30,7 +30,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const { category } = await params;
   const title = labels[category] ?? category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   const description = descriptions[category] ?? `Discover notable ${title.toLowerCase()} quotes by influential authors on Mayalines.`;
-  const quotes = quotesData.filter((quote) => slugify(quote.category) === category && isIndexable(quote));
+  const quotes = quotesData.filter((quote) => slugify(quote.category) === category && isSeoIndexable(quote));
   const visibleQuotes = quotes.slice(0, 60);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const categoryUrl = `${siteUrl}/categories/${category}`;

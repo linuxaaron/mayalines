@@ -5,6 +5,7 @@ import PersistentLikeButton from "../../../components/PersistentLikeButton";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import quotesData from "../../../data/quotes";
+import { isSeoIndexable } from "../../../lib/seo";
 
 export const dynamicParams = true;
 export const revalidate = 86400;
@@ -16,7 +17,7 @@ const localeByLanguage: Record<string, string> = {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const quote = quotesData.find((item) => item.slug === slug);
-  const isIndexable = quote?.indexable === true;
+  const isIndexable = isSeoIndexable(quote);
   const quotePreview = quote?.quote.replace(/\s+/g, " ").trim() ?? "";
   const language = (quote as { language?: string } | undefined)?.language ?? "en";
   const description = quote

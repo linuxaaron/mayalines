@@ -1,16 +1,12 @@
 import type { MetadataRoute } from "next";
 import quotesData from "../data/quotes";
 import { quoteTopics } from "../lib/quote-topics";
+import { isSeoIndexable, PRIMARY_SITEMAP_QUOTE_LIMIT } from "../lib/seo";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
-const PRIMARY_QUOTE_LIMIT = 30000;
 
 function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
-
-function isIndexable(quote: (typeof quotesData)[number]) {
-  return quote.indexable === true;
 }
 
 const highIntentCollections = new Set([
@@ -46,10 +42,10 @@ const collectionSlugs = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const indexableQuotes = quotesData.filter(isIndexable);
+  const indexableQuotes = quotesData.filter(isSeoIndexable);
   const categories = [...new Set(indexableQuotes.map((quote) => quote.category))];
   const authors = [...new Set(indexableQuotes.map((quote) => quote.author))];
-  const primaryQuotes = indexableQuotes.slice(0, PRIMARY_QUOTE_LIMIT);
+  const primaryQuotes = indexableQuotes.slice(0, PRIMARY_SITEMAP_QUOTE_LIMIT);
 
   return [
     { url: siteUrl, changeFrequency: "daily", priority: 1 },

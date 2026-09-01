@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import type { Metadata } from "next";
 import quotesData from "../data/quotes";
 import PersistentLikeButton from "../components/PersistentLikeButton";
 import QuoteActions from "../components/QuoteActions";
@@ -9,6 +10,10 @@ import { quoteTopics } from "../lib/quote-topics";
 
 const PAGE_SIZE = 48;
 const NIETZSCHE_WORDS = ["Man", "muss", "schon", "Chaos", "in", "sich", "tragen,", "um", "einen", "Stern", "gebären", "zu", "können."];
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");

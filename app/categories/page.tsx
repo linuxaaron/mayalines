@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import quotesData from "../../data/quotes";
 import StructuredData from "../../components/StructuredData";
+import { isSeoIndexable } from "../../lib/seo";
 
 export const metadata: Metadata = {
   title: "Quote Categories | Famous, Inspirational & Life Quotes",
@@ -19,12 +20,8 @@ function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-function isIndexable(quote: (typeof quotesData)[number]) {
-  return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared";
-}
-
 export default function CategoriesPage() {
-  const categories = Array.from(new Set(quotesData.filter(isIndexable).map((quote) => quote.category))).sort((a, b) => a.localeCompare(b, "en"));
+  const categories = Array.from(new Set(quotesData.filter(isSeoIndexable).map((quote) => quote.category))).sort((a, b) => a.localeCompare(b, "en"));
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const itemListSchema = {
     "@context": "https://schema.org",
