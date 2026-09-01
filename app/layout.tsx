@@ -6,8 +6,8 @@ import "./admin/admin-overrides.css";
 import StructuredData from "../components/StructuredData";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
-const siteTitle = "Famous Quotes, Inspirational & Motivational Quotes | Mayalines";
-const siteDescription = "Discover famous quotes, inspirational quotes, motivational quotes, life quotes and timeless wisdom from notable authors. Search, read and copy sourced quotes on Mayalines.";
+const siteTitle = "Famous Quotes, Aphorisms & Poems | Mayalines";
+const siteDescription = "Discover sourced famous quotes, aphorisms, inspirational words and public-domain poetry from notable writers. Browse a growing multilingual collection on Mayalines.";
 const socialImage = `${siteUrl}/mayalines-og.svg`;
 
 export const metadata: Metadata = {
@@ -18,7 +18,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Mayalines" }],
   creator: "Mayalines",
   publisher: "Mayalines",
-  category: "quotes",
+  category: "quotes, aphorisms and poetry",
+  keywords: ["famous quotes", "inspirational quotes", "aphorisms", "poems", "poetry", "quotes by authors", "multilingual quotes"],
   alternates: { canonical: "/" },
   robots: {
     index: true,
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     title: siteTitle,
     description: siteDescription,
-    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — Famous Quotes and timeless wisdom" }],
+    images: [{ url: socialImage, width: 1200, height: 630, alt: "MAYALINES — quotes, aphorisms and poetry" }],
   },
   twitter: {
     card: "summary_large_image",
@@ -61,7 +62,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "WebSite",
     name: "Mayalines",
     url: siteUrl,
-    inLanguage: "en-US",
+    inLanguage: ["en", "de", "fr", "es", "it"],
     description: siteDescription,
     image: socialImage,
   };
