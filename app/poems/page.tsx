@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import importedPoems from "../../data/poems.imported.json";
+import generatedPoems from "../../data/poems.generated.json";
 
 export const metadata: Metadata = {
-  title: "Famous Poems | MAYALINES",
-  description: "Read timeless poetry from Emily Dickinson, Edgar Allan Poe, Percy Bysshe Shelley, William Blake, William Ernest Henley and other poets.",
+  title: "Famous Poems in English, German, French, Spanish & Italian | MAYALINES",
+  description: "Read a growing multilingual collection of public-domain poems by Emily Dickinson, William Blake, Friedrich Schiller, Charles Baudelaire, Gustavo Adolfo Bécquer, Giacomo Leopardi and more.",
   alternates: { canonical: "https://mayalines.com/poems" },
   openGraph: {
-    title: "Famous Poems | MAYALINES",
-    description: "A curated collection of timeless poetry.",
-    images: [{ url: "/mayalines-poetry.svg", width: 1200, height: 675, alt: "MAYALINES poetry illustration" }],
+    title: "Famous Poems in Multiple Languages | MAYALINES",
+    description: "Public-domain poetry in English, German, French, Spanish, Italian and more.",
+    images: [{ url: "/mayalines-poetry.svg", width: 1200, height: 675, alt: "MAYALINES multilingual poetry collection" }],
   },
 };
 
@@ -16,24 +17,30 @@ type Poem = {
   id: string;
   title: string;
   author: string;
-  period: string;
+  period?: string;
+  language?: string;
   text: string;
   source?: string;
-  sourceMessageId?: number;
+  sourceName?: string;
   attributionStatus?: string;
   copyrightStatus?: string;
   indexable?: boolean;
 };
 
-const featuredPoems: Poem[] = [
-  { id: "featured-001", title: "Hope is the thing with feathers", author: "Emily Dickinson", period: "1830–1886", text: `“Hope” is the thing with feathers —\nThat perches in the soul —\nAnd sings the tune without the words —\nAnd never stops — at all —\n\nAnd sweetest — in the Gale — is heard —\nAnd sore must be the storm —\nThat could abash the little Bird\nThat kept so many warm —\n\nI’ve heard it in the chillest land —\nAnd on the strangest Sea —\nYet — never — in Extremity,\nIt asked a crumb — of me.` },
-  { id: "featured-002", title: "Ozymandias", author: "Percy Bysshe Shelley", period: "1792–1822", text: `I met a traveller from an antique land,\nWho said — “Two vast and trunkless legs of stone\nStand in the desert. . . . Near them, on the sand,\nHalf sunk, a shattered visage lies, whose frown,\nAnd wrinkled lip, and sneer of cold command,\nTell that its sculptor well those passions read\nWhich yet survive, stamped on these lifeless things,\nThe hand that mocked them and the heart that fed;\nAnd on the pedestal, these words appear:\n‘My name is Ozymandias, King of Kings;\nLook on my Works, ye Mighty, and despair!’\nNothing beside remains. Round the decay\nOf that colossal Wreck, boundless and bare\nThe lone and level sands stretch far away.` },
-  { id: "featured-003", title: "The Tyger", author: "William Blake", period: "1757–1827", text: `Tyger Tyger, burning bright,\nIn the forests of the night;\nWhat immortal hand or eye,\nCould frame thy fearful symmetry?\n\nIn what distant deeps or skies\nBurnt the fire of thine eyes!\nOn what wings dare he aspire?\nWhat the hand, dare seize the fire?\n\nAnd what shoulder, & what art,\nCould twist the sinews of thy heart?\nAnd when thy heart began to beat,\nWhat dread hand? & what dread feet?\n\nWhat the hammer? what the chain,\nIn what furnace was thy brain?\nWhat the anvil? what dread grasp,\nDare its deadly terrors clasp!\n\nWhen the stars threw down their spears,\nAnd water’d heaven with their tears:\nDid he smile his work to see?\nDid he who made the Lamb make thee?\n\nTyger Tyger burning bright,\nIn the forests of the night:\nWhat immortal hand or eye,\nDare frame thy fearful symmetry?` },
-  { id: "featured-004", title: "A Dream Within a Dream", author: "Edgar Allan Poe", period: "1809–1849", text: `Take this kiss upon the brow!\nAnd, in parting from you now,\nThus much let me avow —\nYou are not wrong, who deem\nThat my days have been a dream;\nYet if hope has flown away\nIn a night, or in a day,\nIn a vision, or in none,\nIs it therefore the less gone?\nAll that we see or seem\nIs but a dream within a dream.` },
-  { id: "featured-005", title: "Invictus", author: "William Ernest Henley", period: "1849–1903", text: `Out of the night that covers me,\nBlack as the pit from pole to pole,\nI thank whatever gods may be\nFor my unconquerable soul.\n\nIn the fell clutch of circumstance\nI have not winced nor cried aloud.\nUnder the bludgeonings of chance\nMy head is bloody, but unbowed.\n\nBeyond this place of wrath and tears\nLooms but the Horror of the shade,\nAnd yet the menace of the years\nFinds, and shall find, me unafraid.\n\nIt matters not how strait the gate,\nHow charged with punishments the scroll,\nI am the master of my fate:\nI am the captain of my soul.` }
-];
+const languageNames: Record<string, string> = {
+  en: "English", de: "Deutsch", fr: "Français", es: "Español", it: "Italiano", pt: "Português",
+};
 
-const poems: Poem[] = [...featuredPoems, ...(importedPoems as Poem[])];
+const allPoems: Poem[] = [...(generatedPoems as Poem[]), ...(importedPoems as Poem[])];
+const seen = new Set<string>();
+const poems = allPoems.filter((poem) => {
+  const key = `${poem.author.toLowerCase()}|${poem.title.toLowerCase()}`;
+  if (seen.has(key)) return false;
+  seen.add(key);
+  return poem.indexable !== false && poem.copyrightStatus !== "needs-review";
+});
+const visiblePoems = poems.slice(0, 120);
+const languages = [...new Set(poems.map((poem) => poem.language ?? "en"))];
 
 function slugify(value: string) {
   return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
@@ -41,12 +48,28 @@ function slugify(value: string) {
 
 export default function PoemsPage() {
   return <main className="poems-page">
-    <style>{` .poems-page{min-height:100vh;background:#d8d5cf;color:#171513}.poems-header{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:28px 0;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #bdb8af}.poems-brand{font:500 25px Georgia,serif;letter-spacing:.13em}.poems-header nav{display:flex;gap:22px;font:12px Inter,system-ui,sans-serif;color:#5f5a53}.poems-header nav a:hover,.poem-author-link:hover,.poems-cta a:hover{color:#765843}.poems-hero{width:min(1180px,calc(100% - 36px));margin:0 auto;padding:70px 0 58px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:58px;align-items:center}.poems-hero h1,.poems-cta h2{margin:0;font:500 clamp(46px,7vw,82px)/.95 Georgia,serif;letter-spacing:-.05em}.poems-hero p:not(.eyebrow){max-width:680px;margin:24px 0 0;color:#48433d;font:16px/1.65 Inter,system-ui,sans-serif}.eyebrow{margin:0 0 14px;color:#765843;font:750 9px/1 Inter,system-ui,sans-serif;letter-spacing:.19em}.poems-visual{width:100%;aspect-ratio:16/9;border:1px solid #bdb8af;border-radius:8px;overflow:hidden;background:#e7e4de;box-shadow:0 16px 36px rgba(23,21,19,.06)}.poems-visual img{display:block;width:100%;height:100%;object-fit:cover}.poems-intro{width:min(900px,calc(100% - 36px));margin:0 auto 58px;padding:22px 0 22px 22px;border-left:2px solid #9a7a61;display:flex;gap:18px;align-items:flex-start}.poems-intro p{max-width:650px;margin:0;color:#5f5a53;font:14px/1.6 Inter,system-ui,sans-serif}.poem-ornament{font-size:18px;color:#765843}.poem-grid{width:min(1180px,calc(100% - 36px));margin:0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.poem-card{padding:32px 30px 28px;border:1px solid #bdb8af;border-radius:7px;background:#e7e4de;box-shadow:0 8px 24px rgba(23,21,19,.04)}.poem-label,.poem-period{color:#9a7a61;font:750 9px/1 Inter,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase}.poem-card h2{margin:14px 0 0;font:500 31px/1.08 Georgia,serif;letter-spacing:-.025em}.poem-author{margin:12px 0 0;color:#514b45;font:700 12px Inter,system-ui,sans-serif}.poem-period{margin:5px 0 0}.poem-divider{height:1px;background:#bdb8af;margin:22px 0}.poem-text{margin:0;white-space:pre-line;font:18px/1.65 Georgia,serif;color:#11100f}.poem-author-link{display:inline-block;margin-top:26px;color:#765843;font:750 10px Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}.poem-review{margin-top:14px;color:#777067;font:10px/1.5 Inter,system-ui,sans-serif}.poems-cta{width:min(900px,calc(100% - 36px));margin:82px auto 0;padding:58px 0;border-top:1px solid #bdb8af}.poems-cta h2{font-size:52px}.poems-cta p:not(.eyebrow){max-width:620px;color:#48433d;font:15px/1.6 Inter,system-ui,sans-serif}.poems-cta a{display:inline-block;margin-top:8px;color:#765843;font:750 11px Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase}.poems-footer{margin-top:40px;padding:24px 18px;background:#26211d;color:#d4cec6;display:flex;justify-content:space-between;font:10px Inter,system-ui,sans-serif}.poems-footer a{text-decoration:underline;text-underline-offset:3px}@media(max-width:800px){.poems-hero{grid-template-columns:1fr;padding-top:58px;gap:34px}.poem-grid{grid-template-columns:1fr}.poems-header{align-items:flex-start;gap:18px;flex-direction:column}.poems-header nav{width:100%;justify-content:space-between}}@media(max-width:560px){.poem-card{padding:24px 20px}.poem-text{font-size:17px}.poems-hero h1{font-size:52px}.poems-cta h2{font-size:42px}.poems-footer{flex-direction:column;gap:10px}} `}</style>
+    <style>{`
+      .poems-page{min-height:100vh;background:#d8d5cf;color:#171513}
+      .poems-header,.poems-hero,.poem-grid,.poems-stats{width:min(1180px,calc(100% - 36px));margin-left:auto;margin-right:auto}
+      .poems-header{padding:28px 0;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #bdb8af}
+      .poems-brand{font:500 25px Georgia,serif;letter-spacing:.13em}.poems-header nav{display:flex;gap:22px;font:12px system-ui,sans-serif;color:#5f5a53}
+      .poems-hero{padding:66px 0 36px}.poems-hero h1{max-width:880px;margin:0;font:500 clamp(45px,7vw,78px)/.98 Georgia,serif;letter-spacing:-.045em}
+      .poems-hero p:not(.eyebrow){max-width:760px;margin:22px 0 0;color:#48433d;font:15px/1.65 system-ui,sans-serif}
+      .eyebrow{margin:0 0 14px;color:#765843;font:750 9px/1 system-ui,sans-serif;letter-spacing:.19em}
+      .poems-stats{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 38px}.poems-stats span{padding:7px 10px;border:1px solid #bdb8af;border-radius:999px;font:700 9px system-ui,sans-serif;color:#625b54;background:#e7e4de}
+      .poem-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;padding-bottom:70px}
+      .poem-card{padding:28px;border:1px solid #bdb8af;border-radius:8px;background:#e7e4de;box-shadow:0 8px 24px rgba(23,21,19,.04)}
+      .poem-label{display:flex;justify-content:space-between;gap:10px;color:#8d6d56;font:750 9px/1 system-ui,sans-serif;letter-spacing:.13em;text-transform:uppercase}
+      .poem-card h2{margin:13px 0 0;font:500 29px/1.08 Georgia,serif;letter-spacing:-.025em}.poem-author{margin:10px 0 0;color:#514b45;font:700 11px system-ui,sans-serif}
+      .poem-divider{height:1px;background:#c6c0b8;margin:20px 0}.poem-text{margin:0;white-space:pre-line;font:17px/1.62 Georgia,serif;color:#11100f;display:-webkit-box;-webkit-line-clamp:18;-webkit-box-orient:vertical;overflow:hidden}
+      .poem-author-link{display:inline-block;margin-top:22px;color:#765843;font:750 10px system-ui,sans-serif;letter-spacing:.07em;text-transform:uppercase}
+      .poems-footer{padding:24px max(18px,8vw);background:#26211d;color:#d4cec6;display:flex;justify-content:space-between;font:10px system-ui,sans-serif}.poems-footer a{text-decoration:underline;text-underline-offset:3px}
+      @media(max-width:760px){.poems-header{align-items:flex-start;gap:16px;flex-direction:column}.poems-header nav{width:100%;justify-content:space-between}.poem-grid{grid-template-columns:1fr}.poem-card{padding:24px 20px}.poem-text{font-size:16px}.poems-footer{flex-direction:column;gap:10px}}
+    `}</style>
     <header className="poems-header"><a href="/" className="poems-brand">MAYALINES</a><nav aria-label="Poems navigation"><a href="/">Quotes</a><a href="/authors">Authors</a><a href="/categories">Categories</a><a href="/collections">Collections</a></nav></header>
-    <section className="poems-hero"><div><p className="eyebrow">MAYALINES · POETRY</p><h1>Famous Poems</h1><p>Timeless poetry from writers whose words have endured. Read selected poems from the existing collection and source material imported from the supplied archive.</p></div><figure className="poems-visual"><img src="/mayalines-poetry.svg" alt="Minimal ink and paper illustration for the MAYALINES poetry collection" width="1200" height="675" /></figure></section>
-    <section className="poems-intro" aria-label="Poetry collection introduction"><span className="poem-ornament" aria-hidden="true">✦</span><p>The supplied archive contains both short quotations and complete poems. Imported records remain marked for attribution and copyright review before search-engine indexing.</p></section>
-    <section className="poem-grid" aria-label="Poems">{poems.map((poem) => <article className="poem-card" key={poem.id}><p className="poem-label">POEM</p><h2>{poem.title}</h2><p className="poem-author">— {poem.author}</p><p className="poem-period">{poem.period}</p><div className="poem-divider" aria-hidden="true"/><p className="poem-text">{poem.text}</p><a className="poem-author-link" href={`/authors/${slugify(poem.author)}`}>Explore author →</a>{poem.copyrightStatus === "needs-review" && <p className="poem-review">Source imported · publication/indexing review pending</p>}</article>)}</section>
-    <section className="poems-cta"><p className="eyebrow">MORE TO DISCOVER</p><h2>Words worth keeping.</h2><p>Explore the MAYALINES library for famous quotes by author, topic and category.</p><a href="/collections">Browse curated collections →</a></section>
-    <footer className="poems-footer"><span>© 2026 MAYALINES</span><a href="/copyright">Copyright &amp; sources</a></footer>
+    <section className="poems-hero"><p className="eyebrow">MAYALINES · MULTILINGUAL POETRY</p><h1>Poems from different languages and centuries.</h1><p>A growing collection of verified public-domain poetry. Sources and language metadata are stored with every generated record so the library can expand without sacrificing attribution quality.</p></section>
+    <div className="poems-stats" aria-label="Poetry collection statistics"><span>{poems.length.toLocaleString("en-US")} poems</span>{languages.map((language) => <span key={language}>{languageNames[language] ?? language.toUpperCase()}</span>)}</div>
+    <section className="poem-grid" aria-label="Poems">{visiblePoems.map((poem) => <article className="poem-card" key={poem.id} lang={poem.language ?? "en"}><p className="poem-label"><span>POEM</span><span>{languageNames[poem.language ?? "en"] ?? (poem.language ?? "en").toUpperCase()}</span></p><h2>{poem.title}</h2><p className="poem-author">— {poem.author}{poem.period ? ` · ${poem.period}` : ""}</p><div className="poem-divider" aria-hidden="true"/><p className="poem-text">{poem.text}</p><a className="poem-author-link" href={`/authors/${slugify(poem.author)}`}>Explore author →</a></article>)}</section>
+    <footer className="poems-footer"><span>© 2026 MAYALINES · {poems.length.toLocaleString("en-US")} public-domain poems in the current corpus</span><a href="/copyright">Copyright &amp; sources</a></footer>
   </main>;
 }
