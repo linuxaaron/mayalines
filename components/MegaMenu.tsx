@@ -47,7 +47,9 @@ export default function MegaMenu() {
   useEffect(() => {
     if (!mobileOpen) return;
     const previousOverflow = document.body.style.overflow;
+    const previousOverflowX = document.body.style.overflowX;
     document.body.style.overflow = "hidden";
+    document.body.style.overflowX = "hidden";
     closeButton.current?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -57,6 +59,7 @@ export default function MegaMenu() {
     window.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = previousOverflow;
+      document.body.style.overflowX = previousOverflowX;
       window.removeEventListener("keydown", onKeyDown);
     };
   }, [mobileOpen]);
@@ -112,35 +115,38 @@ export default function MegaMenu() {
         .mega-mobile-flower-head:after{transform:rotate(-45deg)}
         .mega-mobile-flower-center{position:absolute;left:7px;top:3px;width:4px;height:4px;border-radius:50%;background:#111;opacity:0;animation:flower-center 3.2s ease-in-out infinite}
 
-        .mobile-menu{display:flex;position:fixed;z-index:200;inset:0;width:100vw;height:100dvh;flex-direction:column;background:#f5f4f1;color:#1c1d1b;animation:mobile-menu-in .2s ease-out}
-        .mobile-menu-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;min-height:72px;padding:10px 18px;border-bottom:1px solid #d7d3cc;background:#f5f4f1}
-        .mobile-menu-brand{display:grid;gap:3px}
+        .mobile-menu,.mobile-menu *{box-sizing:border-box}
+        .mobile-menu{display:flex;position:fixed;z-index:200;inset:0;width:100%;max-width:100vw;height:100dvh;flex-direction:column;overflow:hidden;overscroll-behavior:none;touch-action:pan-y;background:#f5f4f1;color:#1c1d1b;animation:mobile-menu-in .2s ease-out}
+        .mobile-menu-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;width:100%;max-width:100%;min-width:0;min-height:72px;padding:10px 18px;border-bottom:1px solid #d7d3cc;background:#f5f4f1;overflow:hidden}
+        .mobile-menu-brand{display:grid;gap:3px;min-width:0}
         .mobile-menu-brand strong{font-family:Georgia,"Times New Roman",serif;font-size:19px;font-weight:500;letter-spacing:.05em}
         .mobile-menu-brand span{font-size:8px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#77716a}
-        .mobile-menu-close{display:grid;place-items:center;width:44px;height:44px;border:1px solid #d3cec6;border-radius:50%;background:#fff;color:#214d39;font-size:22px;line-height:1}
+        .mobile-menu-close{flex:0 0 44px;display:grid;place-items:center;width:44px;height:44px;border:1px solid #d3cec6;border-radius:50%;background:#fff;color:#214d39;font-size:22px;line-height:1}
 
-        .mobile-menu-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:16px 16px 22px;-webkit-overflow-scrolling:touch}
-        .mobile-menu-intro{margin:0 0 13px;color:#77716a;font-size:10px;line-height:1.45}
+        .mobile-menu-body{flex:1;min-width:0;min-height:0;width:100%;max-width:100%;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;overscroll-behavior-y:contain;touch-action:pan-y;padding:16px 16px 22px;-webkit-overflow-scrolling:touch}
+        .mobile-menu-body>*{max-width:100%;min-width:0}
+        .mobile-menu-intro{margin:0 0 13px;color:#77716a;font-size:10px;line-height:1.45;overflow-wrap:anywhere}
 
-        .mobile-menu-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px}
-        .mobile-menu-tab{display:flex;align-items:center;justify-content:space-between;min-height:62px;padding:12px 13px;border:1px solid #d8d4cd;border-radius:11px;background:#fbfaf8;color:#292a27;text-align:left;font-family:Georgia,"Times New Roman",serif;font-size:15px;box-shadow:0 1px 0 rgba(20,20,20,.02)}
-        .mobile-menu-tab span:last-child{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#ece9e3;color:#315642;font-family:Arial,sans-serif;font-size:13px}
+        .mobile-menu-sections{display:grid;width:100%;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px;overflow:hidden}
+        .mobile-menu-tab{min-width:0;max-width:100%;display:flex;align-items:center;justify-content:space-between;min-height:62px;padding:12px 13px;border:1px solid #d8d4cd;border-radius:11px;background:#fbfaf8;color:#292a27;text-align:left;font-family:Georgia,"Times New Roman",serif;font-size:15px;box-shadow:0 1px 0 rgba(20,20,20,.02);overflow:hidden}
+        .mobile-menu-tab span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis}
+        .mobile-menu-tab span:last-child{flex:0 0 25px;display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:#ece9e3;color:#315642;font-family:Arial,sans-serif;font-size:13px}
         .mobile-menu-tab[aria-selected="true"]{border-color:#28513e;background:#28513e;color:#fff;box-shadow:0 6px 18px rgba(31,77,58,.13)}
         .mobile-menu-tab[aria-selected="true"] span:last-child{background:rgba(255,255,255,.16);color:#fff}
 
-        .mobile-menu-panel{border:1px solid #d7d3cc;border-radius:13px;background:#fff;overflow:hidden}
-        .mobile-menu-panel-head{padding:14px 15px 11px;border-bottom:1px solid #e2ded7;background:#f0eee9}
+        .mobile-menu-panel{width:100%;max-width:100%;min-width:0;border:1px solid #d7d3cc;border-radius:13px;background:#fff;overflow:hidden}
+        .mobile-menu-panel-head{max-width:100%;padding:14px 15px 11px;border-bottom:1px solid #e2ded7;background:#f0eee9;overflow:hidden}
         .mobile-menu-panel-head span{display:block;margin-bottom:3px;color:#315642;font-size:8px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
         .mobile-menu-panel-head strong{font-family:Georgia,"Times New Roman",serif;font-size:18px;font-weight:500}
-        .mobile-menu-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;padding:7px;background:#e8e4de}
-        .mobile-menu-links a{display:flex;align-items:center;min-height:47px;padding:10px 11px;background:#fff;color:#315642;font-size:11px;font-weight:700;line-height:1.3}
+        .mobile-menu-links{display:grid;width:100%;max-width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;padding:7px;background:#e8e4de;overflow:hidden}
+        .mobile-menu-links a{min-width:0;max-width:100%;display:flex;align-items:center;min-height:47px;padding:10px 11px;background:#fff;color:#315642;font-size:11px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}
         .mobile-menu-links a:nth-child(1){border-radius:7px 0 0 0}
         .mobile-menu-links a:nth-child(2){border-radius:0 7px 0 0}
         .mobile-menu-links a:active{background:#eeece7}
         .mobile-menu-all{display:flex!important;grid-column:1/-1!important;justify-content:space-between!important;border-radius:0 0 7px 7px!important;background:#f6f4f0!important;font-weight:800!important}
 
-        .mobile-menu-shortcuts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px}
-        .mobile-menu-shortcuts a{display:flex;align-items:center;justify-content:center;min-height:46px;padding:9px;border:1px solid #d7d3cc;border-radius:9px;background:#fbfaf8;color:#315642;font-size:10px;font-weight:800;text-align:center}
+        .mobile-menu-shortcuts{display:grid;width:100%;max-width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:14px;overflow:hidden}
+        .mobile-menu-shortcuts a{min-width:0;display:flex;align-items:center;justify-content:center;min-height:46px;padding:9px;border:1px solid #d7d3cc;border-radius:9px;background:#fbfaf8;color:#315642;font-size:10px;font-weight:800;text-align:center;overflow-wrap:anywhere}
         .mobile-menu-shortcuts .primary{grid-column:1/-1;background:#1f4d3a;color:#fff;border-color:#1f4d3a}
       }
 
