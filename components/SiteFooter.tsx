@@ -2,6 +2,7 @@ export default function SiteFooter() {
   return (
     <footer className="site-global-footer">
       <style>{`
+        .redesign-shell>.footer,.collections-footer,.collection-footer{display:none!important}
         .site-global-footer{margin-top:0;padding:0;background:#1e1d1b;color:#d9d5cf;border-top:1px solid #34312e;overflow:hidden}
         .site-global-footer *{box-sizing:border-box;min-width:0}
         .site-global-footer-inner{width:min(1296px,84%);margin:0 auto;padding:42px 0 26px;display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,2fr);gap:50px;align-items:start}
