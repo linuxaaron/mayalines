@@ -8,8 +8,9 @@ const warnings = [];
 const seenExact = new Map();
 const seenNormalized = new Map();
 const categories = new Map();
+const languages = new Map();
 
-const normalize = (value) => String(value)
+const normalize = (value) => String(value ?? "")
   .toLowerCase()
   .normalize("NFKD")
   .replace(/[\u0300-\u036f]/g, "")
@@ -45,22 +46,26 @@ for (const [index, quote] of (quotes ?? []).entries()) {
 
   const category = quote?.category ?? "Unknown";
   categories.set(category, (categories.get(category) ?? 0) + 1);
+  const language = quote?.language ?? "en";
+  languages.set(language, (languages.get(language) ?? 0) + 1);
 }
 
-const expected = Number(process.env.EXPECTED_QUOTES ?? "3000");
-if ((quotes?.length ?? 0) !== expected) errors.push(`Expected ${expected} quotes, found ${quotes?.length ?? 0}.`);
+const count = quotes?.length ?? 0;
+const expected = process.env.EXPECTED_QUOTES ? Number(process.env.EXPECTED_QUOTES) : null;
+const minQuotes = Number(process.env.MIN_QUOTES ?? "1");
+const maxQuotes = Number(process.env.MAX_QUOTES ?? "59000");
+if (expected !== null && count !== expected) errors.push(`Expected exactly ${expected} quotes, found ${count}.`);
+if (count < minQuotes) errors.push(`Expected at least ${minQuotes} quotes, found ${count}.`);
+if (count > maxQuotes) errors.push(`Quote corpus exceeds configured maximum of ${maxQuotes}: found ${count}.`);
 
 const indexableCount = (quotes ?? []).filter((quote) => quote?.indexable === true).length;
-console.log(`Quote audit: ${quotes?.length ?? 0} records`);
+console.log(`Quote audit: ${count} records`);
 console.log(`Indexable: ${indexableCount}`);
 console.log(`Categories: ${categories.size}`);
-for (const [category, count] of [...categories.entries()].sort((a, b) => b[1] - a[1])) {
-  console.log(`  ${category}: ${count}`);
-}
+console.log(`Languages: ${[...languages.entries()].map(([language, amount]) => `${language}:${amount}`).join(", ")}`);
 console.log(`Warnings: ${warnings.length}`);
 for (const warning of warnings.slice(0, 20)) console.warn(`WARN: ${warning}`);
 if (warnings.length > 20) console.warn(`WARN: ... ${warnings.length - 20} more warnings`);
 console.log(`Errors: ${errors.length}`);
 for (const error of errors) console.error(`ERROR: ${error}`);
-
 if (errors.length) process.exit(1);
