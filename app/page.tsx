@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import quotesData from "../data/quotes";
 import PersistentLikeButton from "../components/PersistentLikeButton";
 import QuoteActions from "../components/QuoteActions";
@@ -15,6 +15,7 @@ const categories = ["All", ...Array.from(new Set(quotes.map((item) => item.categ
 const authors = Array.from(new Set(quotes.map((item) => item.author))).sort();
 const featuredTopics = quoteTopics.slice(0, 12);
 const PAGE_SIZE = 48;
+const NIETZSCHE_WORDS = ["Man", "muss", "schon", "Chaos", "in", "sich", "tragen,", "um", "einen", "Stern", "gebären", "zu", "können."];
 
 function slugify(value: string) { return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
@@ -62,9 +63,22 @@ export default function Home() {
       .redesign-shell .footer-links a{color:#c5c0b9;text-decoration:none;font-size:10px;letter-spacing:.05em}
       .redesign-shell .footer-links a:hover{color:#fff}
       .redesign-shell .footer-bottom{width:min(1296px,84%);margin:0 auto;padding:16px 0 20px;border-top:1px solid #34312e;color:#858078;font-size:9px;letter-spacing:.05em}
-      @media(max-width:900px){.redesign-shell .header{padding:12px 20px}.redesign-shell .quote-of-the-day,.redesign-shell .seo-intro{width:auto;margin-left:20px;margin-right:20px}.redesign-shell .quote-of-the-day{padding:36px 28px}.redesign-shell .footer-inner{width:auto;margin:0 20px;grid-template-columns:1fr;gap:28px}.redesign-shell .footer-links{grid-template-columns:repeat(2,minmax(0,1fr))}.redesign-shell .footer-bottom{width:auto;margin:0 20px}}
+
+      .nietzsche-float{position:relative;height:0;z-index:35;pointer-events:none}
+      .nietzsche-float-inner{position:absolute;top:15px;left:50%;width:min(760px,76vw);transform:translateX(-50%);text-align:center;color:#080808;opacity:1;animation:nietzsche-fade 5s ease-in-out forwards}
+      .nietzsche-quote{margin:0;font-family:Palatino,"Palatino Linotype","Book Antiqua",Georgia,serif;font-size:clamp(15px,1.55vw,23px);font-style:italic;font-weight:500;line-height:1.45;letter-spacing:.02em;color:#050505;text-shadow:0 .3px 0 rgba(0,0,0,.18)}
+      .nietzsche-word{display:inline-block;margin-right:.27em;opacity:0;filter:blur(2px);transform:translateY(5px) scale(.98);animation:nietzsche-word-in .34s cubic-bezier(.2,.75,.25,1) forwards;animation-delay:calc(var(--word-index) * .135s)}
+      .nietzsche-author{margin:5px 0 0;font-family:Palatino,"Palatino Linotype","Book Antiqua",Georgia,serif;font-size:10px;font-style:italic;letter-spacing:.08em;color:#111;opacity:0;animation:nietzsche-author-in .45s ease forwards;animation-delay:2s}
+      @keyframes nietzsche-word-in{to{opacity:1;filter:blur(0);transform:translateY(0) scale(1)}}
+      @keyframes nietzsche-author-in{to{opacity:.78}}
+      @keyframes nietzsche-fade{0%,82%{opacity:1}100%{opacity:0}}
+
+      @media(max-width:900px){.redesign-shell .header{padding:12px 20px}.redesign-shell .quote-of-the-day,.redesign-shell .seo-intro{width:auto;margin-left:20px;margin-right:20px}.redesign-shell .quote-of-the-day{padding:36px 28px}.redesign-shell .footer-inner{width:auto;margin:0 20px;grid-template-columns:1fr;gap:28px}.redesign-shell .footer-links{grid-template-columns:repeat(2,minmax(0,1fr))}.redesign-shell .footer-bottom{width:auto;margin:0 20px}.nietzsche-float-inner{top:12px;width:calc(100vw - 42px)}.nietzsche-quote{font-size:15px;line-height:1.38}.nietzsche-author{font-size:9px}.redesign-shell .hero{padding-top:92px}}
       @media(max-width:560px){
-        .redesign-shell .hero{padding-top:46px}
+        .redesign-shell .hero{padding-top:104px}
+        .nietzsche-float-inner{top:12px;width:calc(100vw - 32px)}
+        .nietzsche-quote{font-size:14px;line-height:1.42}
+        .nietzsche-word{margin-right:.23em}
         .redesign-shell .quote-of-the-day{margin-left:16px;margin-right:16px;padding:30px 22px}
         .redesign-shell .seo-intro{margin-left:16px;margin-right:16px}
         .redesign-shell .footer-inner{margin:0 16px}
@@ -84,9 +98,17 @@ export default function Home() {
         .redesign-shell .category-rail{gap:7px 12px;padding:12px 0}
         .redesign-shell .category-rail button,.redesign-shell .category-rail a{font-size:8px}
       }
+      @media(prefers-reduced-motion:reduce){.nietzsche-float-inner,.nietzsche-word,.nietzsche-author{animation:none!important;opacity:1!important;filter:none!important;transform:none!important}}
     `}</style>
     <a className="skip-link" href="#main-content">Skip to content</a>
     <header className="header"><a className="brand" href="#top" aria-label="Mayalines home"><img className="brand-mark" src="/mayalines-mark.svg" alt="" aria-hidden="true" /><span className="brand-copy"><span className="brand-name">MAYALINES</span><span className="brand-tagline">WORDS THAT LAST.</span></span></a><div className="header-rule" aria-hidden="true" /><nav className="nav" aria-label="Main navigation"><MegaMenu /></nav></header>
+
+    <div className="nietzsche-float" aria-label="Zitat von Friedrich Nietzsche">
+      <div className="nietzsche-float-inner">
+        <p className="nietzsche-quote">{NIETZSCHE_WORDS.map((word, index) => <span className="nietzsche-word" style={{ "--word-index": index } as CSSProperties} key={`${word}-${index}`}>{word}</span>)}</p>
+        <p className="nietzsche-author">— Friedrich Nietzsche</p>
+      </div>
+    </div>
 
     <section className="hero" id="top" aria-labelledby="page-title"><p className="eyebrow">MAYALINES · FAMOUS &amp; INSPIRATIONAL QUOTES</p><h1 id="page-title">Famous Quotes, Inspirational Words &amp; Timeless Wisdom</h1><p className="hero-copy">Discover memorable words by author, topic and occasion. Copy a quote for your status, share it with someone, or stay awhile and find something unexpected.</p><label className="search-box"><span className="sr-only">Search quotes, authors and topics</span><input type="search" value={query} onChange={(event) => handleSearch(event.target.value)} placeholder="Search quotes, authors or topics …" autoComplete="off" /></label><div className="hero-links"><a href="/random">✦ Surprise me</a><a href="/popular">Most liked</a><a href="/trending">Trending now</a><a href="/collections/short-inspirational-quotes">Short quotes</a><a href="/community">Community quotes</a></div></section>
 
