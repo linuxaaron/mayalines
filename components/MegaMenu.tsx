@@ -18,15 +18,15 @@ function SunflowerMark() {
           <path className="sunflower-leaf sunflower-leaf-left" d="M13.7 27c-5.8.4-8-2.4-8.5-5.7 4.3-.4 7.3 1.5 8.5 5.7Z" />
           <path className="sunflower-leaf sunflower-leaf-right" d="M14.3 23c5.7-.1 7.9-2.8 8.2-6-4.2-.1-7.1 2-8.2 6Z" />
           <g className="sunflower-bloom">
-            <ellipse className="sunflower-petal" cx="14" cy="3.8" rx="2.2" ry="4.7" />
-            <ellipse className="sunflower-petal" cx="14" cy="12.2" rx="2.2" ry="4.7" />
-            <ellipse className="sunflower-petal" cx="9.8" cy="8" rx="4.7" ry="2.2" />
-            <ellipse className="sunflower-petal" cx="18.2" cy="8" rx="4.7" ry="2.2" />
-            <ellipse className="sunflower-petal" cx="11" cy="5" rx="2.1" ry="4.5" transform="rotate(-45 11 5)" />
-            <ellipse className="sunflower-petal" cx="17" cy="5" rx="2.1" ry="4.5" transform="rotate(45 17 5)" />
-            <ellipse className="sunflower-petal" cx="11" cy="11" rx="2.1" ry="4.5" transform="rotate(45 11 11)" />
-            <ellipse className="sunflower-petal" cx="17" cy="11" rx="2.1" ry="4.5" transform="rotate(-45 17 11)" />
-            <circle className="sunflower-center" cx="14" cy="8" r="4.1" />
+            <ellipse className="sunflower-petal" cx="14" cy="4.7" rx="1.8" ry="3.8" />
+            <ellipse className="sunflower-petal" cx="14" cy="11.3" rx="1.8" ry="3.8" />
+            <ellipse className="sunflower-petal" cx="10.7" cy="8" rx="3.8" ry="1.8" />
+            <ellipse className="sunflower-petal" cx="17.3" cy="8" rx="3.8" ry="1.8" />
+            <ellipse className="sunflower-petal" cx="11.7" cy="5.7" rx="1.7" ry="3.5" transform="rotate(-45 11.7 5.7)" />
+            <ellipse className="sunflower-petal" cx="16.3" cy="5.7" rx="1.7" ry="3.5" transform="rotate(45 16.3 5.7)" />
+            <ellipse className="sunflower-petal" cx="11.7" cy="10.3" rx="1.7" ry="3.5" transform="rotate(45 11.7 10.3)" />
+            <ellipse className="sunflower-petal" cx="16.3" cy="10.3" rx="1.7" ry="3.5" transform="rotate(-45 16.3 10.3)" />
+            <circle className="sunflower-center" cx="14" cy="8" r="3.3" />
           </g>
         </g>
       </svg>
@@ -130,13 +130,13 @@ export default function MegaMenu() {
       .mega-feature a{color:#1f4d3a;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
       .mega-mobile-button,.mobile-menu{display:none}
 
-      .menu-sunflower{display:inline-block;width:20px;height:26px;flex:0 0 20px;overflow:visible;pointer-events:none;vertical-align:middle}
+      .menu-sunflower{display:inline-block;width:17px;height:22px;flex:0 0 17px;overflow:visible;pointer-events:none;vertical-align:middle}
       .menu-sunflower svg{display:block;width:100%;height:100%;overflow:visible}
       .sunflower-grow{transform-box:fill-box;transform-origin:center bottom;animation:sunflower-grow 3.4s cubic-bezier(.45,0,.2,1) infinite}
       .sunflower-bloom{transform-box:fill-box;transform-origin:center;animation:sunflower-bloom 3.4s ease-in-out infinite}
       .sunflower-stem{fill:none;stroke:#111;stroke-width:1.7;stroke-linecap:round}
       .sunflower-leaf{fill:#111;stroke:#111;stroke-width:.6}
-      .sunflower-petal{fill:#f4c430;stroke:#d9a900;stroke-width:.35}
+      .sunflower-petal{fill:#ffd21f;stroke:#b88900;stroke-width:.45}
       .sunflower-center{fill:#111}
 
       @keyframes mega-in{from{opacity:0;transform:translate(-50%,-10px) scale(.985)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
@@ -145,8 +145,8 @@ export default function MegaMenu() {
 
       @media(max-width:900px){
         .mega-desktop{display:none}
-        .mega-mobile-button{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:8px 2px;color:#1f4d3a;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
-        .mega-mobile-button .menu-sunflower{width:20px;height:24px;flex-basis:20px}
+        .mega-mobile-button{display:inline-flex;align-items:center;gap:5px;min-height:44px;padding:8px 2px;color:#1f4d3a;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+        .mega-mobile-button .menu-sunflower{width:17px;height:21px;flex-basis:17px}
 
         .mobile-menu,.mobile-menu *{box-sizing:border-box}
         .mobile-menu{display:flex;position:fixed;z-index:200;inset:0;width:100%;max-width:100vw;height:100dvh;flex-direction:column;overflow:hidden;overscroll-behavior:none;touch-action:pan-y;background:#f5f4f1;color:#1c1d1b;animation:mobile-menu-in .2s ease-out}
@@ -158,7 +158,7 @@ export default function MegaMenu() {
 
         .mobile-menu-body{flex:1;min-width:0;min-height:0;width:100%;max-width:100%;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;overscroll-behavior-y:contain;touch-action:pan-y;padding:16px 16px 22px;-webkit-overflow-scrolling:touch}
         .mobile-menu-body>*{max-width:100%;min-width:0}
-        .mobile-menu-intro{display:block;width:100%;max-width:100%;margin:0 0 14px;padding:0 1px;color:#77716a;font-size:10px;line-height:1.55;white-space:normal;word-break:normal;overflow-wrap:break-word}
+        .mobile-menu-intro{display:block;box-sizing:border-box;width:100%;max-width:none;margin:0 0 14px;padding:0 4px 0 0;color:#77716a;font-size:10px;line-height:1.55;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important;overflow:visible!important;text-overflow:clip!important}
 
         .mobile-menu-sections{display:grid;width:100%;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px;overflow:hidden}
         .mobile-menu-tab{min-width:0;max-width:100%;display:flex;align-items:center;justify-content:space-between;min-height:62px;padding:12px 13px;border:1px solid #d8d4cd;border-radius:11px;background:#fbfaf8;color:#292a27;text-align:left;font-family:Georgia,"Times New Roman",serif;font-size:15px;box-shadow:0 1px 0 rgba(20,20,20,.02);overflow:hidden}
@@ -186,7 +186,7 @@ export default function MegaMenu() {
       @media(max-width:390px){
         .mobile-menu-head{padding-left:14px;padding-right:14px}
         .mobile-menu-body{padding-left:12px;padding-right:12px}
-        .mobile-menu-intro{font-size:9.5px;line-height:1.55}
+        .mobile-menu-intro{font-size:9.5px;line-height:1.55;padding-right:2px}
         .mobile-menu-tab{min-height:58px;padding:10px;font-size:14px}
         .mobile-menu-links a{min-height:45px;padding:9px;font-size:10px}
       }
@@ -223,7 +223,7 @@ export default function MegaMenu() {
       </div>
 
       <div className="mobile-menu-body">
-        <p className="mobile-menu-intro">Choose a section. Only the selected section opens, so you always know where you are.</p>
+        <p className="mobile-menu-intro">Choose a section. Only one section opens at a time.</p>
 
         <div className="mobile-menu-sections" role="tablist" aria-label="Menu sections">
           <button className="mobile-menu-tab" type="button" role="tab" aria-selected={mobileSection === "quotes"} onClick={() => setMobileSection("quotes")}><span>Quotes</span><span>01</span></button>
