@@ -96,7 +96,7 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
       <h1 id="page-title">Famous Quotes, Inspirational Words &amp; Timeless Wisdom</h1>
       <p className="hero-copy">Discover memorable words by author, topic and occasion. Copy a quote for your status, share it with someone, or stay awhile and find something unexpected.</p>
       <label className="search-box"><span className="sr-only">Search quotes, authors and topics</span><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search quotes, authors or topics …" autoComplete="off" /></label>
-      <div className="hero-links"><a href="/random">✦ Surprise me</a><a href="/popular">Most liked</a><a href="/trending">Trending now</a><a href="/collections/short-inspirational-quotes">Short quotes</a><a href="/community">Community quotes</a></div>
+      <div className="hero-links"><a href="/random">✦ Surprise me</a><a href="/popular">Most liked</a><a href="/trending">Trending now</a><a href="/collections/quotes-about-suffering">Suffering quotes</a><a href="/collections/short-inspirational-quotes">Short quotes</a><a href="/community">Community quotes</a></div>
     </section>
 
     <section className="library" id="main-content" aria-labelledby="library-title">
@@ -106,7 +106,7 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
         {categories.map((item) => <button key={item} type="button" onClick={() => setCategory(item)} aria-pressed={category === item}>{item}</button>)}
       </div>
       <div className="quote-grid">
-        {quotes.map((item) => <article className="quote-card" key={item.id}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{item.quote}</p><p className="quote-author">— {item.author}</p><p className="quote-category">{item.category}</p><div className="quote-actions"><PersistentLikeButton quoteId={item.id} author={item.author} /><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}
+        {quotes.map((item) => <article className="quote-card" key={item.id} lang={item.language ?? "en"} dir="auto"><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{item.quote}</p><p className="quote-author">— {item.author}</p><p className="quote-category">{item.category}</p><div className="quote-actions"><PersistentLikeButton quoteId={item.id} author={item.author} /><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}
       </div>
       {!loading && quotes.length === 0 && <p className="hero-copy" role="status">No matching quotes found. Try another author, topic or category.</p>}
       {hasMore && <div className="load-more-wrap"><button className="load-more-button" type="button" disabled={loading} onClick={() => void load(false)}>{loading ? "Loading …" : `Load ${PAGE_SIZE} more quotes`}</button></div>}
