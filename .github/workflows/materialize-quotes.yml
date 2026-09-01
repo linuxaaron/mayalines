@@ -35,7 +35,7 @@ jobs:
         run: node scripts/build-quotes.mjs
 
       - name: Verify minimum corpus size
-        run: MIN_QUOTES=10000 MAX_QUOTES=59000 node scripts/audit-quotes.mjs
+        run: MIN_QUOTES=47000 MAX_QUOTES=59000 node scripts/audit-quotes.mjs
 
       - name: Commit materialized corpus
         run: |
@@ -46,5 +46,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/quotes.json
-          git commit -m "data: materialize 12000 sourced quotes"
+          git commit -m "data: materialize up to 49000 sourced quotes"
           git push
