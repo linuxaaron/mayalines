@@ -43,7 +43,9 @@ const seen = new Set();
 function addQuote({ quote, author, category, source, sourceName, sourceCommit }) {
   quote = cleanQuoteText(quote); author = cleanQuoteText(author);
   if (!author || !quote || quote.length < 15 || quote.length > 1500) return;
-  const key = `${author.toLowerCase()}|${quote.toLowerCase()}`;
+  // A quote must appear only once, even when different anthologies attribute it
+  // differently. This keeps quote pages and search results unambiguous.
+  const key = quote.toLowerCase();
   if (seen.has(key)) return;
   seen.add(key);
   const id = `q${String(quotes.length + 1).padStart(5, "0")}`;
@@ -79,12 +81,35 @@ if (quotes.length < TARGET_COUNT) {
   const text = (await response.text()).replace(/\r/g, "");
   const body = text.split("*** START OF THE PROJECT GUTENBERG EBOOK")[1]?.split("*** END OF THE PROJECT GUTENBERG EBOOK")[0] ?? text;
   let category = "Wisdom";
+  let pending = "";
   for (const rawLine of body.split("\n")) {
-    const line = cleanQuoteText(rawLine);
+    let line = cleanQuoteText(rawLine);
     if (!line || /^\[Pg \d+\]$/.test(line) || /^\*+$/.test(line)) continue;
-    if (/^[A-Z][A-Za-z &'’,-]{2,60}\.—/.test(line)) { category = line.split(".—")[0]; continue; }
-    const match = line.match(/^(.{15,1500}?)\s*[—–]\s*([A-Z][A-Za-z .,'’&-]{1,80})\.?$/);
-    if (match) addQuote({ quote: match[1], author: match[2], category, source: GUTENBERG.url, sourceName: GUTENBERG.name, sourceCommit: GUTENBERG.commit });
+
+    // Gutenberg's plain-text edition uses both "TOPIC.—Quote" and
+    // "TOPIC.--Quote" headings. Preserve the topic while parsing the quote.
+    const heading = line.match(/^([A-Z][A-Z0-9 &'’(),.;:!-]{2,79})\.(?:—|--)(.+)$/);
+    if (heading) {
+      category = heading[1];
+      line = heading[2].trim();
+      pending = "";
+    }
+
+    // Authors appear either on the same line or on the line following a quote.
+    const standaloneAuthor = line.match(/^(?:—|–|--)\s*([A-Z][A-Za-z .,'’&-]{1,80})\.?$/);
+    if (standaloneAuthor && pending) {
+      addQuote({ quote: pending, author: standaloneAuthor[1], category, source: GUTENBERG.url, sourceName: GUTENBERG.name, sourceCommit: GUTENBERG.commit });
+      pending = "";
+      continue;
+    }
+
+    const match = line.match(/^(.{15,1500}?)\s*(?:—|–|--)\s*([A-Z][A-Za-z .,'’&-]{1,80})\.?$/);
+    if (match) {
+      addQuote({ quote: match[1], author: match[2], category, source: GUTENBERG.url, sourceName: GUTENBERG.name, sourceCommit: GUTENBERG.commit });
+      pending = "";
+    } else {
+      pending = pending ? `${pending} ${line}` : line;
+    }
     if (quotes.length >= TARGET_COUNT) break;
   }
 }

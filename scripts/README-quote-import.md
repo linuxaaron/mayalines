@@ -2,6 +2,6 @@
 
 Der produktive Zitatimport erfolgt über `scripts/build-wikisource-quotes.mjs`.
 
-Das Skript ruft die öffentliche Wikisource-Ausgabe zur Build-Zeit ab und schreibt genau 2.000 Datensätze nach `data/quotes.json`.
+Das Build-Skript ruft die öffentlichen Wikisource- und Project-Gutenberg-Quellen zur Build-Zeit ab und schreibt genau 5.000 Datensätze nach `data/quotes.json`.
 
-Die verwendete Ausgabe enthält rund 3.000 ausgewählte Zitate und wird von Wikisource als weltweit gemeinfrei gekennzeichnet.
+Die Wikisource-Ausgabe enthält rund 3.000 ausgewählte Zitate und wird von Wikisource als weltweit gemeinfrei gekennzeichnet. Der Korpus wird durch verifizierte gemeinfreie Zitate aus Project Gutenberg ergänzt.

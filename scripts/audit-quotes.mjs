@@ -47,7 +47,7 @@ for (const [index, quote] of (quotes ?? []).entries()) {
   categories.set(category, (categories.get(category) ?? 0) + 1);
 }
 
-const expected = Number(process.env.EXPECTED_QUOTES ?? "3000");
+const expected = Number(process.env.EXPECTED_QUOTES ?? "5000");
 if ((quotes?.length ?? 0) !== expected) errors.push(`Expected ${expected} quotes, found ${quotes?.length ?? 0}.`);
 
 const indexableCount = (quotes ?? []).filter((quote) => quote?.indexable === true).length;

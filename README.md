@@ -34,7 +34,7 @@ Besucher können Zitate über `/submit` einreichen. Einsendungen werden mit dem 
 
 ## Zitatdaten
 
-Der Produktionsdatensatz enthält 2.000 Zitate aus einer festgelegten öffentlichen Quelle. Jeder Datensatz ist dedupliziert, kategorisiert, mit seiner Quelle verknüpft und wird vor der Indexierung durch das Indexierungs-Gate geprüft.
+Der Produktionsdatensatz enthält 5.000 Zitate aus festgelegten öffentlichen Quellen. Jeder Datensatz ist dedupliziert, kategorisiert, mit seiner Quelle verknüpft und wird vor der Indexierung durch das Indexierungs-Gate geprüft.
 
 Die erzeugte Datei `data/quotes.json` enthält die produktiven Zitatdaten. Das Indexierungs-Gate berücksichtigt ausschließlich Datensätze mit verifizierter Zuordnung, geklärtem Veröffentlichungsstatus und aktivierter Indexierung.
 

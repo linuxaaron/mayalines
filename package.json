@@ -7,7 +7,7 @@
     "prebuild": "node scripts/build-quotes.mjs && node scripts/audit-quotes.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "audit:quotes": "node scripts/audit-quotes.mjs"
   },
   "dependencies": {
@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "typescript": "latest",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^16.3.4",
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest"
