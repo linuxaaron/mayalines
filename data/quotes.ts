@@ -2,13 +2,19 @@ import quotesJson from "./quotes.json";
 import nietzscheQuotes from "./quotes.pending.json";
 import importedQuotes from "./quotes.imported.json";
 
-type BaseQuote = (typeof quotesJson)[number];
-type NietzscheQuote = (typeof nietzscheQuotes)[number];
-type ImportedQuote = (typeof importedQuotes)[number];
-
-export type Quote = (BaseQuote | NietzscheQuote | ImportedQuote) & {
+export type Quote = {
+  id: string;
+  quote: string;
+  author: string;
+  category: string;
+  slug: string;
   indexable: boolean;
+  language?: string;
+  source?: string;
   sourceName?: string;
+  sourceCommit?: string;
+  attributionStatus?: string;
+  copyrightStatus?: string;
 };
 
 /** Normalize imported quote text so HTML entities and invisible Unicode characters
@@ -24,7 +30,11 @@ export function cleanQuoteText(value: string): string {
     .trim();
 }
 
-const allQuotes = [...quotesJson, ...nietzscheQuotes, ...importedQuotes];
+const allQuotes = [
+  ...(quotesJson as Quote[]),
+  ...(nietzscheQuotes as Quote[]),
+  ...(importedQuotes as Quote[]),
+];
 
 export const quotes: Quote[] = allQuotes.map((quote) => ({
   ...quote,
