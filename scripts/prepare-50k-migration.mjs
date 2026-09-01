@@ -1,5 +1,6 @@
 import { readFile, writeFile } from "node:fs/promises";
 
+// One-shot migration helper. Removed automatically after a verified build.
 async function patchFile(path, transform) {
   const before = await readFile(path, "utf8");
   const after = transform(before);
