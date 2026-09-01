@@ -1,14 +1,20 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 
-const PUBLISH_TARGET = 12000;
+const PUBLISH_TARGET = 49000;
 const MAX_CAPACITY = 59000;
-const MIN_REQUIRED_COUNT = 10000;
-const USER_AGENT = "MayalinesQuoteBuilder/4.3 (+https://mayalines.com)";
+const MIN_REQUIRED_COUNT = 47000;
+const USER_AGENT = "MayalinesQuoteBuilder/5.0 (+https://mayalines.com)";
 
 const QUOTABLES = {
   commit: "7936d4c2ee93df843854777850ebf926998f8392",
   url: "https://raw.githubusercontent.com/alvations/Quotables/7936d4c2ee93df843854777850ebf926998f8392/author-quote.txt",
   name: "Quotables — alvations/Quotables (CC0 1.0 dataset)",
+};
+
+const PUBLIC_DOMAIN_ARCHIVE = {
+  commit: "dea847392de0d4a36c632d410b73587e4987852b",
+  url: "https://raw.githubusercontent.com/ConceptJunkie/quote/dea847392de0d4a36c632d410b73587e4987852b/quote.txt",
+  name: "ConceptJunkie quote archive — curated public-domain collection",
 };
 
 const WIKISOURCE = {
@@ -55,7 +61,12 @@ function categoryFor(text) {
 }
 
 const CATEGORY_ALIASES = new Map([["Christian Life","Faith"],["Christianity","Faith"],["Christians","Faith"],["Christian Service","Faith"],["Character","Character"],["Education","Education"],["Freedom","Freedom"],["Friendship","Friendship"],["Happiness","Happiness"],["Life","Life"],["Love","Love"],["Motivation","Motivation"],["Philosophy","Philosophy"],["Science","Science"],["Success","Success"],["Wisdom","Wisdom"],["Nature","Nature"],["Art","Art"],["Truth","Truth"],["Maxims","Wisdom"],["Aphorisms","Wisdom"]]);
-function normalizeCategory(value) { const normalized = titleCase(clean(value).replace(/[.:]+$/, "")); return CATEGORY_ALIASES.get(normalized) || normalized || "Wisdom"; }
+const CORE_CATEGORIES = new Set(["Art","Character","Courage","Education","Faith","Freedom","Friendship","Happiness","Hope","Life","Love","Motivation","Nature","Philosophy","Science","Success","Truth","Wisdom"]);
+function normalizeCategory(value, quoteText = "") {
+  const normalized = titleCase(clean(value).replace(/[.:]+$/, ""));
+  const mapped = CATEGORY_ALIASES.get(normalized) || normalized;
+  return CORE_CATEGORIES.has(mapped) ? mapped : categoryFor(quoteText || normalized);
+}
 
 const quotes = [];
 const seen = new Set();
@@ -79,7 +90,7 @@ function addQuote({ quote, author, category = "Wisdom", source, sourceName, sour
   seen.add(key);
   const generatedId = id && !usedIds.has(id) ? id : nextId();
   usedIds.add(generatedId);
-  quotes.push({ id: generatedId, quote, author, category: normalizeCategory(category), language, source, sourceName, sourceCommit, attributionStatus, copyrightStatus, indexable, slug: slug || `${slugify(quote).slice(0, 88)}-${generatedId}` });
+  quotes.push({ id: generatedId, quote, author, category: normalizeCategory(category, quote), language, source, sourceName, sourceCommit, attributionStatus, copyrightStatus, indexable, slug: slug || `${slugify(quote).slice(0, 88)}-${generatedId}` });
   return true;
 }
 
@@ -154,6 +165,24 @@ for (const source of GUTENBERG_SOURCES) {
       const concise = line.length >= 25 && line.length <= 420 && /[.!?;:]$/.test(line) ? line : "";
       const candidate = numbered?.[1] ?? quoted ?? concise;
       if (candidate) addQuote({ quote: candidate, author: source.author, category, source: url, sourceName, sourceCommit, language: source.language });
+    }
+  }
+}
+
+if (quotes.length < PUBLISH_TARGET) {
+  const archiveText = await fetchText(PUBLIC_DOMAIN_ARCHIVE.url);
+  if (archiveText) {
+    const blocks = archiveText.replace(/\r/g, "").split(/\n%\n/);
+    for (const block of blocks) {
+      if (quotes.length >= PUBLISH_TARGET) break;
+      const lines = block.split("\n").map((line) => clean(line)).filter(Boolean);
+      if (lines.length < 2) continue;
+      const last = lines.at(-1) ?? "";
+      const match = last.match(/^(?:--|—|-)\s*(.{2,120})$/);
+      if (!match) continue;
+      const author = clean(match[1]);
+      const quote = clean(lines.slice(0, -1).join(" "));
+      addQuote({ quote, author, category: categoryFor(quote), source: PUBLIC_DOMAIN_ARCHIVE.url, sourceName: PUBLIC_DOMAIN_ARCHIVE.name, sourceCommit: PUBLIC_DOMAIN_ARCHIVE.commit, language: "en", attributionStatus: "source-derived", copyrightStatus: "needs-review", indexable: true });
     }
   }
 }
