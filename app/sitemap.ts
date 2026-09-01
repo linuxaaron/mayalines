@@ -10,7 +10,7 @@ function slugify(value: string) {
 }
 
 function isIndexable(quote: (typeof quotesData)[number]) {
-  return quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared";
+  return quote.indexable === true;
 }
 
 const collectionSlugs = ["quotes-about-life","quotes-about-love","quotes-about-suffering","quotes-about-success","quotes-about-motivation","quotes-about-wisdom","short-inspirational-quotes","quotes-about-friendship","quotes-about-courage","quotes-about-happiness","quotes-about-hope"];
