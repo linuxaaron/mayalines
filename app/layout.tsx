@@ -88,6 +88,11 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [socialImage],
   },
+  icons: {
+    icon: [{ url: "/sunflower-logo.png?v=2", type: "image/png", sizes: "512x512" }],
+    shortcut: [{ url: "/sunflower-logo.png?v=2", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png?v=2", type: "image/png", sizes: "180x180" }],
+  },
 };
 
 export const viewport: Viewport = {
@@ -113,7 +118,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "Organization",
     name: "Mayalines",
     url: siteUrl,
-    logo: `${siteUrl}/mayalines-mark.svg`,
+    logo: `${siteUrl}/sunflower-logo.png`,
   };
 
   return (
