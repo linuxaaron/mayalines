@@ -7,8 +7,8 @@ import StructuredData from "../../../components/StructuredData";
 import { isPublicQuote } from "../../../lib/seo";
 
 const collections = {
-  "quotes-about-life": { title: "Quotes About Life", description: "Thoughtful words about life, experience, change and the way we choose to live.", category: "Life" },
-  "quotes-about-love": { title: "Love Quotes", description: "Memorable words about love, affection, devotion and human connection.", category: "Love" },
+  "quotes-about-life": { title: "Quotes About Life", description: "Thoughtful life quotes and life lessons about experience, change, growth and the way we choose to live.", category: "Life" },
+  "quotes-about-love": { title: "Love Quotes", description: "Meaningful love quotes to read, copy and share about affection, devotion, relationships and human connection.", category: "Love" },
   "quotes-about-hope": { title: "Hope Quotes", description: "Hope quotes about perseverance, renewal, optimism, difficult times and believing that things can improve.", category: "Hope" },
   "quotes-about-suffering": { title: "Suffering Quotes", description: "Suffering quotes about pain, hardship, grief, adversity, resilience and finding meaning through difficult moments.", match: /(suffer|suffering|pain|painful|grief|sorrow|hardship|adversity|anguish|misery|wound|sacrifice)/i },
   "pain-quotes": { title: "Pain Quotes", description: "Quotes about emotional pain, physical pain, heartbreak, struggle, endurance and finding perspective in difficult experiences.", match: /(pain|painful|hurt|hurting|ache|wound|suffer|agony|anguish)/i },
@@ -18,10 +18,10 @@ const collections = {
   "positive-quotes": { title: "Positive Quotes", description: "Positive quotes about optimism, happiness, gratitude, confidence, hope and approaching life with a constructive mindset.", match: /(positive|optimis|happiness|happy|joy|gratitude|hope|smile|confidence|cheer)/i },
   "maya-angelou-quotes": { title: "Maya Angelou Quotes", description: "Explore Maya Angelou quotes about life, courage, love, dignity, resilience, change and the human experience.", author: "Maya Angelou" },
   "quotes-about-success": { title: "Quotes About Success", description: "Perspectives on achievement, ambition, work, discipline and success.", category: "Success" },
-  "quotes-about-motivation": { title: "Motivational Quotes", description: "Words about courage, action, persistence and moving forward.", category: "Motivation" },
+  "quotes-about-motivation": { title: "Motivational Quotes", description: "Motivational quotes to copy about courage, action, persistence, discipline and moving forward.", category: "Motivation" },
   "quotes-about-wisdom": { title: "Wisdom Quotes", description: "Timeless observations from writers and thinkers on character, knowledge and life.", category: "Wisdom" },
-  "short-inspirational-quotes": { title: "Short Inspirational Quotes", description: "Concise, memorable lines for moments when a few words are enough.", short: true },
-  "quotes-about-friendship": { title: "Friendship Quotes", description: "Quotes about loyalty, trust, companionship and lasting friendships.", category: "Friendship" },
+  "short-inspirational-quotes": { title: "Short Inspirational Quotes", description: "Short inspirational quotes to copy for Instagram captions, WhatsApp status updates and moments when a few words are enough.", short: true },
+  "quotes-about-friendship": { title: "Friendship Quotes", description: "Friendship quotes to copy and share about loyalty, trust, companionship and lasting friendships.", category: "Friendship" },
   "quotes-about-courage": { title: "Courage Quotes", description: "Words about bravery, fear, resilience and finding the strength to act.", category: "Courage" },
   "quotes-about-happiness": { title: "Happiness Quotes", description: "Quotes about joy, contentment and meaningful living.", category: "Happiness" },
 } as const;
