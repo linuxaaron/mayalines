@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Friendship Quotes | MAYALINES",
+  title: "Friendship Quotes",
   description: "Timeless friendship quotes about loyalty, companionship, trust and the people who make life richer.",
   alternates: { canonical: "https://mayalines.com/collections/quotes-about-friendship" },
 };

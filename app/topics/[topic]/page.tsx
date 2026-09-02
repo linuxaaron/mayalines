@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ topic: st
   const topic = quoteTopics.find((item) => item.slug === slug);
   if (!topic) return {};
   return {
-    title: `${topic.label} Quotes — Famous & Inspirational | MAYALINES`,
+    title: `${topic.label} Quotes — Famous & Inspirational`,
     description: topic.description,
     alternates: { canonical: `https://mayalines.com/topics/${topic.slug}` },
     openGraph: { type: "website", title: `${topic.label} Quotes | MAYALINES`, description: topic.description, url: `https://mayalines.com/topics/${topic.slug}` },

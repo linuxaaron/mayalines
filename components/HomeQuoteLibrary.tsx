@@ -20,7 +20,7 @@ type Props = {
   categories: string[];
 };
 
-const PAGE_SIZE = 48;
+const PAGE_SIZE = 24;
 const TOAST_DURATION = 1450;
 const QUICK_CATEGORY_NAMES = ["Life", "Love", "Wisdom", "Success", "Motivation", "Happiness", "Courage", "Friendship", "Freedom"];
 

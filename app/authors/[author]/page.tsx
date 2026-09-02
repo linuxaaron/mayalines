@@ -27,12 +27,12 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
   if (!authorName) notFound();
   const quotes = quotesData.filter((quote) => quote.author === authorName);
   const indexableQuotes = quotes.filter(isSeoIndexable);
+  if (indexableQuotes.length === 0) notFound();
   const visibleQuotes = indexableQuotes.slice(0, 24);
   const topics = Array.from(new Set(indexableQuotes.map((quote) => quote.category))).sort().slice(0, 8);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const authorUrl = `${siteUrl}/authors/${slug}`;
   const personSchema = { "@context": "https://schema.org", "@type": "Person", name: authorName, subjectOf: { "@type": "WebPage", url: authorUrl, inLanguage: "en-US" } };
-  const breadcrumbSchema = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: siteUrl }, { "@type": "ListItem", position: 2, name: "Authors", item: `${siteUrl}/authors` }, { "@type": "ListItem", position: 3, name: authorName, item: authorUrl }] };
   const itemListSchema = { "@context": "https://schema.org", "@type": "ItemList", name: `Quotes by ${authorName}`, numberOfItems: visibleQuotes.length, itemListElement: visibleQuotes.map((quote, index) => ({ "@type": "ListItem", position: index + 1, name: `${authorName} quote`, url: `${siteUrl}/quotes/${quote.slug}` })) };
 
   return <main className="quote-detail">
@@ -54,6 +54,6 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
       <div className="quote-grid">{visibleQuotes.map((quote) => <article className="quote-card" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><p className="quote-category">{quote.category}</p><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><a className="copy-button" href={`/quotes/${quote.slug}`}>VIEW QUOTE</a></div></article>)}</div>
     </section>
     {indexableQuotes.length > visibleQuotes.length && <p className="hero-copy" style={{ marginTop: 24 }}>More sourced quotes by {authorName} are available across the Mayalines library.</p>}
-    <StructuredData data={personSchema} /><StructuredData data={breadcrumbSchema} /><StructuredData data={itemListSchema} />
+    <StructuredData data={personSchema} /><StructuredData data={itemListSchema} />
   </main>;
 }

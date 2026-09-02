@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Happiness Quotes | MAYALINES",
+  title: "Happiness Quotes",
   description: "Read timeless quotes about happiness, joy, contentment and the simple things that make life meaningful.",
   alternates: { canonical: "https://mayalines.com/collections/quotes-about-happiness" },
 };

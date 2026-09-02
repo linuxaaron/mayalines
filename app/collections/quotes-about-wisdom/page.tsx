@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Wisdom Quotes | MAYALINES",
+  title: "Wisdom Quotes",
   description: "Explore timeless wisdom quotes about knowledge, perspective, truth and the art of living well.",
   alternates: { canonical: "https://mayalines.com/collections/quotes-about-wisdom" },
 };

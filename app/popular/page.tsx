@@ -2,9 +2,9 @@ import { getDb } from "../../lib/db";
 import QuoteResults from "../../components/QuoteResults";
 import quotesData from "../../data/quotes";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata = {
-  title: "Popular Quotes — Most Liked Quotes | MAYALINES",
+  title: "Popular Quotes — Most Liked Quotes",
   description: "Discover the most liked famous and inspirational quotes on MAYALINES, ranked by our reader community.",
   alternates: { canonical: "https://mayalines.com/popular" },
 };

@@ -1,6 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { headers } from "next/headers";
-import Script from "next/script";
 import "./globals.css";
 import "./accessibility-overrides.css";
 import "./quote-overrides.css";
@@ -12,7 +10,7 @@ import GoogleTranslateLink from "../components/GoogleTranslateLink";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 const siteTitle = "Famous Quotes, Love Quotes, Hope Quotes & Poems | Mayalines";
-const siteDescription = "Discover famous quotes, love quotes, hope quotes, life quotes, inspirational quotes, suffering quotes, Maya Angelou quotes, wisdom and poems. Browse thousands of quotes by topic and author on Mayalines.";
+const siteDescription = "Discover sourced famous quotes, love quotes, hope quotes, life quotes, inspirational quotes, timeless wisdom and public-domain poems. Browse thousands of quotes by topic and author on Mayalines.";
 const socialImage = `${siteUrl}/mayalines-og.svg`;
 
 export const metadata: Metadata = {
@@ -54,19 +52,12 @@ export const metadata: Metadata = {
     "success quotes",
     "wisdom quotes",
     "philosophy quotes",
-    "Maya Angelou quotes",
-    "Maya quotes",
     "quotes by famous people",
     "quotes by authors",
     "daily quotes",
     "quote of the day",
     "beautiful quotes",
     "timeless quotes",
-    "Liebeszitate",
-    "Zitate über Liebe",
-    "Hoffnung Zitate",
-    "Lebenszitate",
-    "inspirierende Zitate",
     "aphorisms",
     "famous poems",
     "poems",
@@ -106,14 +97,13 @@ export const viewport: Viewport = {
   themeColor: "#f4f3f0",
 };
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Mayalines",
     url: siteUrl,
-    inLanguage: ["en", "de", "fr", "es", "it", "nl"],
+    inLanguage: "en-US",
     description: siteDescription,
     image: socialImage,
   };
@@ -132,12 +122,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <meta name="referrer" content="strict-origin-when-cross-origin" />
       </head>
       <body translate="yes">
-        <StructuredData data={websiteSchema} nonce={nonce} />
-        <StructuredData data={organizationSchema} nonce={nonce} />
+        <StructuredData data={websiteSchema} />
+        <StructuredData data={organizationSchema} />
         {children}
         <SiteFooter />
         <GoogleTranslateLink />
-        <Script nonce={nonce} async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2162793628214003" crossOrigin="anonymous" strategy="afterInteractive" />
       </body>
     </html>
   );

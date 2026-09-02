@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Quote Collections – Love, Hope, Pain, Healing & Maya Angelou Quotes | MAYALINES",
-  description: "Explore curated quote collections including love quotes, hope quotes, pain quotes, healing quotes, sad quotes, strength quotes, positive quotes, Maya Angelou quotes and more.",
+  title: "Quote Collections – Love, Hope, Pain, Healing & Strength Quotes",
+  description: "Explore curated quote collections including love quotes, hope quotes, pain quotes, healing quotes, sad quotes, strength quotes and positive quotes.",
   alternates: { canonical: "https://mayalines.com/collections" },
   openGraph: {
     title: "Quote Collections | MAYALINES",
@@ -21,7 +22,6 @@ const collections = [
   { slug: "sad-quotes", title: "Sad Quotes", description: "Quotes about sadness, loneliness, heartbreak, loss, grief and sorrow." },
   { slug: "strength-quotes", title: "Strength Quotes", description: "Quotes about strength, resilience, courage, endurance and overcoming adversity." },
   { slug: "positive-quotes", title: "Positive Quotes", description: "Positive quotes about optimism, gratitude, happiness, hope and confidence." },
-  { slug: "maya-angelou-quotes", title: "Maya Angelou Quotes", description: "Quotes by Maya Angelou about courage, life, love, dignity, change and resilience." },
   { slug: "quotes-about-success", title: "Quotes About Success", description: "Perspectives on achievement, ambition, work, discipline and success." },
   { slug: "quotes-about-motivation", title: "Motivational Quotes", description: "Words about courage, action, persistence and moving forward." },
   { slug: "quotes-about-wisdom", title: "Wisdom Quotes", description: "Timeless observations on character, knowledge, perspective and life." },
@@ -38,7 +38,7 @@ export default function CollectionsPage() {
     `}</style>
     <div className="collections-wrap">
       <header className="collections-header"><a href="/" className="collections-brand">MAYALINES</a><nav className="collections-nav" aria-label="Collections navigation"><a href="/">Quotes</a><a href="/authors">Authors</a><a href="/poems">Poems</a></nav></header>
-      <section className="collections-hero"><div><p className="eyebrow">MAYALINES · CURATED COLLECTIONS</p><h1>Quotes worth returning to.</h1><p>Explore focused collections of famous quotes, love quotes, hope quotes, pain quotes, healing quotes, strength quotes, positive quotes and timeless words by author or topic.</p></div><figure className="collections-visual"><img src="/mayalines-poetry.svg" alt="Minimal paper and ink illustration for MAYALINES quote collections" width="1200" height="675" /></figure></section>
+      <section className="collections-hero"><div><p className="eyebrow">MAYALINES · CURATED COLLECTIONS</p><h1>Quotes worth returning to.</h1><p>Explore focused collections of famous quotes, love quotes, hope quotes, pain quotes, healing quotes, strength quotes, positive quotes and timeless words by author or topic.</p></div><figure className="collections-visual"><Image src="/mayalines-poetry.svg" alt="Minimal paper and ink illustration for MAYALINES quote collections" width={1200} height={675} sizes="(max-width: 900px) 100vw, 360px" /></figure></section>
       <section className="collection-grid" aria-label="Quote collections">{collections.map((collection) => <article className="collection-card" key={collection.slug}><p className="eyebrow">COLLECTION</p><h2>{collection.title}</h2><p>{collection.description}</p><a className="collection-link" href={`/collections/${collection.slug}`}>Explore collection →</a></article>)}</section>
     </div>
   </main>;

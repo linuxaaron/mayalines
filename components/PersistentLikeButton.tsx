@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useWhenVisible } from "./useWhenVisible";
 
 type LikeResponse = {
   likes?: number;
@@ -14,8 +15,10 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
   const [pending, setPending] = useState(false);
   const [ready, setReady] = useState(false);
   const [persistent, setPersistent] = useState(true);
+  const { ref, visible } = useWhenVisible<HTMLDivElement>();
 
   useEffect(() => {
+    if (!visible) return;
     let cancelled = false;
     fetch(`/api/quotes/${encodeURIComponent(quoteId)}/like`, {
       cache: "no-store",
@@ -39,7 +42,7 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
     return () => {
       cancelled = true;
     };
-  }, [quoteId]);
+  }, [quoteId, visible]);
 
   async function toggleLike() {
     if (pending || !ready || !persistent) return;
@@ -82,7 +85,7 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
       : `Like the quote by ${author}`;
 
   return (
-    <div className="like-control" data-persistent={persistent ? "true" : "false"}>
+    <div ref={ref} className="like-control" data-persistent={persistent ? "true" : "false"}>
       <button
         className={`like-button${liked ? " is-liked" : ""}`}
         type="button"

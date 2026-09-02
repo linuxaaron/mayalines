@@ -2,9 +2,9 @@ import { getDb } from "../../lib/db";
 import QuoteResults from "../../components/QuoteResults";
 import quotesData from "../../data/quotes";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 300;
 export const metadata = {
-  title: "Most Copied Quotes | MAYALINES",
+  title: "Most Copied Quotes",
   description: "Discover the quotes readers copy most often for messages, statuses and social posts.",
   alternates: { canonical: "https://mayalines.com/most-copied" },
 };

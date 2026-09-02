@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Motivation Quotes | MAYALINES",
+  title: "Motivation Quotes",
   description: "Find motivating quotes about courage, action, resilience and making progress when you need it most.",
   alternates: { canonical: "https://mayalines.com/collections/quotes-about-motivation" },
 };

@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Short Inspirational Quotes | MAYALINES",
+  title: "Short Inspirational Quotes",
   description: "A curated collection of short inspirational quotes about courage, hope, action and resilience that are easy to remember and share.",
   alternates: { canonical: "https://mayalines.com/collections/short-inspirational-quotes" },
 };

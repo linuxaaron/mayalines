@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import quotesData from "../data/quotes";
 import PersistentLikeButton from "../components/PersistentLikeButton";
 import QuoteActions from "../components/QuoteActions";
@@ -8,8 +9,7 @@ import MegaMenu from "../components/MegaMenu";
 import HomeQuoteLibrary from "../components/HomeQuoteLibrary";
 import { quoteTopics } from "../lib/quote-topics";
 
-const PAGE_SIZE = 48;
-const NIETZSCHE_WORDS = ["Man", "muss", "schon", "Chaos", "in", "sich", "tragen,", "um", "einen", "Stern", "gebären", "zu", "können."];
+const PAGE_SIZE = 24;
 
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
@@ -27,6 +27,8 @@ export default function Home() {
   const initialQuotes = indexableQuotes.slice(0, PAGE_SIZE);
   const featured = indexableQuotes.slice(0, 3);
   const daily = indexableQuotes[0];
+  const floatingQuote = indexableQuotes.find((item) => (item.language ?? "en") === "en" && item.quote.length <= 135) ?? daily;
+  const floatingWords = floatingQuote?.quote.split(/\s+/) ?? [];
 
   return <main className="site-shell redesign-shell" id="main-content" tabIndex={-1}>
     <style>{`
@@ -74,9 +76,9 @@ export default function Home() {
     `}</style>
 
     <a className="skip-link" href="#main-content">Skip to content</a>
-    <header className="header"><a className="brand" href="#top" aria-label="Mayalines home"><img className="brand-mark" src="/mayalines-mark.svg" alt="" aria-hidden="true" /><span className="brand-copy"><span className="brand-name">MAYALINES</span><span className="brand-tagline">WORDS THAT LAST.</span></span></a><div className="header-rule" aria-hidden="true" /><nav className="nav" aria-label="Main navigation"><MegaMenu /></nav></header>
+    <header className="header"><a className="brand" href="#top" aria-label="Mayalines home"><Image className="brand-mark" src="/mayalines-mark.svg" alt="" aria-hidden="true" width={46} height={46} priority /><span className="brand-copy"><span className="brand-name">MAYALINES</span><span className="brand-tagline">WORDS THAT LAST.</span></span></a><div className="header-rule" aria-hidden="true" /><nav className="nav" aria-label="Main navigation"><MegaMenu /></nav></header>
 
-    <div className="nietzsche-float" aria-label="Zitat von Friedrich Nietzsche"><div className="nietzsche-float-inner"><p className="nietzsche-quote">{NIETZSCHE_WORDS.map((word, index) => <span className="nietzsche-word" style={{ "--word-index": index } as CSSProperties} key={`${word}-${index}`}>{word}</span>)}</p><p className="nietzsche-author">— Friedrich Nietzsche</p></div></div>
+    {floatingQuote && <div className="nietzsche-float" aria-label={`Quote by ${floatingQuote.author}`}><div className="nietzsche-float-inner"><p className="nietzsche-quote">{floatingWords.map((word, index) => <span className="nietzsche-word" style={{ "--word-index": index } as CSSProperties} key={`${word}-${index}`}>{word}</span>)}</p><p className="nietzsche-author">— {floatingQuote.author}</p></div></div>}
 
     <HomeQuoteLibrary initialQuotes={initialQuotes} initialTotal={indexableQuotes.length} categories={categories} />
 

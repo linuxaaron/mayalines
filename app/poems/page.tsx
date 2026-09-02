@@ -3,7 +3,7 @@ import importedPoems from "../../data/poems.imported.json";
 import generatedPoems from "../../data/poems.generated.json";
 
 export const metadata: Metadata = {
-  title: "Famous Poems in English, German, French, Spanish & Italian | MAYALINES",
+  title: "Famous Poems in English, German, French, Spanish & Italian",
   description: "Read a growing multilingual collection of public-domain poems by Emily Dickinson, William Blake, Friedrich Schiller, Charles Baudelaire, Gustavo Adolfo Bécquer, Giacomo Leopardi and more.",
   alternates: { canonical: "https://mayalines.com/poems" },
   openGraph: {

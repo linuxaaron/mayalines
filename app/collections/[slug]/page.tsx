@@ -27,6 +27,22 @@ const collections = {
 
 type CollectionSlug = keyof typeof collections;
 
+type Collection = (typeof collections)[CollectionSlug];
+type QuoteItem = (typeof quotesData)[number];
+
+function matchesCollection(quote: QuoteItem, collection: Collection) {
+  if (quote.indexable !== true || quote.attributionStatus !== "verified" || quote.copyrightStatus !== "cleared") return false;
+  if ("short" in collection && collection.short && quote.quote.length > 120) return false;
+  if ("author" in collection) return quote.author.toLowerCase() === collection.author.toLowerCase();
+  if ("match" in collection) return collection.match.test(`${quote.quote} ${quote.category}`);
+  if ("category" in collection) return quote.category === collection.category;
+  return false;
+}
+
+function getCollectionQuotes(collection: Collection) {
+  return quotesData.filter((quote) => matchesCollection(quote, collection));
+}
+
 export function generateStaticParams() {
   return Object.keys(collections).map((slug) => ({ slug }));
 }
@@ -34,13 +50,14 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const collection = collections[slug as CollectionSlug];
-  if (!collection) return { title: "Collection Not Found | MAYALINES", robots: { index: false, follow: false } };
+  if (!collection) return { title: "Collection Not Found", robots: { index: false, follow: false } };
+  const hasQuotes = getCollectionQuotes(collection).length > 0;
 
   return {
     title: `${collection.title} – Famous, Meaningful & Inspirational Quotes`,
     description: collection.description,
     alternates: { canonical: `https://mayalines.com/collections/${slug}` },
-    robots: { index: true, follow: true },
+    robots: { index: hasQuotes, follow: true },
     openGraph: {
       title: `${collection.title} | MAYALINES`,
       description: collection.description,
@@ -60,14 +77,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
   const collection = collections[slug as CollectionSlug];
   if (!collection) return <main className="collection-page"><div className="collection-wrap"><h1>Collection not found</h1><Link href="/collections">Browse collections →</Link></div></main>;
 
-  const quotes = quotesData.filter((quote) => {
-    if (quote.indexable !== true || quote.attributionStatus !== "verified" || quote.copyrightStatus !== "cleared") return false;
-    if ("short" in collection && collection.short && quote.quote.length > 120) return false;
-    if ("author" in collection) return quote.author.toLowerCase() === collection.author.toLowerCase();
-    if ("match" in collection) return collection.match.test(`${quote.quote} ${quote.category}`);
-    if ("category" in collection) return quote.category === collection.category;
-    return false;
-  });
+  const quotes = getCollectionQuotes(collection);
   const related = Object.entries(collections).filter(([otherSlug]) => otherSlug !== slug).slice(0, 6);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const itemListSchema = {
@@ -91,7 +101,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     <div className="collection-wrap">
       <header className="collection-header"><Link href="/" className="collection-brand">MAYALINES</Link><nav className="collection-nav" aria-label="Collection navigation"><Link href="/collections">Collections</Link><Link href="/authors">Authors</Link><Link href="/poems">Poems</Link></nav></header>
       <section className="collection-hero"><p className="eyebrow">MAYALINES · CURATED COLLECTION</p><h1>{collection.title}</h1><p>{collection.description}</p><p className="collection-meta">{quotes.length.toLocaleString("en-US")} sourced quotes</p></section>
-      <section className="collection-grid" aria-label={collection.title}>{quotes.slice(0, 90).map((quote) => <article className="collection-quote" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><Link className="collection-author" href={`/authors/${slugify(quote.author)}`}>More by {quote.author} →</Link><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><CopyQuoteButton quote={quote.quote} author={quote.author} /></div></article>)}</section>
+      {quotes.length > 0 ? <section className="collection-grid" aria-label={collection.title}>{quotes.slice(0, 90).map((quote) => <article className="collection-quote" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><Link className="collection-author" href={`/authors/${slugify(quote.author)}`}>More by {quote.author} →</Link><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><CopyQuoteButton quote={quote.quote} author={quote.author} /></div></article>)}</section> : <p className="collection-meta">No editorially verified quotes are currently available in this collection.</p>}
       {related.length > 0 && <section className="related" aria-labelledby="related-heading"><p className="eyebrow">KEEP EXPLORING</p><h2 id="related-heading">More quote collections</h2><div className="related-grid">{related.map(([relatedSlug, relatedCollection]) => <Link className="related-link" key={relatedSlug} href={`/collections/${relatedSlug}`}>{relatedCollection.title} →</Link>)}</div></section>}
       <footer className="collection-footer"><Link href="/collections">← All collections</Link></footer>
     </div>

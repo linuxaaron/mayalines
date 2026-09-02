@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Success Quotes | MAYALINES",
+  title: "Success Quotes",
   description: "Thoughtful quotes about success, achievement, ambition and perseverance from notable authors.",
   alternates: { canonical: "https://mayalines.com/collections/quotes-about-success" },
 };

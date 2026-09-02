@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { getDb } from "../../lib/db";
 
+export const revalidate = 300;
+
 export const metadata: Metadata = {
-  title: "Community Quotes | MAYALINES",
+  title: "Community Quotes",
   description: "Discover quotes submitted by the MAYALINES community and approved by the editors.",
   alternates: { canonical: "https://mayalines.com/community" },
-  robots: { index: true, follow: true },
+  robots: { index: false, follow: true },
 };
 
 type Submission = {
@@ -91,7 +93,7 @@ export default async function CommunityPage() {
             ))}
           </div>
         ) : (
-          <div className="community-empty">Noch wurden keine Community-Zitate veröffentlicht. Reiche ein Zitat ein und nach erfolgreicher Prüfung kann es hier erscheinen.</div>
+          <div className="community-empty">No community quotes have been published yet. Submit a quote and it may appear here after editorial review.</div>
         )}
 
         <div className="community-cta">

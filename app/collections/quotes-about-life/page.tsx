@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Quotes About Life | MAYALINES",
+  title: "Quotes About Life",
   description: "Discover thoughtful quotes about life, purpose, change and the moments that shape us. Read and copy timeless words from notable authors.",
   alternates: { canonical: "https://mayalines.com/collections/quotes-about-life" },
   openGraph: { title: "Quotes About Life | MAYALINES", description: "Thoughtful and timeless quotes about life, purpose and change." },

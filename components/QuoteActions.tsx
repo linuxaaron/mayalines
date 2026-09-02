@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import SaveQuoteButton from "./SaveQuoteButton";
+import { useWhenVisible } from "./useWhenVisible";
 
 type EngagementStats = {
   likes?: number;
@@ -15,12 +16,12 @@ export default function QuoteActions({ quote, author, quoteId }: { quote: string
   const [shared, setShared] = useState(false);
   const [copies, setCopies] = useState(0);
   const [shares, setShares] = useState(0);
+  const { ref, visible } = useWhenVisible<HTMLDivElement>();
 
   const text = `“${quote}” — ${author}`;
-  const pageUrl = typeof window === "undefined" ? "https://mayalines.com" : window.location.href;
 
   useEffect(() => {
-    if (!quoteId) return;
+    if (!quoteId || !visible) return;
     let cancelled = false;
 
     fetch(`/api/quotes/${encodeURIComponent(quoteId)}/stats`, {
@@ -38,7 +39,7 @@ export default function QuoteActions({ quote, author, quoteId }: { quote: string
     return () => {
       cancelled = true;
     };
-  }, [quoteId]);
+  }, [quoteId, visible]);
 
   const record = async (kind: "copy" | "share", channel = "native") => {
     if (!quoteId) return;
@@ -66,6 +67,7 @@ export default function QuoteActions({ quote, author, quoteId }: { quote: string
   }
 
   async function share() {
+    const pageUrl = window.location.href;
     try {
       if (navigator.share) {
         await navigator.share({ title: `${author} quote`, text, url: pageUrl });
@@ -81,22 +83,21 @@ export default function QuoteActions({ quote, author, quoteId }: { quote: string
     } catch { setShared(false); }
   }
 
-  const whatsappText = encodeURIComponent(`${text}\n\n${pageUrl}`);
-
   async function whatsapp() {
     await record("share", "whatsapp");
+    const whatsappText = encodeURIComponent(`${text}\n\n${window.location.href}`);
     window.open(`https://wa.me/?text=${whatsappText}`, "_blank", "noopener,noreferrer");
   }
 
   return (
-    <div className="quote-action-suite">
+    <div ref={ref} className="quote-action-suite">
       <button className="copy-button" type="button" onClick={() => copy()}>{copied ? "COPIED" : "COPY"}</button>
-      <button className="copy-button" type="button" onClick={() => copy(`${text}\n\n${pageUrl}`)}>COPY WITH LINK</button>
+      <button className="copy-button" type="button" onClick={() => copy(`${text}\n\n${window.location.href}`)}>COPY WITH LINK</button>
       <button className="copy-button" type="button" onClick={whatsapp}>WHATSAPP</button>
       <button className="copy-button" type="button" onClick={share}>{shared ? "SHARED" : "SHARE"}</button>
       {quoteId && <SaveQuoteButton quoteId={quoteId} />}
       {quoteId && <span className="engagement-counts" aria-label="Quote engagement">
-        {copies.toLocaleString("de-DE")} Kopien · {shares.toLocaleString("de-DE")} Shares
+        {copies.toLocaleString("en-US")} Copies · {shares.toLocaleString("en-US")} Shares
       </span>}
     </div>
   );

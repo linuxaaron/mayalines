@@ -2,7 +2,7 @@ import Link from "next/link";
 import { quoteTopics } from "../../lib/quote-topics";
 
 export const metadata = {
-  title: "Quote Topics — Love, Life, Wisdom, Success & More | MAYALINES",
+  title: "Quote Topics — Love, Life, Wisdom, Success & More",
   description: "Browse famous quotes by topic, including love, life, wisdom, success, motivation, courage, happiness and more.",
   alternates: { canonical: "https://mayalines.com/topics" },
 };

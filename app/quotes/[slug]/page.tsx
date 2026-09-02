@@ -50,21 +50,21 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const authorSlug = quote.author.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   const categorySlug = quote.category.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  const breadcrumbSchema = {
-    "@context": "https://schema.org", "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
-      { "@type": "ListItem", position: 2, name: "Quotes", item: siteUrl },
-      { "@type": "ListItem", position: 3, name: `${quote.category} Quotes`, item: `${siteUrl}/categories/${categorySlug}` },
-      { "@type": "ListItem", position: 4, name: `${quote.author} Quote`, item: `${siteUrl}/quotes/${quote.slug}` },
-    ],
-  };
   const quoteSchema = {
     "@context": "https://schema.org", "@type": "Quotation", text: quote.quote,
     creator: { "@type": "Person", name: quote.author }, inLanguage: language,
     url: `${siteUrl}/quotes/${quote.slug}`,
     isPartOf: { "@type": "WebSite", name: "Mayalines", url: siteUrl },
   };
+  const relatedIds = new Set<string>();
+  const relatedQuotes = [
+    ...quotesData.filter((item) => item.id !== quote.id && item.author === quote.author && isSeoIndexable(item)),
+    ...quotesData.filter((item) => item.id !== quote.id && item.category === quote.category && isSeoIndexable(item)),
+  ].filter((item) => {
+    if (relatedIds.has(item.id)) return false;
+    relatedIds.add(item.id);
+    return true;
+  }).slice(0, 6);
 
   return <main className="quote-detail" lang={language}>
     <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Quotes", url: "/#main-content" }, { name: `${quote.category} Quotes`, url: `/categories/${categorySlug}` }, { name: quote.author, url: `/authors/${authorSlug}` }]} />
@@ -77,6 +77,15 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
     <p className="source-note">Attribution status: {quote.attributionStatus} · Publication status: {quote.copyrightStatus}</p>
     <p className="source-note">Explore more <a href={`/authors/${authorSlug}`}>quotes by {quote.author}</a> or browse <a href={`/categories/${categorySlug}`}>{quote.category.toLowerCase()} quotes</a>.</p>
     <p className="source-note">If you believe this quote is incorrectly attributed or should be removed, see <a href="/copyright">Copyright and quote corrections</a>.</p>
-    <StructuredData data={breadcrumbSchema} /><StructuredData data={quoteSchema} />
+    {relatedQuotes.length > 0 && <section aria-labelledby="related-quotes" style={{ marginTop: 52, paddingTop: 28, borderTop: "1px solid var(--border)" }}>
+      <h2 className="section-heading" id="related-quotes">Related verified quotes</h2>
+      <div className="quote-grid">{relatedQuotes.map((item) => <article className="quote-card" key={item.id} lang={item.language ?? "en"}>
+        <div className="quote-mark" aria-hidden="true">“</div>
+        <p className="quote-text">{item.quote}</p>
+        <p className="quote-author">— {item.author}</p>
+        <a className="copy-button" style={{ marginTop: "auto", alignSelf: "flex-start" }} href={`/quotes/${item.slug}`}>READ QUOTE</a>
+      </article>)}</div>
+    </section>}
+    <StructuredData data={quoteSchema} />
   </main>;
 }

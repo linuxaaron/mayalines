@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Hope Quotes | MAYALINES",
+  title: "Hope Quotes",
   description: "Discover timeless quotes about hope, perseverance, renewal and finding light in difficult moments.",
   alternates: { canonical: "https://mayalines.com/collections/quotes-about-hope" },
 };

@@ -18,7 +18,6 @@ const highIntentCollections = new Set([
   "sad-quotes",
   "strength-quotes",
   "positive-quotes",
-  "maya-angelou-quotes",
 ]);
 
 const collectionSlugs = [
@@ -31,7 +30,6 @@ const collectionSlugs = [
   "sad-quotes",
   "strength-quotes",
   "positive-quotes",
-  "maya-angelou-quotes",
   "quotes-about-success",
   "quotes-about-motivation",
   "quotes-about-wisdom",
@@ -55,7 +53,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...quoteTopics.map((topic) => ({ url: `${siteUrl}/topics/${topic.slug}`, changeFrequency: "weekly" as const, priority: 0.85 })),
     { url: `${siteUrl}/poems`, changeFrequency: "weekly", priority: 0.95 },
     { url: `${siteUrl}/collections`, changeFrequency: "weekly", priority: 0.95 },
-    { url: `${siteUrl}/community`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${siteUrl}/most-copied`, changeFrequency: "daily", priority: 0.8 },
     ...collectionSlugs.map((slug) => ({ url: `${siteUrl}/collections/${slug}`, changeFrequency: "weekly" as const, priority: highIntentCollections.has(slug) ? 0.95 : 0.9 })),
     { url: `${siteUrl}/categories`, changeFrequency: "weekly", priority: 0.9 },

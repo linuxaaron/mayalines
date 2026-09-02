@@ -1,3 +1,31 @@
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Terms of Use | Mayalines", description: "Terms of use for Mayalines.", robots: { index: true, follow: true } };
-export default function TermsPage(){return <main className="legal-page"><a className="skip-link" href="#content">Skip to content</a><nav className="legal-nav" aria-label="Legal information navigation"><a href="/">← Mayalines</a></nav><article id="content"><p className="eyebrow">LEGAL</p><h1>Terms of Use</h1><p>Mayalines provides a searchable collection of quotes and related editorial information. Use of the website is subject to applicable law and these terms.</p><h2>1. Information Service</h2><p>The content is provided for information and inspiration. Mayalines does not guarantee that every attribution, translation, quote or historical statement is error-free.</p><h2>2. Intellectual Property</h2><p>Rights in quote texts, names, photographs, trademarks and other third-party content remain with their respective rights holders unless stated otherwise. Users must independently determine whether copying, redistribution or commercial use is permitted.</p><h2>3. Permitted Use</h2><p>Users must not use the service unlawfully, intentionally disrupt its operation, bypass security measures or infringe third-party rights.</p><h2>4. Third-Party Services</h2><p>Mayalines may link to or use third-party services. Those services are subject to their own terms and privacy policies. Active third-party services are documented in the privacy policy.</p><h2>5. Availability and Changes</h2><p>The operator may change, temporarily suspend or remove content or features when required for maintenance, security, legal requirements or editorial corrections.</p><h2>6. Legal Limits</h2><p>Nothing on this page excludes liability or statutory rights that cannot legally be excluded. The final version should be reviewed against the law applicable to the operator and the actual service.</p></article></main>}
+
+export const metadata: Metadata = {
+  title: "Terms of Use",
+  description: "Terms of use for Mayalines.",
+  robots: { index: true, follow: true },
+};
+
+export default function TermsPage() {
+  return <main className="legal-page">
+    <a className="skip-link" href="#content">Skip to content</a>
+    <nav className="legal-nav" aria-label="Legal information navigation"><a href="/">← Mayalines</a></nav>
+    <article id="content">
+      <p className="eyebrow">LEGAL</p>
+      <h1>Terms of Use</h1>
+      <p>Mayalines provides a searchable collection of quotes and related editorial information. Use of the website is subject to applicable law and these terms.</p>
+      <h2>1. Information Service</h2>
+      <p>The content is provided for information and inspiration. Mayalines does not guarantee that every attribution, translation, quote or historical statement is error-free.</p>
+      <h2>2. Intellectual Property</h2>
+      <p>Rights in quote texts, names, photographs, trademarks and other third-party content remain with their respective rights holders unless stated otherwise. Users must independently determine whether copying, redistribution or commercial use is permitted.</p>
+      <h2>3. Permitted Use</h2>
+      <p>Users must not use the service unlawfully, intentionally disrupt its operation, bypass security measures or infringe third-party rights.</p>
+      <h2>4. Third-Party Services</h2>
+      <p>Mayalines may link to or use third-party services. Those services are subject to their own terms and privacy policies. Active infrastructure providers are documented in the privacy policy.</p>
+      <h2>5. Availability and Changes</h2>
+      <p>The operator may change, temporarily suspend or remove content or features when required for maintenance, security, legal requirements or editorial corrections.</p>
+      <h2>6. Legal Limits</h2>
+      <p>Nothing on this page excludes liability or statutory rights that cannot legally be excluded.</p>
+    </article>
+  </main>;
+}

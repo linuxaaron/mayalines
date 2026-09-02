@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Love Quotes | MAYALINES",
+  title: "Love Quotes",
   description: "Read timeless love quotes about affection, devotion, connection and the many forms of love.",
   alternates: { canonical: "https://mayalines.com/collections/quotes-about-love" },
 };

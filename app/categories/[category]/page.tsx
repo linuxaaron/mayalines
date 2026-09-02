@@ -35,13 +35,12 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const categoryUrl = `${siteUrl}/categories/${category}`;
   const collectionSchema = { "@context": "https://schema.org", "@type": "CollectionPage", name: `${title} Quotes – Famous & Timeless Words | Mayalines`, description, url: categoryUrl, inLanguage: "en-US", isPartOf: { "@type": "WebSite", name: "Mayalines", url: siteUrl } };
-  const breadcrumbSchema = { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: siteUrl }, { "@type": "ListItem", position: 2, name: "Categories", item: `${siteUrl}/categories` }, { "@type": "ListItem", position: 3, name: `${title} Quotes`, item: categoryUrl }] };
   const itemListSchema = { "@context": "https://schema.org", "@type": "ItemList", name: `${title} Quotes`, numberOfItems: visibleQuotes.length, itemListElement: visibleQuotes.map((quote, index) => ({ "@type": "ListItem", position: index + 1, name: `${quote.author} quote`, url: `${siteUrl}/quotes/${quote.slug}` })) };
 
   return <main className="quote-detail">
     <Breadcrumbs items={[{ name: "Home", url: "/" }, { name: "Categories", url: "/categories" }, { name: `${title} Quotes`, url: `/categories/${category}` }]} />
     <p className="eyebrow">MAYALINES CATEGORY</p><h1>{title} Quotes</h1><p className="hero-copy">{description}</p><p className="library-meta">{quotes.length.toLocaleString("en-US")} sourced quotes in this category.</p>
     <div className="quote-grid">{visibleQuotes.map((quote) => <article className="quote-card" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><a className="copy-button" href={`/quotes/${quote.slug}`}>READ QUOTE</a></div></article>)}</div>
-    <StructuredData data={collectionSchema} /><StructuredData data={breadcrumbSchema} /><StructuredData data={itemListSchema} />
+    <StructuredData data={collectionSchema} /><StructuredData data={itemListSchema} />
   </main>;
 }

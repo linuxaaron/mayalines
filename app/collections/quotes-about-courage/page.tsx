@@ -3,7 +3,7 @@ import Link from "next/link";
 import QuoteCopyButton from "@/components/QuoteCopyButton";
 
 export const metadata: Metadata = {
-  title: "Courage Quotes | MAYALINES",
+  title: "Courage Quotes",
   description: "Discover timeless quotes about courage, bravery, fear and finding the strength to act.",
   alternates: { canonical: "https://mayalines.com/collections/quotes-about-courage" },
 };
