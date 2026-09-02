@@ -110,7 +110,7 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
     </section>
 
     <section className="library" id="quote-library" aria-labelledby="library-title">
-      <div className="section-heading" id="library-title">Quote library</div>
+      <h2 className="section-heading" id="library-title">Quote library</h2>
       <p className="sr-only" aria-live="polite">{total.toLocaleString("en-US")} quotes</p>
       <div className="category-rail quote-library-filters" id="categories" role="group" aria-label="Quick quote categories">
         {quickCategories.map((item) => <button key={item} type="button" onClick={() => setCategory(item)} aria-pressed={category === item}>{item}</button>)}

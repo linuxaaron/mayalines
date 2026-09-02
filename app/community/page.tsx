@@ -61,9 +61,8 @@ export default async function CommunityPage() {
         .community-cta p{margin:8px 0 0;color:#6d6963;font:13px/1.5 Inter,system-ui,sans-serif}
         .community-button{display:inline-flex;align-items:center;padding:12px 16px;border:1px solid #5d554d;border-radius:5px;color:#5d554d;font:800 10px Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
         .community-button:hover{background:#5d554d;color:#fff}
-        .community-footer{padding:20px 0 28px;border-top:1px solid #d4d0ca;color:#5d554d;display:flex;justify-content:space-between;font:11px/1.4 Inter,system-ui,sans-serif;letter-spacing:.05em}
         @media(max-width:800px){.community-header{align-items:flex-start;flex-direction:column}.community-nav{width:100%;justify-content:space-between}.community-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.community-main{padding-top:52px}.community-cta{align-items:flex-start;flex-direction:column}}
-        @media(max-width:560px){.community-header,.community-main,.community-footer{width:calc(100% - 32px)}.community-main{padding:44px 0 60px}.community-main h1{font-size:50px}.community-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:34px}.community-card{min-height:205px;padding:16px 14px}.community-card blockquote{font-size:16px;line-height:1.32}.community-card footer{padding-top:14px;font-size:12px}.community-card .category{font-size:11px}.community-card .source{font-size:12px}.community-cta{margin-top:44px;padding-top:26px}.community-cta h2{font-size:26px}.community-footer{flex-direction:column;gap:8px}}
+        @media(max-width:560px){.community-header,.community-main{width:calc(100% - 32px)}.community-main{padding:44px 0 60px}.community-main h1{font-size:50px}.community-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:34px}.community-card{min-height:205px;padding:16px 14px}.community-card blockquote{font-size:16px;line-height:1.32}.community-card footer{padding-top:14px;font-size:12px}.community-card .category{font-size:11px}.community-card .source{font-size:12px}.community-cta{margin-top:44px;padding-top:26px}.community-cta h2{font-size:26px}}
       `}</style>
 
       <header className="community-header">
@@ -102,7 +101,6 @@ export default async function CommunityPage() {
         </div>
       </section>
 
-      <footer className="community-footer"><span>© 2026 MAYALINES</span><span>Community submissions are reviewed before publication.</span></footer>
     </main>
   );
 }

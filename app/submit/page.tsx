@@ -1,35 +1,14 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useActionState } from "react";
+import { QUOTE_CATEGORIES } from "../../lib/quote-categories";
+import { submitQuote, type SubmitState } from "./actions";
+import SubmitButton from "./SubmitButton";
 
-const categories = ["Love", "Life", "Wisdom", "Success", "Motivation", "Courage", "Happiness", "Friendship", "Hope", "Inspiration", "Philosophy", "Other"];
+const initialState: SubmitState = { status: "idle", message: "" };
 
 export default function SubmitQuotePage() {
-  const [submitted, setSubmitted] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setBusy(true);
-    setError("");
-    const form = event.currentTarget;
-    const payload = Object.fromEntries(new FormData(form).entries());
-    try {
-      const response = await fetch("/api/quote-submissions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) throw new Error("Submission failed");
-      setSubmitted(true);
-      form.reset();
-    } catch {
-      setError("The submission could not be sent. Please try again later.");
-    } finally {
-      setBusy(false);
-    }
-  }
+  const [state, formAction] = useActionState(submitQuote, initialState);
 
   return (
     <main className="site-shell">
@@ -52,10 +31,10 @@ export default function SubmitQuotePage() {
         <h1 id="submit-title">Share a quote worth keeping.</h1>
         <p className="hero-copy">Know a quotation that belongs in the library? Send it to the editors. Every submission is reviewed before publication.</p>
 
-        {submitted && <div className="submit-success" role="status"><strong>Thank you.</strong> Your submission has been received for review.</div>}
-        {error && <div className="submit-error" role="alert"><strong>Something went wrong.</strong> {error}</div>}
+        {state.status === "success" && <div className="submit-success" role="status">{state.message}</div>}
+        {state.status === "error" && <div className="submit-error" role="alert"><strong>Something went wrong.</strong> {state.message}</div>}
 
-        <form className="submit-form" onSubmit={submit}>
+        <form className="submit-form" action={formAction}>
           <input name="website" type="text" tabIndex={-1} autoComplete="off" aria-hidden="true" style={{ display: "none" }} />
           <label>
             Quote
@@ -73,38 +52,17 @@ export default function SubmitQuotePage() {
             Category
             <select name="category" defaultValue="" required>
               <option value="" disabled>Select a category</option>
-              {categories.map((category) => <option key={category}>{category}</option>)}
+              {QUOTE_CATEGORIES.map((category) => <option key={category}>{category}</option>)}
             </select>
           </label>
           <label>
             Your name <span>(optional)</span>
             <input name="submitter" maxLength={120} placeholder="How should we credit you?" />
           </label>
-          <button className="submit-button" type="submit" disabled={busy}>
-            {busy ? "SENDING…" : "SUBMIT QUOTE →"}
-          </button>
+          <SubmitButton />
         </form>
       </section>
 
-      <footer className="footer">
-        <div className="footer-inner">
-          <div>
-            <div className="footer-brand">MAYALINES</div>
-            <p className="footer-note">Timeless words, carefully collected. Discover quotes, authors, poems and ideas worth keeping.</p>
-          </div>
-          <nav className="footer-links" aria-label="Footer navigation">
-            <a href="/submit">Submit a quote</a>
-            <a href="/poems">Poems</a>
-            <a href="/authors">Authors</a>
-            <a href="/imprint">Imprint</a>
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
-            <a href="/copyright">Copyright</a>
-            <a href="/accessibility">Accessibility</a>
-          </nav>
-        </div>
-        <div className="footer-bottom">© 2026 Mayalines · Words that last.</div>
-      </footer>
     </main>
   );
 }

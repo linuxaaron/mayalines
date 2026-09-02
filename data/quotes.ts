@@ -41,9 +41,9 @@ const allQuotes = [
 export const quotes: Quote[] = allQuotes.map((quote) => ({
   ...quote,
   quote: cleanQuoteText(quote.quote),
-  // Only editorially verified, copyright-cleared records may be shown publicly.
-  // Source-derived records remain available to the moderation workflow only.
-  indexable: quote.indexable === true && quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared",
+  // Public browsing follows the explicit release flag. Search-engine exposure
+  // remains separately protected by `isSeoIndexable` in metadata and sitemaps.
+  indexable: quote.indexable === true,
 }));
 
 export default quotes;

@@ -64,7 +64,7 @@ export default function GoogleTranslateLink() {
             bottom:12px;
             min-height:34px;
             padding:7px 10px;
-            font-size:9px;
+            font-size:10px;
           }
         }
         @media(prefers-reduced-motion:reduce){

@@ -2,8 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import quotesData from "../../../data/quotes";
 import { getDb, getOrCreateVisitorId, isValidQuoteId } from "../../../lib/db";
 import { rejectIfRateLimited } from "../../../lib/rate-limit";
+import { rejectCrossSiteMutation } from "../../../lib/request-security";
+import { isPublicQuote } from "../../../lib/seo";
 
 const MAX_PAGE_SIZE = 48;
+const publicQuotesById = new Map(quotesData.filter(isPublicQuote).map((quote) => [quote.id, quote]));
 
 export const revalidate = 86400;
 
@@ -28,7 +31,12 @@ export async function GET(request: NextRequest) {
     if (!db) return response({ collections: [], persistent: false }, visitorId);
     try {
       const rows = await db`SELECT c.name, i.quote_id, i.created_at FROM quote_collections c JOIN quote_collection_items i ON i.collection_id = c.id WHERE c.visitor_id = ${visitorId}::uuid ORDER BY i.created_at DESC`;
-      return response({ collections: rows, persistent: true }, visitorId);
+      const collections = rows.flatMap((row) => {
+        const item = row as { name: string; quote_id: string; created_at: unknown };
+        const quote = publicQuotesById.get(item.quote_id);
+        return quote ? [{ name: item.name, quote }] : [];
+      });
+      return response({ collections, persistent: true }, visitorId);
     } catch { return response({ collections: [], persistent: false }, visitorId); }
   }
   const query = (searchParams.get("q") ?? "").trim().toLowerCase().slice(0, 160);
@@ -37,7 +45,7 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(MAX_PAGE_SIZE, Math.max(1, Number.parseInt(searchParams.get("limit") ?? String(MAX_PAGE_SIZE), 10) || MAX_PAGE_SIZE));
 
   const filtered = quotesData.filter((item) => {
-    if (item.indexable === false) return false;
+    if (!isPublicQuote(item)) return false;
     if (category !== "All" && item.category !== category) return false;
     if (!query) return true;
     return `${item.quote} ${item.author} ${item.category} ${item.language ?? ""}`.toLowerCase().includes(query);
@@ -62,6 +70,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const crossSiteResponse = rejectCrossSiteMutation(request);
+  if (crossSiteResponse) return crossSiteResponse;
   const rateLimitResponse = await rejectIfRateLimited(request, "library", { max: 30, windowSeconds: 60 });
   if (rateLimitResponse) return rateLimitResponse;
 
@@ -71,7 +81,7 @@ export async function POST(request: NextRequest) {
   const quoteId = typeof body.quoteId === "string" ? body.quoteId : "";
   const name = collectionName(body.collection);
   const action = body.action;
-  if (!isValidQuoteId(quoteId) || !name || (action !== "save" && action !== "remove")) return response({ error: "Invalid library request" }, visitorId, 400);
+  if (!isValidQuoteId(quoteId) || !publicQuotesById.has(quoteId) || !name || (action !== "save" && action !== "remove")) return response({ error: "Invalid library request" }, visitorId, 400);
   const db = getDb();
   if (!db) return response({ error: "Library storage is not configured" }, visitorId, 503);
   try {

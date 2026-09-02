@@ -32,7 +32,7 @@ export default function Home() {
 
   return <main className="site-shell redesign-shell" id="main-content" tabIndex={-1}>
     <style>{`
-      .redesign-shell{min-width:0;overflow-x:clip;--background:#f4f3f0;--surface:#fbfaf8;--surface-strong:#fff;--foreground:#191817;--quote-black:#151413;--muted:#6d6963;--border:#d9d6d0;--brown:#5d554d;--brown-soft:#81786f;--brown-wash:#e9e5df}
+      .redesign-shell{min-width:0;overflow-x:clip;--background:#f4f3f0;--surface:#fbfaf8;--surface-strong:#fff;--foreground:#191817;--quote-black:#151413;--muted:#6d6963;--border:#d9d6d0;--brown:#5d554d;--brown-soft:#6f6257;--brown-wash:#e9e5df}
       .redesign-shell .header{min-height:82px;padding:14px 48px;border-bottom:1px solid var(--border);background:rgba(244,243,240,.88);backdrop-filter:blur(16px)}
       .redesign-shell .header-rule{background:#d2cec7}
       .redesign-shell .brand:hover .brand-name{color:#5d554d}
@@ -44,8 +44,8 @@ export default function Home() {
       .redesign-shell .quote-card{position:relative;overflow:hidden;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
       .redesign-shell .quote-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:#a69b90;opacity:.7}
       .redesign-shell .quote-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(30,27,24,.07);border-color:#c8c2ba}
-      .redesign-shell .quote-mark{color:#85786c}
-      .redesign-shell .quote-category{color:#85786c}
+      .redesign-shell .quote-mark{color:#6f6257}
+      .redesign-shell .quote-category{color:#6f6257}
       .redesign-shell .topic-strip{background-color:#eeece8;background-image:radial-gradient(circle at 1px 1px,rgba(93,85,77,.08) 1px,transparent 1.5px)}
       .redesign-shell .topic-strip>*{background:transparent}
       .redesign-shell .discovery-grid{padding-top:34px;padding-bottom:76px}
@@ -61,7 +61,7 @@ export default function Home() {
       .redesign-shell .footer-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 22px;margin:0}
       .redesign-shell .footer-links a{color:#c5c0b9;text-decoration:none;font-size:10px;letter-spacing:.05em}
       .redesign-shell .footer-links a:hover{color:#fff}
-      .redesign-shell .footer-bottom{width:min(1296px,84%);margin:0 auto;padding:16px 0 20px;border-top:1px solid #34312e;color:#858078;font-size:9px;letter-spacing:.05em}
+      .redesign-shell .footer-bottom{width:min(1296px,84%);margin:0 auto;padding:16px 0 20px;border-top:1px solid #34312e;color:#858078;font-size:10px;letter-spacing:.05em}
       .nietzsche-float{position:relative;height:0;z-index:35;pointer-events:none}
       .nietzsche-float-inner{position:absolute;top:15px;left:50%;width:min(760px,76vw);transform:translateX(-50%);text-align:center;color:#080808;opacity:1;animation:nietzsche-fade 5s ease-in-out forwards}
       .nietzsche-quote{margin:0;font-family:Palatino,"Palatino Linotype","Book Antiqua",Georgia,serif;font-size:clamp(15px,1.55vw,23px);font-style:italic;font-weight:500;line-height:1.45;letter-spacing:.02em;color:#050505;text-shadow:0 .3px 0 rgba(0,0,0,.18)}
@@ -70,8 +70,8 @@ export default function Home() {
       @keyframes nietzsche-word-in{to{opacity:1;filter:blur(0);transform:translateY(0) scale(1)}}
       @keyframes nietzsche-author-in{to{opacity:.78}}
       @keyframes nietzsche-fade{0%,82%{opacity:1}100%{opacity:0}}
-      @media(max-width:900px){.redesign-shell .header{padding:12px 20px}.redesign-shell .quote-of-the-day,.redesign-shell .seo-intro{width:auto;margin-left:20px;margin-right:20px}.redesign-shell .quote-of-the-day{padding:36px 28px}.redesign-shell .footer-inner{width:auto;margin:0 20px;grid-template-columns:1fr;gap:28px}.redesign-shell .footer-links{grid-template-columns:repeat(2,minmax(0,1fr))}.redesign-shell .footer-bottom{width:auto;margin:0 20px}.nietzsche-float-inner{top:12px;width:calc(100vw - 42px)}.nietzsche-quote{font-size:15px;line-height:1.38}.nietzsche-author{font-size:9px}.redesign-shell .hero{padding-top:92px}}
-      @media(max-width:560px){.redesign-shell .hero{padding-top:104px}.nietzsche-float-inner{top:12px;width:calc(100vw - 32px)}.nietzsche-quote{font-size:14px;line-height:1.42}.nietzsche-word{margin-right:.23em}.redesign-shell .quote-of-the-day{margin-left:16px;margin-right:16px;padding:30px 22px}.redesign-shell .seo-intro{margin-left:16px;margin-right:16px}.redesign-shell .footer-inner{margin:0 16px}.redesign-shell .footer-bottom{margin:0 16px}.redesign-shell .quote-grid{grid-template-columns:1fr;gap:10px;margin-top:14px}.redesign-shell .quote-card{min-height:220px;padding:17px 16px 14px}.redesign-shell .quote-actions{gap:8px;padding-top:12px}.redesign-shell .like-button{width:34px;height:34px}.redesign-shell .copy-button{padding:7px 10px;font-size:9px}.redesign-shell .category-rail{gap:6px;padding:12px 0}}
+      @media(max-width:900px){.redesign-shell .header{padding:12px 20px}.redesign-shell .quote-of-the-day,.redesign-shell .seo-intro{width:auto;margin-left:20px;margin-right:20px}.redesign-shell .quote-of-the-day{padding:36px 28px}.redesign-shell .footer-inner{width:auto;margin:0 20px;grid-template-columns:1fr;gap:28px}.redesign-shell .footer-links{grid-template-columns:repeat(2,minmax(0,1fr))}.redesign-shell .footer-bottom{width:auto;margin:0 20px}.nietzsche-float-inner{top:12px;width:calc(100vw - 42px)}.nietzsche-quote{font-size:15px;line-height:1.38}.nietzsche-author{font-size:10px}.redesign-shell .hero{padding-top:92px}}
+      @media(max-width:560px){.redesign-shell .hero{padding-top:104px}.nietzsche-float-inner{top:12px;width:calc(100vw - 32px)}.nietzsche-quote{font-size:14px;line-height:1.42}.nietzsche-word{margin-right:.23em}.redesign-shell .quote-of-the-day{margin-left:16px;margin-right:16px;padding:30px 22px}.redesign-shell .seo-intro{margin-left:16px;margin-right:16px}.redesign-shell .footer-inner{margin:0 16px}.redesign-shell .footer-bottom{margin:0 16px}.redesign-shell .quote-grid{grid-template-columns:1fr;gap:10px;margin-top:14px}.redesign-shell .quote-card{min-height:220px;padding:17px 16px 14px}.redesign-shell .quote-actions{gap:8px;padding-top:12px}.redesign-shell .like-button{width:34px;height:34px}.redesign-shell .copy-button{padding:7px 10px;font-size:10px}.redesign-shell .category-rail{gap:6px;padding:12px 0}}
       @media(prefers-reduced-motion:reduce){.nietzsche-float-inner,.nietzsche-word,.nietzsche-author{animation:none!important;opacity:1!important;filter:none!important;transform:none!important}}
     `}</style>
 
@@ -82,7 +82,7 @@ export default function Home() {
 
     <HomeQuoteLibrary initialQuotes={initialQuotes} initialTotal={indexableQuotes.length} categories={categories} />
 
-    <section className="feature-band" aria-labelledby="featured-heading"><div className="section-heading" id="featured-heading">A few words worth keeping</div><div className="feature-grid">{featured.map((item) => <article className="feature-card" key={item.id}><p className="feature-quote">“{item.quote}”</p><p className="quote-author">— {item.author}</p><div className="feature-actions"><PersistentLikeButton quoteId={item.id} author={item.author} /><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}</div></section>
+    <section className="feature-band" aria-labelledby="featured-heading"><h2 className="section-heading" id="featured-heading">A few words worth keeping</h2><div className="feature-grid">{featured.map((item) => <article className="feature-card" key={item.id}><p className="feature-quote">“{item.quote}”</p><p className="quote-author">— {item.author}</p><div className="feature-actions"><PersistentLikeButton quoteId={item.id} author={item.author} /><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}</div></section>
 
     <CommunitySections />
 
@@ -92,8 +92,6 @@ export default function Home() {
 
     {daily && <section className="quote-of-the-day" aria-labelledby="daily-title"><p className="eyebrow" id="daily-title">QUOTE OF THE DAY</p><blockquote>{daily.quote}</blockquote><p className="quote-author">— {daily.author}</p><div className="quote-actions"><PersistentLikeButton quoteId={daily.id} author={daily.author} /><QuoteActions quote={daily.quote} author={daily.author} quoteId={daily.id} /></div></section>}
 
-    <section className="seo-intro" aria-labelledby="explore-title"><div className="section-heading" id="explore-title">Explore Famous Quotes by Topic</div><p className="hero-copy">Find sourced quotes and aphorisms about love, life, success, motivation, wisdom, courage, happiness, friendship, freedom, philosophy, science, education and more. Browse by topic, author or collection and discover words in multiple languages.</p><div className="author-row">{authors.slice(0, 24).map((author) => <a href={`/authors/${slugify(author)}`} key={author}>{author}</a>)}</div></section>
-
-    <footer className="footer" id="about"><div className="footer-inner"><div><div className="footer-brand">MAYALINES</div><p className="footer-note">Timeless words, carefully collected. Discover quotes, aphorisms, authors, poems and ideas worth keeping.</p></div><nav className="footer-links" aria-label="Legal and accessibility navigation"><a href="/submit">Submit a quote</a><a href="/community">Community quotes</a><a href="/poems">Poems</a><a href="/imprint">Imprint</a><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="/copyright">Copyright</a><a href="/accessibility">Accessibility</a></nav></div><div className="footer-bottom">© 2026 Mayalines · Words that last.</div></footer>
+    <section className="seo-intro" aria-labelledby="explore-title"><h2 className="section-heading" id="explore-title">Explore Famous Quotes by Topic</h2><p className="hero-copy">Find sourced quotes and aphorisms about love, life, success, motivation, wisdom, courage, happiness, friendship, freedom, philosophy, science, education and more. Browse by topic, author or collection and discover words in multiple languages.</p><div className="author-row">{authors.slice(0, 24).map((author) => <a href={`/authors/${slugify(author)}`} key={author}>{author}</a>)}</div></section>
   </main>;
 }

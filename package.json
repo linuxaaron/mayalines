@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test:smoke": "node scripts/smoke-test.mjs",
     "audit:quotes": "node scripts/audit-quotes.mjs",
     "audit:licensed": "node scripts/validate-licensed-import.mjs",
     "build:data": "node scripts/build-quotes.mjs && node scripts/build-poems.mjs"

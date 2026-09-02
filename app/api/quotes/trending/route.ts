@@ -1,17 +1,25 @@
 import { NextResponse } from "next/server";
-import { Redis } from "@upstash/redis";
 import quotesData from "../../../../data/quotes";
+import { getDb } from "../../../../lib/db";
+import { isPublicQuote } from "../../../../lib/seo";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-  if (!url || !token) return NextResponse.json({ quotes: [], persistent: false }, { headers: { "Cache-Control": "no-store" } });
-  const redis = new Redis({ url, token });
-  const ids = await redis.zrange<string[]>("quotes:trending", 0, 11, { rev: true });
-  const byId = new Map(quotesData.map((quote) => [quote.id, quote]));
-  const quotes = ids.map((id) => byId.get(id)).filter((quote): quote is (typeof quotesData)[number] => Boolean(quote && quote.indexable !== false));
-  return NextResponse.json({ quotes, persistent: true }, { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } });
+  const db = getDb();
+  if (!db) return NextResponse.json({ quotes: [], persistent: false }, { headers: { "Cache-Control": "no-store" } });
+
+  try {
+    const rows = await db`SELECT quote_id, COUNT(*)::int AS likes FROM quote_likes WHERE created_at >= NOW() - INTERVAL '7 days' GROUP BY quote_id ORDER BY likes DESC, MAX(created_at) DESC LIMIT 24`;
+    const byId = new Map(quotesData.filter(isPublicQuote).map((quote) => [quote.id, quote]));
+    const quotes = rows.flatMap((row) => {
+      const item = row as { quote_id: string; likes: number };
+      const quote = byId.get(item.quote_id);
+      return quote ? [{ ...quote, likes: Math.max(0, Number(item.likes) || 0) }] : [];
+    }).slice(0, 12);
+    return NextResponse.json({ quotes, persistent: true }, { headers: { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=120" } });
+  } catch {
+    return NextResponse.json({ quotes: [], persistent: false }, { status: 503, headers: { "Cache-Control": "no-store" } });
+  }
 }

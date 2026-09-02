@@ -150,18 +150,18 @@ export default function MegaMenu() {
       .mega-submit{position:relative;color:var(--foreground);font-weight:700;padding:8px 0}
       .mega-submit:after{content:"";position:absolute;left:0;right:0;bottom:4px;height:1px;background:#1f4d3a;transform:scaleX(0);transform-origin:left;transition:transform .18s ease}
       .mega-submit:hover:after{transform:scaleX(1)}
-      .mega-chevron{font-size:9px;transition:transform .22s cubic-bezier(.2,.8,.2,1)}
+      .mega-chevron{font-size:10px;transition:transform .22s cubic-bezier(.2,.8,.2,1)}
       .mega-trigger[aria-expanded="true"] .mega-chevron{transform:rotate(180deg)}
       .mega-panel{position:absolute;z-index:80;top:76px;left:50%;width:min(1180px,calc(100% - 56px));transform:translateX(-50%);padding:0 26px 22px;background:rgba(251,250,248,.98);border:1px solid #d7d3cc;border-top:0;border-radius:0 0 12px 12px;box-shadow:0 22px 55px rgba(23,21,19,.12);backdrop-filter:blur(18px);animation:mega-in .24s cubic-bezier(.2,.8,.2,1)}
       .mega-inner{padding:22px 0 0;display:grid;grid-template-columns:1.15fr 1.15fr 1fr 1fr;gap:26px}
       .mega-column{min-width:0}
-      .mega-label{margin:0 0 10px;color:#1f4d3a;font-size:8px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+      .mega-label{margin:0 0 10px;color:#1f4d3a;font-size: 10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
       .mega-links{display:grid;gap:5px}
       .mega-links a{font-family:Georgia,"Times New Roman",serif;font-size:14px;line-height:1.15;color:#1f4d3a;transition:color .18s ease,transform .18s ease}
       .mega-links a:hover{color:#163a2c;transform:translateX(3px)}
       .mega-feature{padding:14px 16px;background:#e9e5df;border:1px solid #d5d0c8;border-radius:8px;align-self:start}
-      .mega-feature p{margin:0 0 8px;color:var(--muted);font-size:9px;line-height:1.45}
-      .mega-feature a{color:#1f4d3a;font-size:9px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+      .mega-feature p{margin:0 0 8px;color:var(--muted);font-size:10px;line-height:1.45}
+      .mega-feature a{color:#1f4d3a;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
       .mega-mobile-button,.mobile-menu{display:none}
 
       .menu-sunflower{display:inline-block;width:17px;height:22px;flex:0 0 17px;overflow:visible;pointer-events:none;vertical-align:middle}
@@ -187,14 +187,14 @@ export default function MegaMenu() {
         .mobile-menu-head{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;width:100%;max-width:100%;min-width:0;min-height:72px;padding:10px 18px;border-bottom:1px solid #d7d3cc;background:#f5f4f1;overflow:hidden}
         .mobile-menu-brand{display:grid;gap:3px;min-width:0}
         .mobile-menu-brand strong{font-family:Georgia,"Times New Roman",serif;font-size:19px;font-weight:500;letter-spacing:.05em}
-        .mobile-menu-brand span{font-size:8px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#77716a}
+        .mobile-menu-brand span{font-size: 10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#77716a}
         .mobile-menu-close{flex:0 0 44px;display:grid;place-items:center;width:44px;height:44px;border:1px solid #d3cec6;border-radius:50%;background:#fff;color:#214d39;font-size:22px;line-height:1}
 
         .mobile-menu-body{flex:1;min-width:0;min-height:0;width:100%;max-width:100%;overflow-y:auto;overflow-x:hidden;overscroll-behavior-x:none;overscroll-behavior-y:contain;touch-action:pan-y;padding:16px 16px 22px;-webkit-overflow-scrolling:touch}
         .mobile-menu-body>*{max-width:100%;min-width:0}
         .mobile-menu-intro{display:block;box-sizing:border-box;width:100%;max-width:none;margin:0 0 14px;padding:0 4px 0 0;color:#77716a;font-size:10px;line-height:1.55;white-space:normal!important;word-break:normal!important;overflow-wrap:normal!important;overflow:visible!important;text-overflow:clip!important}
 
-        .mobile-menu-switcher{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px;margin:0 0 14px}.mobile-menu-switcher button{display:grid;place-items:center;width:44px;height:44px;border:1px solid #d8d4cd;border-radius:50%;background:#fff;color:#1f4d3a;font-size:20px}.mobile-menu-switcher p{margin:0;color:#315642;font:800 10px/1.2 Inter,system-ui,sans-serif;letter-spacing:.12em;text-align:center;text-transform:uppercase}.mobile-menu-switcher small{display:block;margin-top:4px;color:#77716a;font-size:8px;font-weight:700;letter-spacing:.08em}
+        .mobile-menu-switcher{display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:8px;margin:0 0 14px}.mobile-menu-switcher button{display:grid;place-items:center;width:44px;height:44px;border:1px solid #d8d4cd;border-radius:50%;background:#fff;color:#1f4d3a;font-size:20px}.mobile-menu-switcher p{margin:0;color:#315642;font:800 10px/1.2 Inter,system-ui,sans-serif;letter-spacing:.12em;text-align:center;text-transform:uppercase}.mobile-menu-switcher small{display:block;margin-top:4px;color:#77716a;font-size: 10px;font-weight:700;letter-spacing:.08em}
 
         .mobile-menu-sections{display:grid;width:100%;max-width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px;overflow:hidden}
         .mobile-menu-tab{min-width:0;max-width:100%;display:flex;align-items:center;justify-content:space-between;min-height:62px;padding:12px 13px;border:1px solid #d8d4cd;border-radius:11px;background:#fbfaf8;color:#292a27;text-align:left;font-family:Georgia,"Times New Roman",serif;font-size:15px;box-shadow:0 1px 0 rgba(20,20,20,.02);overflow:hidden}
@@ -205,7 +205,7 @@ export default function MegaMenu() {
 
         .mobile-menu-panel{width:100%;max-width:100%;min-width:0;border:1px solid #d7d3cc;border-radius:13px;background:#fff;overflow:hidden;animation:mobile-menu-panel-in .18s ease-out}
         .mobile-menu-panel-head{max-width:100%;padding:14px 15px 11px;border-bottom:1px solid #e2ded7;background:#f0eee9;overflow:hidden}
-        .mobile-menu-panel-head span{display:block;margin-bottom:3px;color:#315642;font-size:8px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
+        .mobile-menu-panel-head span{display:block;margin-bottom:3px;color:#315642;font-size: 10px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
         .mobile-menu-panel-head strong{font-family:Georgia,"Times New Roman",serif;font-size:18px;font-weight:500}
         .mobile-menu-links{display:grid;width:100%;max-width:100%;min-width:0;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;padding:7px;background:#e8e4de;overflow:hidden}
         .mobile-menu-links a{min-width:0;max-width:100%;display:flex;align-items:center;min-height:47px;padding:10px 11px;background:#fff;color:#315642;font-size:11px;font-weight:700;line-height:1.3;overflow-wrap:anywhere}

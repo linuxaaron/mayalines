@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "../../../../lib/db";
 import { isAdminAuthorized } from "../../../../lib/admin-auth";
+import { rejectCrossSiteMutation } from "../../../../lib/request-security";
 
 export const runtime = "nodejs";
 
@@ -23,6 +24,8 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const crossSiteResponse = rejectCrossSiteMutation(request);
+  if (crossSiteResponse) return crossSiteResponse;
   if (!isAdminAuthorized(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

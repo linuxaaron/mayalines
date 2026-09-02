@@ -28,7 +28,7 @@ export default function QuoteCopyButton({ quote, author }: Props) {
       style={{
         border: 0,
         background: "transparent",
-        color: "#765843",
+        color: "#674934",
         cursor: "pointer",
         font: "750 10px Inter,system-ui,sans-serif",
         letterSpacing: ".08em",

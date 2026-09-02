@@ -1,18 +1,10 @@
 import { NextResponse } from "next/server";
 import { getDb } from "../../../lib/db";
+import { saveQuoteSubmission } from "../../../lib/quote-submission";
 import { rejectIfRateLimited } from "../../../lib/rate-limit";
+import { rejectCrossSiteMutation } from "../../../lib/request-security";
 
 export const runtime = "nodejs";
-
-const MAX_QUOTE = 2000;
-const MAX_AUTHOR = 160;
-const MAX_SOURCE = 300;
-const MAX_SUBMITTER = 120;
-const MAX_CATEGORY = 80;
-
-function clean(value: unknown, max: number) {
-  return typeof value === "string" ? value.trim().slice(0, max) : "";
-}
 
 export async function GET() {
   const db = getDb();
@@ -36,6 +28,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const crossSiteResponse = rejectCrossSiteMutation(request);
+  if (crossSiteResponse) return crossSiteResponse;
   const rateLimitResponse = await rejectIfRateLimited(request, "submission", { max: 5, windowSeconds: 600 });
   if (rateLimitResponse) return rateLimitResponse;
 
@@ -43,27 +37,7 @@ export async function POST(request: Request) {
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
   if (!body || typeof body !== "object") return NextResponse.json({ error: "Invalid request" }, { status: 400 });
 
-  const input = body as Record<string, unknown>;
-  // Silently accept bot-filled honeypots without persisting a submission.
-  if (typeof input.website === "string" && input.website.trim()) {
-    return NextResponse.json({ received: true, persisted: false });
-  }
-
-  const quote = clean(input.quote, MAX_QUOTE);
-  const author = clean(input.author, MAX_AUTHOR);
-  const source = clean(input.source, MAX_SOURCE);
-  const category = clean(input.category, MAX_CATEGORY);
-  const submitter = clean(input.submitter, MAX_SUBMITTER);
-
-  if (quote.length < 3 || author.length < 1 || source.length < 3 || category.length < 1) return NextResponse.json({ error: "Quote, author, verifiable source and category are required" }, { status: 400 });
-
-  const db = getDb();
-  if (!db) return NextResponse.json({ error: "Submission storage is not configured" }, { status: 503 });
-
-  try {
-    await db`INSERT INTO quote_submissions (quote, author, source, category, submitter_name) VALUES (${quote}, ${author}, ${source || null}, ${category}, ${submitter || null})`;
-    return NextResponse.json({ received: true, persisted: true });
-  } catch {
-    return NextResponse.json({ error: "Submission storage is temporarily unavailable" }, { status: 503 });
-  }
+  const result = await saveQuoteSubmission(body as Record<string, unknown>);
+  if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.status });
+  return NextResponse.json({ received: true, persisted: result.persisted });
 }

@@ -3,7 +3,7 @@ import quotesData from "../../../data/quotes";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import PersistentLikeButton from "../../../components/PersistentLikeButton";
-import { isSeoIndexable } from "../../../lib/seo";
+import { isPublicQuote, isSeoIndexable } from "../../../lib/seo";
 
 export const dynamicParams = false;
 
@@ -30,7 +30,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   const { category } = await params;
   const title = labels[category] ?? category.replace(/-/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase());
   const description = descriptions[category] ?? `Discover notable ${title.toLowerCase()} quotes by influential authors on Mayalines.`;
-  const quotes = quotesData.filter((quote) => slugify(quote.category) === category && isSeoIndexable(quote));
+  const quotes = quotesData.filter((quote) => slugify(quote.category) === category && isPublicQuote(quote));
   const visibleQuotes = quotes.slice(0, 60);
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const categoryUrl = `${siteUrl}/categories/${category}`;

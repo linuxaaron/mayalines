@@ -11,7 +11,7 @@ import GoogleTranslateLink from "../components/GoogleTranslateLink";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 const siteTitle = "Famous Quotes, Love Quotes, Hope Quotes & Poems | Mayalines";
 const siteDescription = "Discover sourced famous quotes, love quotes, hope quotes, life quotes, inspirational quotes, timeless wisdom and public-domain poems. Browse thousands of quotes by topic and author on Mayalines.";
-const socialImage = `${siteUrl}/mayalines-og.svg`;
+const socialImage = `${siteUrl}/opengraph-image`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

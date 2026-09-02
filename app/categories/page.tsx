@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import quotesData from "../../data/quotes";
 import StructuredData from "../../components/StructuredData";
-import { isSeoIndexable } from "../../lib/seo";
+import { isPublicQuote } from "../../lib/seo";
 
 export const metadata: Metadata = {
   title: "Quote Categories | Famous, Inspirational & Life Quotes",
@@ -21,7 +21,7 @@ function slugify(value: string) {
 }
 
 export default function CategoriesPage() {
-  const categories = Array.from(new Set(quotesData.filter(isSeoIndexable).map((quote) => quote.category))).sort((a, b) => a.localeCompare(b, "en"));
+  const categories = Array.from(new Set(quotesData.filter(isPublicQuote).map((quote) => quote.category))).sort((a, b) => a.localeCompare(b, "en"));
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const itemListSchema = {
     "@context": "https://schema.org",

@@ -62,8 +62,8 @@ if (expected !== null && count !== expected) errors.push(`Expected exactly ${exp
 if (count < minQuotes) errors.push(`Expected at least ${minQuotes} quotes, found ${count}.`);
 if (count > maxQuotes) errors.push(`Quote corpus exceeds configured maximum of ${maxQuotes}: found ${count}.`);
 
-const publicCount = (quotes ?? []).filter((quote) => quote?.indexable === true && quote?.attributionStatus === "verified" && quote?.copyrightStatus === "cleared").length;
-const seoClearedCount = publicCount;
+const publicCount = (quotes ?? []).filter((quote) => quote?.indexable === true).length;
+const seoClearedCount = (quotes ?? []).filter((quote) => quote?.indexable === true && quote?.attributionStatus === "verified" && quote?.copyrightStatus === "cleared").length;
 console.log(`Quote audit: ${count} records`);
 console.log(`Public library: ${publicCount}`);
 console.log(`SEO-cleared: ${seoClearedCount}`);

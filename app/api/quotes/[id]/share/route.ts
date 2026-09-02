@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { getDb, getOrCreateVisitorId, isValidQuoteId } from "../../../../../lib/db";
 import { rejectIfRateLimited } from "../../../../../lib/rate-limit";
+import { rejectCrossSiteMutation } from "../../../../../lib/request-security";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const crossSiteResponse = rejectCrossSiteMutation(request);
+  if (crossSiteResponse) return crossSiteResponse;
   const rateLimitResponse = await rejectIfRateLimited(request, "share", { max: 30, windowSeconds: 60 });
   if (rateLimitResponse) return rateLimitResponse;
 

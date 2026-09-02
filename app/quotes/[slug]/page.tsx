@@ -5,7 +5,7 @@ import PersistentLikeButton from "../../../components/PersistentLikeButton";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import quotesData from "../../../data/quotes";
-import { isSeoIndexable } from "../../../lib/seo";
+import { isPublicQuote, isSeoIndexable } from "../../../lib/seo";
 
 export const dynamicParams = true;
 export const revalidate = 86400;
@@ -58,8 +58,8 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
   };
   const relatedIds = new Set<string>();
   const relatedQuotes = [
-    ...quotesData.filter((item) => item.id !== quote.id && item.author === quote.author && isSeoIndexable(item)),
-    ...quotesData.filter((item) => item.id !== quote.id && item.category === quote.category && isSeoIndexable(item)),
+    ...quotesData.filter((item) => item.id !== quote.id && item.author === quote.author && isPublicQuote(item)),
+    ...quotesData.filter((item) => item.id !== quote.id && item.category === quote.category && isPublicQuote(item)),
   ].filter((item) => {
     if (relatedIds.has(item.id)) return false;
     relatedIds.add(item.id);
