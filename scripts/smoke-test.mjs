@@ -53,7 +53,20 @@ try {
   assert.match(home.response.headers.get("strict-transport-security") || "", /max-age=31536000/);
   assert.match(home.response.headers.get("content-security-policy") || "", /frame-ancestors 'none'/);
 
-  await Promise.all(["/random", "/library", "/submit", "/robots.txt", "/sitemap.xml", "/opengraph-image"].map(get));
+  await Promise.all(["/random", "/library", "/submit", "/opengraph-image"].map(get));
+
+  const [robots, primarySitemap, overflowSitemap] = await Promise.all([
+    get("/robots.txt"),
+    get("/sitemap.xml"),
+    get("/sitemap-quotes-2.xml"),
+  ]);
+  assert.match(robots.text, /Sitemap: .*\/sitemap-quotes-2\.xml/, "robots.txt should advertise the overflow sitemap");
+  const sitemapQuoteCount = (primarySitemap.text.match(/<loc>[^<]*\/quotes\//g) || []).length
+    + (overflowSitemap.text.match(/<loc>[^<]*\/quotes\//g) || []).length;
+  assert.ok(sitemapQuoteCount >= 49_000, `sitemaps should expose at least 49,000 quote URLs, found ${sitemapQuoteCount}`);
+
+  const formerlyPendingQuote = await get("/quotes/creativity-is-the-key-to-success-in-the-future-and-primary-education-is-where-teachers-c-q00043");
+  assert.match(formerlyPendingQuote.text, /<meta name="robots" content="index, follow"/i, "rights-cleared quote pages should be indexable");
 
   const randomResponse = await fetch(`${baseUrl}/api/quotes/random`);
   assert.equal(randomResponse.status, 200);
@@ -73,7 +86,7 @@ try {
   assert.equal(blockedMutation.status, 403, "cross-site mutations should be rejected before data access");
 
   await assertClientChunksStaySmall(path.join(process.cwd(), ".next", "static", "chunks"));
-  console.log("Smoke tests passed: 49,000+ public quotes, routes, headers, CSRF guard, footer semantics and client bundle ceiling.");
+  console.log("Smoke tests passed: 49,000+ indexed quotes, routes, headers, CSRF guard, footer semantics and client bundle ceiling.");
 } finally {
   server.kill("SIGTERM");
 }

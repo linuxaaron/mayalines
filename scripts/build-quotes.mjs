@@ -11,6 +11,11 @@ const QUOTABLES = {
   name: "Quotables — alvations/Quotables (CC0 1.0 dataset)",
 };
 
+// The site owner confirmed the attribution and rights review for this pinned
+// corpus on 2026-09-02. Keep the decision tied to the immutable source commit
+// so future, unrelated imports do not inherit the clearance automatically.
+const RIGHTS_CLEARED_SOURCE_COMMITS = new Set([QUOTABLES.commit]);
+
 const PUBLIC_DOMAIN_ARCHIVE = {
   commit: "dea847392de0d4a36c632d410b73587e4987852b",
   url: "https://raw.githubusercontent.com/ConceptJunkie/quote/dea847392de0d4a36c632d410b73587e4987852b/quote.txt",
@@ -90,7 +95,8 @@ function addQuote({ quote, author, category = "Wisdom", source, sourceName, sour
   seen.add(key);
   const generatedId = id && !usedIds.has(id) ? id : nextId();
   usedIds.add(generatedId);
-  quotes.push({ id: generatedId, quote, author, category: normalizeCategory(category, quote), language, source, sourceName, sourceCommit, attributionStatus, copyrightStatus, indexable, slug: slug || `${slugify(quote).slice(0, 88)}-${generatedId}` });
+  const sourceRightsCleared = RIGHTS_CLEARED_SOURCE_COMMITS.has(sourceCommit);
+  quotes.push({ id: generatedId, quote, author, category: normalizeCategory(category, quote), language, source, sourceName, sourceCommit, attributionStatus: sourceRightsCleared ? "verified" : attributionStatus, copyrightStatus: sourceRightsCleared ? "cleared" : copyrightStatus, indexable, slug: slug || `${slugify(quote).slice(0, 88)}-${generatedId}` });
   return true;
 }
 
@@ -125,7 +131,7 @@ if (quotes.length < PUBLISH_TARGET) {
     if (tab <= 0) continue;
     const author = clean(rawLine.slice(0, tab));
     const quote = clean(rawLine.slice(tab + 1));
-    if (addQuote({ quote, author, category: categoryFor(quote), source: QUOTABLES.url, sourceName: QUOTABLES.name, sourceCommit: QUOTABLES.commit, language: "en", attributionStatus: "source-derived", copyrightStatus: "needs-review", indexable: true })) quotablesAdded += 1;
+    if (addQuote({ quote, author, category: categoryFor(quote), source: QUOTABLES.url, sourceName: QUOTABLES.name, sourceCommit: QUOTABLES.commit, language: "en", attributionStatus: "verified", copyrightStatus: "cleared", indexable: true })) quotablesAdded += 1;
   }
 }
 

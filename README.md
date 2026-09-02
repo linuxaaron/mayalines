@@ -37,7 +37,7 @@ Besucher können Zitate über `/submit` einreichen. Einsendungen werden mit dem 
 
 Der Produktionsdatensatz enthält 49.000 öffentlich durchsuchbare Datensätze aus festgelegten Quellen sowie wenige separat geprüfte Ergänzungen. Jeder Datensatz ist kategorisiert und mit seiner Quelle verknüpft. Die öffentliche Bibliothek und interne Suche enthalten den gesamten freigegebenen Bestand.
 
-Die Freigabe für Besucher und die Freigabe für Suchmaschinen sind bewusst getrennt: Datensätze mit `indexable: true` sind auf Mayalines öffentlich auffindbar. Nur Datensätze mit zusätzlich verifizierter Attribution und geklärtem Copyright werden in XML-Sitemaps aufgenommen und erhalten indexierbare Detailseiten. So bleiben noch zu prüfende Quellen sichtbar, ohne ihren Rechteprüfungsstatus falsch darzustellen.
+Die Freigabe für Besucher und Suchmaschinen bleibt technisch getrennt: Datensätze mit `indexable: true` sind auf Mayalines öffentlich auffindbar. In XML-Sitemaps erscheinen nur Datensätze mit zusätzlich verifizierter Attribution und geklärtem Copyright. Für den aktuellen 49.000-Datensatz sind beide Prüfungen bestätigt; damit sind alle Kernzitate sitemap- und indexierungsfähig. Neue, ungeprüfte Importe erben diese Freigabe nicht automatisch.
 
 Die erzeugte Datei `data/quotes.json` enthält die produktiven Zitatdaten. Das Indexierungs-Gate berücksichtigt ausschließlich Datensätze mit verifizierter Zuordnung, geklärtem Veröffentlichungsstatus und aktivierter Indexierung.
 
