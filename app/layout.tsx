@@ -10,7 +10,7 @@ import GoogleTranslateLink from "../components/GoogleTranslateLink";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 const siteTitle = "Famous Quotes, Love Quotes, Hope Quotes & Poems | Mayalines";
-const siteDescription = "Discover sourced famous quotes, love quotes, hope quotes, life quotes, inspirational quotes, timeless wisdom and public-domain poems. Browse thousands of quotes by topic and author on Mayalines.";
+const siteDescription = "Discover sourced famous quotes, love quotes, hope quotes, life quotes, inspirational quotes, short quotes for Instagram and WhatsApp, timeless wisdom and public-domain poems. Browse thousands of quotes by topic and author on Mayalines.";
 const socialImage = `${siteUrl}/opengraph-image`;
 
 export const metadata: Metadata = {
@@ -38,6 +38,11 @@ export const metadata: Metadata = {
     "deep quotes",
     "meaningful quotes",
     "short quotes",
+    "short quotes to copy",
+    "quotes for Instagram",
+    "quotes for WhatsApp status",
+    "life lessons quotes",
+    "inspirational quotes to copy",
     "short inspirational quotes",
     "suffering quotes",
     "quotes about suffering",
