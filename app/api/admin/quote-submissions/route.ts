@@ -1,47 +1,32 @@
 import { NextResponse } from "next/server";
-import { getDb } from "../../../../lib/db";
 import { isAdminAuthorized } from "../../../../lib/admin-auth";
 import { rejectCrossSiteMutation } from "../../../../lib/request-security";
+import { listQuoteSubmissions, updateQuoteSubmission } from "../../../../lib/quote-submission";
 
 export const runtime = "nodejs";
 
 export async function GET(request: Request) {
-  if (!isAdminAuthorized(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!isAdminAuthorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    return NextResponse.json({ submissions: await listQuoteSubmissions() });
+  } catch {
+    return NextResponse.json({ error: "Submission storage is temporarily unavailable" }, { status: 503 });
   }
-
-  const db = getDb();
-  if (!db) return NextResponse.json({ error: "Submission storage is not configured" }, { status: 503 });
-
-  const submissions = await db`
-    SELECT id, quote, author, source, category, submitter_name, status, created_at
-    FROM quote_submissions
-    ORDER BY created_at DESC
-    LIMIT 100
-  `;
-
-  return NextResponse.json({ submissions });
 }
 
 export async function POST(request: Request) {
   const crossSiteResponse = rejectCrossSiteMutation(request);
   if (crossSiteResponse) return crossSiteResponse;
-  if (!isAdminAuthorized(request)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  if (!isAdminAuthorized(request)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const form = await request.formData();
   const rawId = String(form.get("id") ?? "");
   const status = String(form.get("status") ?? "");
-
   if (!/^\d+$/.test(rawId) || !["approved", "rejected"].includes(status)) {
     return NextResponse.json({ error: "Invalid submission update" }, { status: 400 });
   }
 
-  const id = BigInt(rawId);
-  const db = getDb();
-  if (!db) return NextResponse.json({ error: "Submission storage is not configured" }, { status: 503 });
-
-  await db`UPDATE quote_submissions SET status = ${status} WHERE id = ${id}`;
+  const updated = await updateQuoteSubmission(Number(rawId), status as "approved" | "rejected");
+  if (!updated) return NextResponse.json({ error: "Submission storage is unavailable" }, { status: 503 });
   return NextResponse.json({ updated: true });
 }
