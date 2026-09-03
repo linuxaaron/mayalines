@@ -7,6 +7,7 @@ import QuoteActions from "../components/QuoteActions";
 import CommunitySections from "../components/CommunitySections";
 import MegaMenu from "../components/MegaMenu";
 import HomeQuoteLibrary from "../components/HomeQuoteLibrary";
+import TotalLikes from "../components/TotalLikes";
 import { quoteTopics } from "../lib/quote-topics";
 
 const PAGE_SIZE = 24;
@@ -76,7 +77,7 @@ export default function Home() {
     `}</style>
 
     <a className="skip-link" href="#main-content">Skip to content</a>
-    <header className="header"><a className="brand" href="#top" aria-label="Mayalines home"><Image className="brand-mark" src="/sunflower-logo.png" alt="" aria-hidden="true" width={46} height={46} priority /><span className="brand-copy"><span className="brand-name">MAYALINES</span><span className="brand-tagline">WORDS THAT LAST.</span></span></a><div className="header-rule" aria-hidden="true" /><nav className="nav" aria-label="Main navigation"><MegaMenu /></nav></header>
+    <header className="header"><TotalLikes /><a className="brand" href="#top" aria-label="Mayalines home"><Image className="brand-mark" src="/sunflower-logo.png" alt="" aria-hidden="true" width={46} height={46} priority /><span className="brand-copy"><span className="brand-name">MAYALINES</span><span className="brand-tagline">WORDS THAT LAST.</span></span></a><div className="header-rule" aria-hidden="true" /><nav className="nav" aria-label="Main navigation"><MegaMenu /></nav></header>
 
     {floatingQuote && <div className="nietzsche-float" aria-label={`Quote by ${floatingQuote.author}`}><div className="nietzsche-float-inner"><p className="nietzsche-quote">{floatingWords.map((word, index) => <span className="nietzsche-word" style={{ "--word-index": index } as CSSProperties} key={`${word}-${index}`}>{word}</span>)}</p><p className="nietzsche-author">— {floatingQuote.author}</p></div></div>}
 

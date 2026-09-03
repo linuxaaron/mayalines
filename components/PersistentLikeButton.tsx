@@ -47,7 +47,7 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
   async function toggleLike() {
     if (pending || !ready || !persistent) return;
 
-    const nextLiked = !liked;
+    const nextLiked = true;
     const previousLiked = liked;
     const previousLikes = likes;
 
@@ -69,6 +69,9 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
       if (data.persistent === false) throw new Error("Persistent like storage unavailable");
       setLikes(Math.max(0, Number(data.likes) || 0));
       setLiked(Boolean(data.liked));
+      if (!previousLiked && data.liked) {
+        window.dispatchEvent(new Event("mayalines:like-added"));
+      }
     } catch {
       setLiked(previousLiked);
       setLikes(previousLikes);
@@ -77,11 +80,11 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
     }
   }
 
-  const disabled = pending || !ready || !persistent;
+  const disabled = pending || !ready || !persistent || liked;
   const label = !persistent
     ? "Like storage is currently unavailable"
     : liked
-      ? `Remove like from the quote by ${author}`
+      ? `Quote by ${author} already liked`
       : `Like the quote by ${author}`;
 
   return (
@@ -93,7 +96,7 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
         disabled={disabled}
         aria-pressed={liked}
         aria-label={label}
-        title={!ready ? "Loading likes" : !persistent ? "Like storage unavailable" : liked ? "Unlike" : "Like this quote"}
+        title={!ready ? "Loading likes" : !persistent ? "Like storage unavailable" : liked ? "Already liked" : "Like this quote"}
       >
         <span className="heart-icon" aria-hidden="true">♥</span>
         <span className="sr-only">{liked ? "Liked" : "Like"}</span>

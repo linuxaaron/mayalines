@@ -80,6 +80,26 @@ summary:focus-visible {
   gap: 22px;
   padding: 12px 48px;
 }
+.total-likes {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+.total-likes strong {
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 800;
+}
+.total-likes-heart {
+  color: #b32632;
+  font-size: 15px;
+  line-height: 1;
+}
 .brand {
   display: inline-flex;
   align-items: center;
@@ -275,6 +295,38 @@ summary:focus-visible {
   padding: 6px 8px;
   font-size: 10px;
 }
+.social-share-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.social-share-button {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .18s ease, background-color .18s ease, transform .18s ease;
+}
+.social-share-button:hover {
+  color: #fff;
+  background: #1f4d3a;
+  transform: translateY(-1px);
+}
+.social-share-button svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.social-share-instagram svg { fill: none; }
+.social-share-instagram .social-icon-cutout { fill: currentColor; stroke: none; }
 .library {
   width: min(1440px, 100%);
   margin: 0 auto;
@@ -885,6 +937,13 @@ summary:focus-visible {
   .brand-mark {
     width: 40px;
     height: 40px;
+  }
+  .total-likes {
+    order: 3;
+    width: 100%;
+    margin-top: 1px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border);
   }
   .brand-name {
     font-size: 22px;

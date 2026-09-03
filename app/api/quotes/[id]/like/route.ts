@@ -54,17 +54,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   let body: { action?: string } = {};
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
-  if (body.action !== "like" && body.action !== "unlike") return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+  if (body.action !== "like") return NextResponse.json({ error: "Likes cannot be removed" }, { status: 400 });
 
   const visitorId = getOrCreateVisitorId(request);
   const db = getDb();
   if (db) {
     try {
-      if (body.action === "like") {
-        await db`INSERT INTO quote_likes (quote_id, visitor_id) VALUES (${id}, ${visitorId}::uuid) ON CONFLICT (quote_id, visitor_id) DO NOTHING`;
-      } else {
-        await db`DELETE FROM quote_likes WHERE quote_id = ${id} AND visitor_id = ${visitorId}::uuid`;
-      }
+      await db`INSERT INTO quote_likes (quote_id, visitor_id) VALUES (${id}, ${visitorId}::uuid) ON CONFLICT (quote_id, visitor_id) DO NOTHING`;
       const rows = await db`SELECT COUNT(*)::int AS likes, BOOL_OR(visitor_id = ${visitorId}::uuid) AS liked FROM quote_likes WHERE quote_id = ${id}`;
       const result = rows[0] as { likes: number; liked: boolean | null };
       return response(Number(result?.likes) || 0, Boolean(result?.liked), true, visitorId);
@@ -78,16 +74,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
   const visitorKey = `quote:liked:${id}:${visitorId}`;
   const countKey = `quote:likes:${id}`;
-  if (body.action === "like") {
-    const added = await redis.set(visitorKey, "1", { nx: true, ex: 63072000 });
-    if (added) await redis.incr(countKey);
-  } else {
-    const existed = await redis.exists(visitorKey);
-    if (existed) {
-      await redis.del(visitorKey);
-      await redis.decr(countKey);
-    }
-  }
+  const added = await redis.set(visitorKey, "1", { nx: true, ex: 63072000 });
+  if (added) await redis.incr(countKey);
 
   const [likes, liked] = await Promise.all([redis.get<number>(countKey), redis.exists(visitorKey)]);
   return response(Number(likes) || 0, Boolean(liked), true, visitorId);
