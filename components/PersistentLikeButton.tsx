@@ -45,7 +45,7 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
   }, [quoteId, visible]);
 
   async function toggleLike() {
-    if (pending || !ready || !persistent) return;
+    if (pending || !persistent || liked) return;
 
     const nextLiked = true;
     const previousLiked = liked;
@@ -80,7 +80,9 @@ export default function PersistentLikeButton({ quoteId, author }: { quoteId: str
     }
   }
 
-  const disabled = pending || !ready || !persistent || liked;
+  // Allow an immediate click while the initial count request is still loading.
+  // The server response remains authoritative and corrects the optimistic value.
+  const disabled = pending || !persistent || liked;
   const label = !persistent
     ? "Like storage is currently unavailable"
     : liked

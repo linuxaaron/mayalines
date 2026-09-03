@@ -39,12 +39,12 @@ export default function SiteRating() {
       setAverage(Number(data.average) || 0);
       setCount(Number(data.count) || 0);
       setValue(nextValue);
-      setMessage("Gespeichert");
+      setMessage("Saved");
       window.dispatchEvent(new Event("mayalines:site-rating-updated"));
     } catch {
-      setMessage("Bewertung momentan nicht verfügbar");
+      setMessage("Rating is currently unavailable");
     } finally { setPending(false); }
   }
 
-  return <div className="site-rating"><button className="site-rating-link" type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open}>Webseite bewerten</button>{count > 0 && <span className="site-rating-summary" aria-label={`${average.toFixed(1)} von 5 Sternen aus ${count} Bewertungen`}>★ {average.toFixed(1)}/5 · {count}</span>}{open && <div className="site-rating-panel" role="group" aria-label="Mayalines bewerten"><span>Wie findest du Mayalines?</span><div className="site-rating-stars">{[1, 2, 3, 4, 5].map((star) => <button key={star} type="button" className={value !== null && star <= value ? "is-selected" : ""} onClick={() => void rate(star)} disabled={pending} aria-label={`${star} von 5 Sternen`}>★</button>)}</div>{message && <small role="status">{message}</small>}</div>}</div>;
+  return <div className="site-rating"><button className="site-rating-link" type="button" onClick={() => setOpen((current) => !current)} aria-expanded={open}>Rate this website</button>{count > 0 && <span className="site-rating-summary" aria-label={`${average.toFixed(1)} out of 5 stars from ${count} ratings`}>★ {average.toFixed(1)}/5 · {count}</span>}{open && <div className="site-rating-panel" role="group" aria-label="Rate Mayalines"><span>How do you rate Mayalines?</span><div className="site-rating-stars">{[1, 2, 3, 4, 5].map((star) => <button key={star} type="button" className={value !== null && star <= value ? "is-selected" : ""} onClick={() => void rate(star)} disabled={pending} aria-label={`${star} out of 5 stars`}>★</button>)}</div>{message && <small role="status">{message}</small>}</div>}</div>;
 }
