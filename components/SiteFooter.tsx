@@ -1,4 +1,5 @@
 import styles from "./SiteFooter.module.css";
+import SiteRating from "./SiteRating";
 
 export default function SiteFooter() {
   return (
@@ -7,6 +8,7 @@ export default function SiteFooter() {
         <div>
           <div className={styles.brand}>MAYALINES</div>
           <p className={styles.note}>Timeless words, carefully collected. Discover quotes, aphorisms, authors, poems and ideas worth keeping.</p>
+          <div className={styles.rating}><SiteRating /></div>
         </div>
         <nav className={styles.links} aria-label="Mayalines footer navigation">
           <a href="/">Quote library</a>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import QuoteRating from "./QuoteRating";
+import PersistentLikeButton from "./PersistentLikeButton";
 
 export default function QuoteActions({ quote, author, quoteId }: { quote: string; author: string; quoteId?: string }) {
   const [copied, setCopied] = useState(false);
@@ -19,8 +19,8 @@ export default function QuoteActions({ quote, author, quoteId }: { quote: string
 
   return (
     <div className="quote-action-suite">
+      {quoteId && <PersistentLikeButton quoteId={quoteId} author={author} />}
       <button className="copy-button" type="button" onClick={() => void copy()}>{copied ? "COPIED" : "COPY"}</button>
-      {quoteId && <QuoteRating quoteId={quoteId} />}
     </div>
   );
 }

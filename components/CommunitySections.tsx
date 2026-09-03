@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import CopyQuoteButton from "./CopyQuoteButton";
+import PersistentLikeButton from "./PersistentLikeButton";
 
 type Quote = { id: string; quote: string; author: string; category: string; likes?: number };
 
 function MiniQuote({ item }: { item: Quote }) {
-  return <article className="mini-quote"><p className="mini-quote-text">“{item.quote}”</p><p className="quote-author">— {item.author}</p><div className="mini-quote-actions"><CopyQuoteButton quote={item.quote} author={item.author}/><a href={`/authors/${item.author.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}>Author →</a></div></article>;
+  return <article className="mini-quote"><p className="mini-quote-text">“{item.quote}”</p><p className="quote-author">— {item.author}</p><div className="mini-quote-actions"><PersistentLikeButton quoteId={item.id} author={item.author}/><CopyQuoteButton quote={item.quote} author={item.author}/><a href={`/authors/${item.author.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`}>Author →</a></div></article>;
 }
 
 export default function CommunitySections() {
