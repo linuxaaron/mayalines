@@ -420,8 +420,10 @@ summary:focus-visible {
   position: absolute;
   z-index: 40;
   top: calc(100% + 8px);
-  left: 0;
+  left: auto;
+  right: 0;
   min-width: 205px;
+  max-width: calc(100vw - 32px);
   padding: 12px;
   border: 1px solid var(--border, #d9d6d0);
   border-radius: 7px;

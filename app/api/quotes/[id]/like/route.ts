@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { Redis } from "@upstash/redis";
-import { getDb, getOrCreateVisitorId, isValidQuoteId } from "../../../../../lib/db";
+import { getOrCreateVisitorId, isValidQuoteId } from "../../../../../lib/db";
 import { rejectIfRateLimited } from "../../../../../lib/rate-limit";
 import { rejectCrossSiteMutation } from "../../../../../lib/request-security";
 
@@ -22,19 +22,8 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const { id } = await params;
   if (!isValidQuoteId(id)) return NextResponse.json({ error: "Invalid quote id" }, { status: 400 });
 
-  const visitorId = getOrCreateVisitorId(request);
-  const db = getDb();
-  if (db) {
-    try {
-      const rows = await db`SELECT COUNT(*)::int AS likes, BOOL_OR(visitor_id = ${visitorId}::uuid) AS liked FROM quote_likes WHERE quote_id = ${id}`;
-      const result = rows[0] as { likes: number; liked: boolean | null };
-      return response(Number(result?.likes) || 0, Boolean(result?.liked), true, visitorId);
-    } catch {
-      // Fall through to Redis if the database/table is unavailable.
-    }
-  }
-
   const redis = getRedis();
+  const visitorId = getOrCreateVisitorId(request);
   if (!redis) return response(0, false, false, visitorId);
   const [likes, liked] = await Promise.all([
     redis.get<number>(`quote:likes:${id}`),
@@ -56,21 +45,9 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
   if (body.action !== "like") return NextResponse.json({ error: "Likes cannot be removed" }, { status: 400 });
 
-  const visitorId = getOrCreateVisitorId(request);
-  const db = getDb();
-  if (db) {
-    try {
-      await db`INSERT INTO quote_likes (quote_id, visitor_id) VALUES (${id}, ${visitorId}::uuid) ON CONFLICT (quote_id, visitor_id) DO NOTHING`;
-      const rows = await db`SELECT COUNT(*)::int AS likes, BOOL_OR(visitor_id = ${visitorId}::uuid) AS liked FROM quote_likes WHERE quote_id = ${id}`;
-      const result = rows[0] as { likes: number; liked: boolean | null };
-      return response(Number(result?.likes) || 0, Boolean(result?.liked), true, visitorId);
-    } catch {
-      // Fall through to Redis.
-    }
-  }
-
   const redis = getRedis();
   if (!redis) return NextResponse.json({ error: "Like storage is not configured" }, { status: 503 });
+  const visitorId = getOrCreateVisitorId(request);
 
   const visitorKey = `quote:liked:${id}:${visitorId}`;
   const countKey = `quote:likes:${id}`;
