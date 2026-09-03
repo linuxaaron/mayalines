@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import quotesData from "../../../data/quotes";
-import PersistentLikeButton from "../../../components/PersistentLikeButton";
-import CopyQuoteButton from "../../../components/CopyQuoteButton";
+import QuoteActions from "../../../components/QuoteActions";
 import StructuredData from "../../../components/StructuredData";
 import { isPublicQuote } from "../../../lib/seo";
 
@@ -102,7 +101,7 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     <div className="collection-wrap">
       <header className="collection-header"><Link href="/" className="collection-brand">MAYALINES</Link><nav className="collection-nav" aria-label="Collection navigation"><Link href="/collections">Collections</Link><Link href="/authors">Authors</Link><Link href="/poems">Poems</Link></nav></header>
       <section className="collection-hero"><p className="eyebrow">MAYALINES · CURATED COLLECTION</p><h1>{collection.title}</h1><p>{collection.description}</p><p className="collection-meta">{quotes.length.toLocaleString("en-US")} sourced quotes</p></section>
-      {quotes.length > 0 ? <section className="collection-grid" aria-label={collection.title}>{quotes.slice(0, 90).map((quote) => <article className="collection-quote" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><Link className="collection-author" href={`/authors/${slugify(quote.author)}`}>More by {quote.author} →</Link><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><CopyQuoteButton quote={quote.quote} author={quote.author} /></div></article>)}</section> : <p className="collection-meta">No released quotes are currently available in this collection.</p>}
+      {quotes.length > 0 ? <section className="collection-grid" aria-label={collection.title}>{quotes.slice(0, 90).map((quote) => <article className="collection-quote" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><Link className="collection-author" href={`/authors/${slugify(quote.author)}`}>More by {quote.author} →</Link><div className="quote-actions"><QuoteActions quote={quote.quote} author={quote.author} quoteId={quote.id} /></div></article>)}</section> : <p className="collection-meta">No released quotes are currently available in this collection.</p>}
       {related.length > 0 && <section className="related" aria-labelledby="related-heading"><p className="eyebrow">KEEP EXPLORING</p><h2 id="related-heading">More quote collections</h2><div className="related-grid">{related.map(([relatedSlug, relatedCollection]) => <Link className="related-link" key={relatedSlug} href={`/collections/${relatedSlug}`}>{relatedCollection.title} →</Link>)}</div></section>}
       <nav className="collection-back" aria-label="Back to collections"><Link href="/collections">← All collections</Link></nav>
     </div>

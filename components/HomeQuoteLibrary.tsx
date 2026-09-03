@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import PersistentLikeButton from "./PersistentLikeButton";
 import QuoteActions from "./QuoteActions";
 
 type QuoteItem = {
@@ -117,7 +116,7 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
         <a className="all-categories-link" href="/categories">All categories →</a>
       </div>
       <div className="quote-grid">
-        {quotes.map((item) => <article className="quote-card" key={item.id} lang={item.language ?? "en"} dir="auto"><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{item.quote}</p><p className="quote-author">— {item.author}</p><p className="quote-category">{item.category}</p><div className="quote-actions"><PersistentLikeButton quoteId={item.id} author={item.author} /><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}
+        {quotes.map((item) => <article className="quote-card" key={item.id} lang={item.language ?? "en"} dir="auto"><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{item.quote}</p><p className="quote-author">— {item.author}</p><p className="quote-category">{item.category}</p><div className="quote-actions"><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}
       </div>
       {!loading && quotes.length === 0 && <p className="hero-copy" role="status">No matching quotes found. Try another author, topic or category.</p>}
       {hasMore && <div className="load-more-wrap"><button className="load-more-button" type="button" disabled={loading} onClick={() => void load(false)}>{loading ? "Loading …" : `Load ${PAGE_SIZE} more quotes`}</button></div>}

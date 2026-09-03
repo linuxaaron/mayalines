@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import PersistentLikeButton from "./PersistentLikeButton";
+import QuoteActions from "./QuoteActions";
 
 export type RandomQuote = {
   id: string;
@@ -37,7 +37,7 @@ export default function RandomQuoteCard({ initialQuote }: { initialQuote: Random
       <blockquote>“{quote.quote}”</blockquote>
       <p className="quote-author">— {quote.author}</p>
       <div className="quote-detail-actions">
-        <PersistentLikeButton quoteId={quote.id} author={quote.author} />
+        <QuoteActions quote={quote.quote} author={quote.author} quoteId={quote.id} />
         <button className="load-more-button" type="button" disabled={loading} onClick={() => void loadQuote()}>
           {loading ? "LOADING…" : "NEW QUOTE"}
         </button>

@@ -1,10 +1,9 @@
 "use client";
 
-import PersistentLikeButton from "./PersistentLikeButton";
 import QuoteActions from "./QuoteActions";
 import type { Quote } from "../data/quotes";
 
-type QuoteResult = Quote & { likes?: number; rank?: number };
+type QuoteResult = Quote & { rank?: number };
 
 type Props = {
   quotes: QuoteResult[];
@@ -22,8 +21,6 @@ export default function QuoteResults({ quotes, metricLabel = "likes" }: Props) {
           <p className="quote-author">— {item.author}</p>
           <p className="quote-category">{item.category}</p>
           <div className="quote-actions">
-            <PersistentLikeButton quoteId={item.id} author={item.author} />
-            {typeof item.likes === "number" && item.likes > 0 && <span className="rank-like-count">{item.likes.toLocaleString("en-US")} {metricLabel}</span>}
             <QuoteActions quote={item.quote} author={item.author} quoteId={item.id} />
           </div>
         </article>

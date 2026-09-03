@@ -2,7 +2,6 @@ import type { CSSProperties } from "react";
 import type { Metadata } from "next";
 import Image from "next/image";
 import quotesData from "../data/quotes";
-import PersistentLikeButton from "../components/PersistentLikeButton";
 import QuoteActions from "../components/QuoteActions";
 import CommunitySections from "../components/CommunitySections";
 import MegaMenu from "../components/MegaMenu";
@@ -83,7 +82,7 @@ export default function Home() {
 
     <HomeQuoteLibrary initialQuotes={initialQuotes} initialTotal={indexableQuotes.length} categories={categories} />
 
-    <section className="feature-band" aria-labelledby="featured-heading"><h2 className="section-heading" id="featured-heading">A few words worth keeping</h2><div className="feature-grid">{featured.map((item) => <article className="feature-card" key={item.id}><p className="feature-quote">“{item.quote}”</p><p className="quote-author">— {item.author}</p><div className="feature-actions"><PersistentLikeButton quoteId={item.id} author={item.author} /><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}</div></section>
+    <section className="feature-band" aria-labelledby="featured-heading"><h2 className="section-heading" id="featured-heading">A few words worth keeping</h2><div className="feature-grid">{featured.map((item) => <article className="feature-card" key={item.id}><p className="feature-quote">“{item.quote}”</p><p className="quote-author">— {item.author}</p><div className="feature-actions"><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}</div></section>
 
     <CommunitySections />
 
@@ -91,7 +90,7 @@ export default function Home() {
 
     <section className="discovery-grid" aria-label="Discover more on Mayalines"><a className="discovery-card discovery-card-feature" href="/poems"><span className="eyebrow">POETRY</span><strong>Famous Poems</strong><p>Read timeless poetry in multiple languages and discover writers beyond the quote.</p><span>Explore poems →</span></a><a className="discovery-card" href="/collections"><span className="eyebrow">CURATED</span><strong>Quote Collections</strong><p>Focused collections about life, love, wisdom, success and more.</p><span>Explore collections →</span></a><a className="discovery-card" href="/authors"><span className="eyebrow">AUTHORS</span><strong>Discover Authors</strong><p>Browse memorable words from writers, thinkers and public figures.</p><span>Browse authors →</span></a><a className="discovery-card" href="/submit"><span className="eyebrow">COMMUNITY</span><strong>Share a Quote</strong><p>Know a quote worth preserving? Send it to the MAYALINES editors.</p><span>Submit a quote →</span></a><a className="discovery-card" href="/community"><span className="eyebrow">COMMUNITY</span><strong>Community Quotes</strong><p>Read quotations submitted by readers and approved by the editors.</p><span>Read community quotes →</span></a></section>
 
-    {daily && <section className="quote-of-the-day" aria-labelledby="daily-title"><p className="eyebrow" id="daily-title">QUOTE OF THE DAY</p><blockquote>{daily.quote}</blockquote><p className="quote-author">— {daily.author}</p><div className="quote-actions"><PersistentLikeButton quoteId={daily.id} author={daily.author} /><QuoteActions quote={daily.quote} author={daily.author} quoteId={daily.id} /></div></section>}
+    {daily && <section className="quote-of-the-day" aria-labelledby="daily-title"><p className="eyebrow" id="daily-title">QUOTE OF THE DAY</p><blockquote>{daily.quote}</blockquote><p className="quote-author">— {daily.author}</p><div className="quote-actions"><QuoteActions quote={daily.quote} author={daily.author} quoteId={daily.id} /></div></section>}
 
     <section className="seo-intro" aria-labelledby="explore-title"><h2 className="section-heading" id="explore-title">Explore Famous Quotes by Topic</h2><p className="hero-copy">Find sourced quotes and aphorisms about love, life, success, motivation, wisdom, courage, happiness, friendship, freedom, philosophy, science, education and more. Browse by topic, author or collection and discover words in multiple languages.</p><div className="author-row">{authors.slice(0, 24).map((author) => <a href={`/authors/${slugify(author)}`} key={author}>{author}</a>)}</div></section>
   </main>;

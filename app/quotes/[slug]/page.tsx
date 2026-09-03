@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import CopyButton from "../../../components/CopyButton";
-import PersistentLikeButton from "../../../components/PersistentLikeButton";
+import QuoteActions from "../../../components/QuoteActions";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import quotesData from "../../../data/quotes";
@@ -72,7 +71,7 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
     <h1>{quote.author} Quote</h1>
     <blockquote>“{quote.quote}”</blockquote>
     <p className="quote-author">— {quote.author}</p>
-    <div className="quote-detail-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><CopyButton quote={quote.quote} author={quote.author} /></div>
+    <div className="quote-detail-actions"><QuoteActions quote={quote.quote} author={quote.author} quoteId={quote.id} /></div>
     <p className="source-note">Source: {quote.sourceName ?? quote.source}</p>
     <p className="source-note">Attribution status: {quote.attributionStatus} · Publication status: {quote.copyrightStatus}</p>
     <p className="source-note">Explore more <a href={`/authors/${authorSlug}`}>quotes by {quote.author}</a> or browse <a href={`/categories/${categorySlug}`}>{quote.category.toLowerCase()} quotes</a>.</p>
@@ -83,7 +82,7 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
         <div className="quote-mark" aria-hidden="true">“</div>
         <p className="quote-text">{item.quote}</p>
         <p className="quote-author">— {item.author}</p>
-        <a className="copy-button" style={{ marginTop: "auto", alignSelf: "flex-start" }} href={`/quotes/${item.slug}`}>READ QUOTE</a>
+        <QuoteActions quote={item.quote} author={item.author} quoteId={item.id} />
       </article>)}</div>
     </section>}
     <StructuredData data={quoteSchema} />

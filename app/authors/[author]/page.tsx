@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
-import PersistentLikeButton from "../../../components/PersistentLikeButton";
+import QuoteActions from "../../../components/QuoteActions";
 import FollowButton from "../../../components/FollowButton";
 import quotesData from "../../../data/quotes";
 import { isPublicQuote, isSeoIndexable } from "../../../lib/seo";
@@ -51,7 +51,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ author:
     </section>}
     <section aria-labelledby="author-library" style={{ marginTop: 38 }}>
       <div className="section-heading" id="author-library">Selected quotes by {authorName}</div>
-      <div className="quote-grid">{visibleQuotes.map((quote) => <article className="quote-card" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><p className="quote-category">{quote.category}</p><div className="quote-actions"><PersistentLikeButton quoteId={quote.id} author={quote.author} /><a className="copy-button" href={`/quotes/${quote.slug}`}>VIEW QUOTE</a></div></article>)}</div>
+      <div className="quote-grid">{visibleQuotes.map((quote) => <article className="quote-card" key={quote.id} lang={quote.language ?? "en"}><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{quote.quote}</p><p className="quote-author">— {quote.author}</p><p className="quote-category">{quote.category}</p><div className="quote-actions"><QuoteActions quote={quote.quote} author={quote.author} quoteId={quote.id} /></div></article>)}</div>
     </section>
     {publicQuotes.length > visibleQuotes.length && <p className="hero-copy" style={{ marginTop: 24 }}>More sourced quotes by {authorName} are available across the Mayalines library.</p>}
     <StructuredData data={personSchema} /><StructuredData data={itemListSchema} />
