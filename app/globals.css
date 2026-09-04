@@ -397,54 +397,6 @@ summary:focus-visible {
 }
 .social-share-instagram svg { fill: none; }
 .social-share-instagram .social-icon-cutout { fill: currentColor; stroke: none; }
-.site-rating {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.site-rating-link {
-  padding: 6px 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: 700 11px/1 Inter, system-ui, sans-serif;
-  letter-spacing: .04em;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  cursor: pointer;
-}
-.site-rating-link:hover { color: #c38b17; }
-.site-rating-summary { font-size: 11px; white-space: nowrap; }
-.site-rating-panel {
-  position: absolute;
-  z-index: 40;
-  top: calc(100% + 8px);
-  left: auto;
-  right: 0;
-  min-width: 205px;
-  max-width: calc(100vw - 32px);
-  padding: 12px;
-  border: 1px solid var(--border, #d9d6d0);
-  border-radius: 7px;
-  background: var(--surface-strong, #fff);
-  color: var(--foreground, #191817);
-  box-shadow: 0 10px 24px rgba(0,0,0,.15);
-}
-.site-rating-panel > span { display: block; margin-bottom: 7px; font-size: 12px; }
-.site-rating-stars { display: flex; gap: 3px; }
-.site-rating-stars button {
-  padding: 0 2px;
-  border: 0;
-  background: transparent;
-  color: #c8c5bf;
-  font-size: 25px;
-  line-height: 1;
-  cursor: pointer;
-}
-.site-rating-stars button:hover,
-.site-rating-stars button.is-selected { color: #c38b17; }
-.site-rating-panel small { display: block; margin-top: 7px; font-size: 11px; }
 .library {
   width: min(1440px, 100%);
   margin: 0 auto;
