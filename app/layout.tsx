@@ -9,8 +9,8 @@ import SiteFooter from "../components/SiteFooter";
 import GoogleTranslateLink from "../components/GoogleTranslateLink";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
-const siteTitle = "Famous Quotes, Love Quotes, Hope Quotes & Poems | Mayalines";
-const siteDescription = "Discover sourced famous quotes, love quotes, hope quotes, life quotes, inspirational quotes, short quotes for Instagram and WhatsApp, timeless wisdom and public-domain poems. Browse thousands of quotes by topic and author on Mayalines.";
+const siteTitle = "Famous Quotes & Timeless Wisdom | Mayalines";
+const siteDescription = "Discover famous quotes, inspirational words and timeless wisdom by author and topic. Search, read and copy quotes on Mayalines.";
 const socialImage = `${siteUrl}/opengraph-image`;
 
 export const metadata: Metadata = {
