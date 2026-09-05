@@ -12,12 +12,12 @@ export default function PrivacyPage() {
       <a className="skip-link" href="#content">Skip to content</a>
       <nav className="legal-nav"><a href="/">← Mayalines</a></nav>
       <article id="content">
-        <p className="eyebrow">LEGAL · LAST UPDATED 2 SEPTEMBER 2026</p>
+        <p className="eyebrow">LEGAL · LAST UPDATED 5 SEPTEMBER 2026</p>
         <h1>Privacy Policy</h1>
 
         <h2>1. Controller</h2>
         <address>
-          <strong>Joscha Aaron Schmidt</strong><br />
+          <strong>Aaron</strong><br />
           Im Sinnighofen 8b<br />
           79189 Bad Krozingen<br />
           Germany<br />
