@@ -4,7 +4,7 @@ import QuoteActions from "../../../components/QuoteActions";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 import StructuredData from "../../../components/StructuredData";
 import quotesData from "../../../data/quotes";
-import { isPublicQuote, isSeoIndexable } from "../../../lib/seo";
+import { isSeoIndexable } from "../../../lib/seo";
 
 export const dynamicParams = true;
 export const revalidate = 86400;
@@ -13,6 +13,10 @@ const localeByLanguage: Record<string, string> = {
   en: "en_US", de: "de_DE", fr: "fr_FR", es: "es_ES", it: "it_IT", pt: "pt_PT", nl: "nl_NL", ilo: "fil_PH",
 };
 
+function slugify(value: string) {
+  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const quote = quotesData.find((item) => item.slug === slug);
@@ -20,8 +24,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const quotePreview = quote?.quote.replace(/\s+/g, " ").trim() ?? "";
   const language = (quote as { language?: string } | undefined)?.language ?? "en";
   const description = quote
-    ? `Read this ${language.toUpperCase()} quote by ${quote.author}: “${quotePreview.slice(0, 145)}${quotePreview.length > 145 ? "…" : ""}” on Mayalines.`
-    : "Read famous, inspirational and timeless quotes from notable authors on Mayalines.";
+    ? `Read this ${language.toUpperCase()} quote attributed to ${quote.author}: “${quotePreview.slice(0, 145)}${quotePreview.length > 145 ? "…" : ""}” on Mayalines.`
+    : "Read famous, inspirational and timeless quotes from notable sources on Mayalines.";
 
   return {
     title: quote ? `${quote.author} Quote – “${quotePreview.slice(0, 62)}${quotePreview.length > 62 ? "…" : ""}”` : "Famous Quote",
@@ -47,18 +51,22 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
   const isVerified = quote.attributionStatus === "verified" && quote.copyrightStatus === "cleared";
   const statusLabel = isVerified ? "VERIFIED" : "SOURCE-DERIVED";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
-  const authorSlug = quote.author.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-  const categorySlug = quote.category.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const authorSlug = slugify(quote.author);
+  const categorySlug = slugify(quote.category);
   const quoteSchema = {
-    "@context": "https://schema.org", "@type": "Quotation", text: quote.quote,
-    creator: { "@type": "Person", name: quote.author }, inLanguage: language,
+    "@context": "https://schema.org",
+    "@type": "Quotation",
+    text: quote.quote,
+    creator: { "@type": "Thing", name: quote.author },
+    inLanguage: language,
     url: `${siteUrl}/quotes/${quote.slug}`,
     isPartOf: { "@type": "WebSite", name: "Mayalines", url: siteUrl },
   };
+
   const relatedIds = new Set<string>();
   const relatedQuotes = [
-    ...quotesData.filter((item) => item.id !== quote.id && item.author === quote.author && isPublicQuote(item)),
-    ...quotesData.filter((item) => item.id !== quote.id && item.category === quote.category && isPublicQuote(item)),
+    ...quotesData.filter((item) => item.id !== quote.id && item.author === quote.author && isSeoIndexable(item)),
+    ...quotesData.filter((item) => item.id !== quote.id && item.category === quote.category && isSeoIndexable(item)),
   ].filter((item) => {
     if (relatedIds.has(item.id)) return false;
     relatedIds.add(item.id);
@@ -74,15 +82,20 @@ export default async function QuotePage({ params }: { params: Promise<{ slug: st
     <div className="quote-detail-actions"><QuoteActions quote={quote.quote} author={quote.author} quoteId={quote.id} /></div>
     <p className="source-note">Source: {quote.sourceName ?? quote.source}</p>
     <p className="source-note">Attribution status: {quote.attributionStatus} · Publication status: {quote.copyrightStatus}</p>
-    <p className="source-note">Explore more <a href={`/authors/${authorSlug}`}>quotes by {quote.author}</a> or browse <a href={`/categories/${categorySlug}`}>{quote.category.toLowerCase()} quotes</a>.</p>
+    <p className="source-note">Explore more <a href={`/authors/${authorSlug}`}>quotes attributed to {quote.author}</a> or browse <a href={`/categories/${categorySlug}`}>{quote.category.toLowerCase()} quotes</a>.</p>
     <p className="source-note">If you believe this quote is incorrectly attributed or should be removed, see <a href="/copyright">Copyright and quote corrections</a>.</p>
+
     {relatedQuotes.length > 0 && <section aria-labelledby="related-quotes" style={{ marginTop: 52, paddingTop: 28, borderTop: "1px solid var(--border)" }}>
       <h2 className="section-heading" id="related-quotes">Related verified quotes</h2>
       <div className="quote-grid">{relatedQuotes.map((item) => <article className="quote-card" key={item.id} lang={item.language ?? "en"}>
         <div className="quote-mark" aria-hidden="true">“</div>
         <p className="quote-text">{item.quote}</p>
         <p className="quote-author">— {item.author}</p>
-        <QuoteActions quote={item.quote} author={item.author} quoteId={item.id} />
+        <p className="quote-category"><a href={`/categories/${slugify(item.category)}`}>{item.category}</a></p>
+        <div className="quote-actions">
+          <a className="copy-button" href={`/quotes/${item.slug}`}>Read quote</a>
+          <QuoteActions quote={item.quote} author={item.author} quoteId={item.id} />
+        </div>
       </article>)}</div>
     </section>}
     <StructuredData data={quoteSchema} />
