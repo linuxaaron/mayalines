@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import quotesData from "../../data/quotes";
 import StructuredData from "../../components/StructuredData";
-import { isPublicQuote } from "../../lib/seo";
+import { isSeoIndexable, MIN_INDEXABLE_QUOTES_PER_AUTHOR_PAGE } from "../../lib/seo";
 
 export const metadata: Metadata = {
   title: "Famous Quotes by Author | Inspirational & Timeless Quotes",
@@ -21,14 +21,23 @@ function slugify(value: string) {
 }
 
 export default function AuthorsPage() {
-  const authors = Array.from(new Set(quotesData.filter(isPublicQuote).map((quote) => quote.author))).sort((a, b) => a.localeCompare(b, "en"));
+  const authorCounts = new Map<string, number>();
+  for (const quote of quotesData.filter(isSeoIndexable)) {
+    authorCounts.set(quote.author, (authorCounts.get(quote.author) ?? 0) + 1);
+  }
+
+  const authors = [...authorCounts.entries()]
+    .filter(([, count]) => count >= MIN_INDEXABLE_QUOTES_PER_AUTHOR_PAGE)
+    .sort(([a], [b]) => a.localeCompare(b, "en"));
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
   const itemListSchema = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "Famous Quotes by Author",
     description: "Verified quote collections by author on Mayalines.",
-    itemListElement: authors.map((author, index) => ({
+    numberOfItems: authors.length,
+    itemListElement: authors.slice(0, 500).map(([author], index) => ({
       "@type": "ListItem",
       position: index + 1,
       name: author,
@@ -40,9 +49,9 @@ export default function AuthorsPage() {
     <nav className="legal-nav" aria-label="Primary navigation"><a href="/">← Mayalines</a></nav>
     <p className="eyebrow">MAYALINES · AUTHORS</p>
     <h1>Famous Quotes by Author</h1>
-    <p className="hero-copy">Browse verified quote collections by notable authors, writers, thinkers and public figures. Select an author to explore memorable words, source information and individual quote pages.</p>
-    <p className="library-meta">{authors.length.toLocaleString("en-US")} authors with verified quotes.</p>
-    <div className="author-row">{authors.map((author) => <a href={`/authors/${slugify(author)}`} key={author}>{author}</a>)}</div>
+    <p className="hero-copy">Browse verified quote collections with multiple sourced quotes. Each author page links directly to individual quote pages and related topics, helping readers explore the library naturally.</p>
+    <p className="library-meta">{authors.length.toLocaleString("en-US")} author collections with at least {MIN_INDEXABLE_QUOTES_PER_AUTHOR_PAGE} verified quotes.</p>
+    <div className="author-row">{authors.map(([author, count]) => <a href={`/authors/${slugify(author)}`} key={author}>{author} <span aria-label={`${count} quotes`}>({count})</span></a>)}</div>
     <StructuredData data={itemListSchema} />
   </main>;
 }
