@@ -6,6 +6,12 @@ type SeoQuote = {
 
 export const PRIMARY_SITEMAP_QUOTE_LIMIT = 30_000;
 
+/**
+ * Avoid indexing thin author archive pages that only contain a single eligible quote.
+ * Individual quote pages remain independently indexable.
+ */
+export const MIN_INDEXABLE_QUOTES_PER_AUTHOR_PAGE = 2;
+
 /** Public browsing is controlled by the explicit editorial release flag. */
 export function isPublicQuote(quote: SeoQuote | undefined): boolean {
   return quote?.indexable === true;
@@ -21,4 +27,12 @@ export function isSeoIndexable(quote: SeoQuote | undefined): boolean {
       && quote.attributionStatus === "verified"
       && quote.copyrightStatus === "cleared",
   );
+}
+
+export function countSeoIndexableQuotes(quotes: readonly (SeoQuote | undefined)[]): number {
+  return quotes.reduce((count, quote) => count + (isSeoIndexable(quote) ? 1 : 0), 0);
+}
+
+export function isAuthorPageIndexable(quotes: readonly (SeoQuote | undefined)[]): boolean {
+  return countSeoIndexableQuotes(quotes) >= MIN_INDEXABLE_QUOTES_PER_AUTHOR_PAGE;
 }
