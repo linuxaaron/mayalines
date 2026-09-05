@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import "./accessibility-overrides.css";
 import "./quote-overrides.css";
+import "./google-translate-overrides.css";
 import "./submit/submit-overrides.css";
 import "./admin/admin-overrides.css";
 import StructuredData from "../components/StructuredData";
