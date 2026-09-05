@@ -1,0 +1,100 @@
+/* Keep the Mayalines layout stable when Google Translate proxies the page.
+   Google may inject a fixed banner and inline top offsets into <body>. */
+
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+/* Google Translate commonly adds an inline body offset for its banner. */
+body,
+html.translated-ltr body,
+html.translated-rtl body {
+  top: 0 !important;
+}
+
+/* Prevent Google's translation banner from reserving vertical space. */
+.goog-te-banner-frame,
+.goog-te-banner-frame.skiptranslate,
+iframe.goog-te-banner-frame,
+body > .skiptranslate:first-child {
+  display: none !important;
+  height: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Google can inject these helper elements while hovering translated text. */
+#goog-gt-tt,
+.goog-te-balloon-frame,
+.goog-te-spinner-pos {
+  pointer-events: none !important;
+}
+
+/* Translated strings can be significantly longer than the English source.
+   Let text wrap inside its existing container instead of widening the page. */
+.quote-card,
+.feature-card,
+.hero,
+.library,
+.header,
+.footer,
+main,
+section,
+article {
+  min-width: 0;
+}
+
+.quote-text,
+.feature-quote,
+.hero h1,
+.hero-copy,
+.brand-name,
+.brand-tagline,
+.quote-author,
+.quote-category,
+nav a,
+button,
+a,
+p,
+h1,
+h2,
+h3 {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+/* Google wraps translated fragments in <font> elements. Preserve the
+   typography defined by Mayalines instead of allowing wrapper-specific drift. */
+.quote-text font,
+.feature-quote font,
+.hero h1 font,
+.hero-copy font,
+.brand-name font,
+.brand-tagline font,
+.quote-author font,
+.quote-category font,
+nav font,
+button font,
+a font,
+p font,
+h1 font,
+h2 font,
+h3 font {
+  font: inherit !important;
+  color: inherit !important;
+  letter-spacing: inherit !important;
+  line-height: inherit !important;
+}
+
+@media (max-width: 760px) {
+  /* Long translated labels must wrap rather than pushing the mobile viewport. */
+  .header,
+  .nav,
+  .quote-card,
+  .feature-card {
+    max-width: 100%;
+  }
+}
