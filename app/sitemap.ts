@@ -1,7 +1,11 @@
 import type { MetadataRoute } from "next";
 import quotesData from "../data/quotes";
 import { quoteTopics } from "../lib/quote-topics";
-import { isSeoIndexable, PRIMARY_SITEMAP_QUOTE_LIMIT } from "../lib/seo";
+import {
+  isSeoIndexable,
+  MIN_INDEXABLE_QUOTES_PER_AUTHOR_PAGE,
+  PRIMARY_SITEMAP_QUOTE_LIMIT,
+} from "../lib/seo";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://mayalines.com";
 
@@ -42,7 +46,16 @@ const collectionSlugs = [
 export default function sitemap(): MetadataRoute.Sitemap {
   const indexableQuotes = quotesData.filter(isSeoIndexable);
   const categories = [...new Set(indexableQuotes.map((quote) => quote.category))];
-  const authors = [...new Set(indexableQuotes.map((quote) => quote.author))];
+  const authorCounts = new Map<string, number>();
+
+  for (const quote of indexableQuotes) {
+    authorCounts.set(quote.author, (authorCounts.get(quote.author) ?? 0) + 1);
+  }
+
+  const authors = [...authorCounts.entries()]
+    .filter(([, count]) => count >= MIN_INDEXABLE_QUOTES_PER_AUTHOR_PAGE)
+    .map(([author]) => author);
+
   const primaryQuotes = indexableQuotes.slice(0, PRIMARY_SITEMAP_QUOTE_LIMIT);
 
   return [
