@@ -23,6 +23,10 @@ const PAGE_SIZE = 24;
 const TOAST_DURATION = 1450;
 const QUICK_CATEGORY_NAMES = ["Life", "Love", "Wisdom", "Success", "Motivation", "Happiness", "Courage", "Friendship", "Freedom"];
 
+function slugify(value: string) {
+  return value.toLowerCase().normalize("NFKD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
 export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categories }: Props) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState("All");
@@ -93,6 +97,8 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
       .quote-library-filters button:hover,.quote-library-filters button[aria-pressed="true"]{border-color:#c8c2ba;background:#fff;color:#5d554d}
       .all-categories-link{display:inline-flex;align-items:center;min-height:40px;padding:9px 4px;color:#5d554d;font-size:10px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
       .all-categories-link:hover{text-decoration:underline;text-underline-offset:4px}
+      .quote-card-links{display:flex;flex-wrap:wrap;gap:8px 12px;margin-top:8px;font-size:10px}
+      .quote-card-links a{text-decoration:underline;text-underline-offset:3px}
       @keyframes quote-count-toast{0%{opacity:0;transform:translate(-50%,-44%) scale(.96)}12%,76%{opacity:.96;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-56%) scale(.98)}}
       @media(max-width:560px){.quote-count-toast{min-width:128px;padding:13px 18px;font-size:16px}.quote-library-filters{gap:6px;padding:12px 0}.quote-library-filters button,.all-categories-link{min-height:44px;font-size:10px}.quote-library-filters button{padding:10px 12px}}
       @media(prefers-reduced-motion:reduce){.quote-count-toast{animation:none}}
@@ -116,7 +122,7 @@ export default function HomeQuoteLibrary({ initialQuotes, initialTotal, categori
         <a className="all-categories-link" href="/categories">All categories →</a>
       </div>
       <div className="quote-grid">
-        {quotes.map((item) => <article className="quote-card" key={item.id} lang={item.language ?? "en"} dir="auto"><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{item.quote}</p><p className="quote-author">— {item.author}</p><p className="quote-category">{item.category}</p><div className="quote-actions"><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}
+        {quotes.map((item) => <article className="quote-card" key={item.id} lang={item.language ?? "en"} dir="auto"><div className="quote-mark" aria-hidden="true">“</div><p className="quote-text">{item.quote}</p><p className="quote-author">— <a href={`/authors/${slugify(item.author)}`}>{item.author}</a></p><p className="quote-category"><a href={`/categories/${slugify(item.category)}`}>{item.category}</a></p><div className="quote-card-links"><a href={`/quotes/${item.slug}`}>Read full quote</a></div><div className="quote-actions"><QuoteActions quote={item.quote} author={item.author} quoteId={item.id} /></div></article>)}
       </div>
       {!loading && quotes.length === 0 && <p className="hero-copy" role="status">No matching quotes found. Try another author, topic or category.</p>}
       {hasMore && <div className="load-more-wrap"><button className="load-more-button" type="button" disabled={loading} onClick={() => void load(false)}>{loading ? "Loading …" : `Load ${PAGE_SIZE} more quotes`}</button></div>}
