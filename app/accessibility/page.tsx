@@ -26,7 +26,7 @@ export default function AccessibilityPage() {
       <h2>Known Limitations</h2>
       <p>Automated checks cannot establish complete accessibility. Manual testing with keyboard navigation, screen readers, zoom, contrast tools and mobile devices remains necessary.</p>
       <h2>Report an Accessibility Issue</h2>
-      <p>Email <a href="mailto:joschaschmidt@mail.de">joschaschmidt@mail.de</a> with the page URL, a description of the issue and, where possible, the device and assistive technology used.</p>
+      <p>Email Joscha Aaron Schmidt at <a href="mailto:joschaschmidt@mail.de">joschaschmidt@mail.de</a> with the page URL, a description of the issue and, where possible, the device and assistive technology used.</p>
     </article>
   </main>;
 }
