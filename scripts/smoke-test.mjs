@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
+import seoRedirects from "../data/seo-redirects.json" with { type: "json" };
 
 const port = 3100;
 const baseUrl = `http://127.0.0.1:${port}`;
@@ -55,6 +56,17 @@ try {
 
   await Promise.all(["/random", "/library", "/submit", "/opengraph-image"].map(get));
 
+  for (const { source, destination } of seoRedirects) {
+    const redirect = await fetch(`${baseUrl}${source}`, { redirect: "manual" });
+    assert.equal(redirect.status, 301, `${source} must permanently redirect`);
+    assert.equal(new URL(redirect.headers.get("location"), baseUrl).pathname, destination);
+    const target = await get(destination);
+    assert.match(target.text, /<meta name="robots" content="index, follow"/i, `${destination} must be indexable`);
+    assert.ok(target.text.includes(`href="https://mayalines.com${destination}"`), `${destination} must declare its own canonical URL`);
+  }
+  const unknownQuote = await fetch(`${baseUrl}/quotes/not-a-real-quote`, { redirect: "manual" });
+  assert.equal(unknownQuote.status, 404, "unknown quotes must keep a real 404 response");
+
   const [robots, primarySitemap, overflowSitemap] = await Promise.all([
     get("/robots.txt"),
     get("/sitemap.xml"),
@@ -63,7 +75,11 @@ try {
   assert.match(robots.text, /Sitemap: .*\/sitemap-quotes-2\.xml/, "robots.txt should advertise the overflow sitemap");
   const sitemapQuoteCount = (primarySitemap.text.match(/<loc>[^<]*\/quotes\//g) || []).length
     + (overflowSitemap.text.match(/<loc>[^<]*\/quotes\//g) || []).length;
-  assert.ok(sitemapQuoteCount >= 49_000, `sitemaps should expose at least 49,000 quote URLs, found ${sitemapQuoteCount}`);
+  assert.ok(sitemapQuoteCount >= 48_999, `sitemaps should expose the corpus minus the confirmed duplicate, found ${sitemapQuoteCount}`);
+  for (const { source, destination } of seoRedirects) {
+    assert.ok(!`${primarySitemap.text}${overflowSitemap.text}`.includes(`https://mayalines.com${source}</loc>`), `${source} must be excluded from sitemaps`);
+    assert.ok(`${primarySitemap.text}${overflowSitemap.text}`.includes(`https://mayalines.com${destination}</loc>`), `${destination} must remain in a sitemap`);
+  }
 
   const formerlyPendingQuote = await get("/quotes/creativity-is-the-key-to-success-in-the-future-and-primary-education-is-where-teachers-c-q00043");
   assert.match(formerlyPendingQuote.text, /<meta name="robots" content="index, follow"/i, "rights-cleared quote pages should be indexable");
@@ -86,7 +102,7 @@ try {
   assert.equal(blockedMutation.status, 403, "cross-site mutations should be rejected before data access");
 
   await assertClientChunksStaySmall(path.join(process.cwd(), ".next", "static", "chunks"));
-  console.log("Smoke tests passed: 49,000+ indexed quotes, routes, headers, CSRF guard, footer semantics and client bundle ceiling.");
+  console.log("Smoke tests passed: canonical quote URLs, legacy redirects, routes, headers, CSRF guard, footer semantics and client bundle ceiling.");
 } finally {
   server.kill("SIGTERM");
 }
