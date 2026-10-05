@@ -1,6 +1,12 @@
+import seoRedirects from "./data/seo-redirects.json" with { type: "json" };
+
 /** @type {import("next").NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
+  async redirects() {
+    // Preserve discovered legacy URLs and consolidate the confirmed duplicate.
+    return seoRedirects.map((redirect) => ({ ...redirect, statusCode: 301 }));
+  },
   experimental: {
     // TypeScript 6's CLI can close its wrapper before Next receives the
     // complete --showConfig output. The compiler API avoids that transport
